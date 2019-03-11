@@ -84,92 +84,91 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildDrawer() {
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          UserAccountsDrawerHeader(
-            currentAccountPicture: Image.asset('res/ic_launcher-web.png'),
-            accountName: Text('Tujian R'),
-            accountEmail: Text('无人为孤岛，一图一世界。'),
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor.withAlpha(200),
+      child: ListTileTheme(
+        selectedColor: Theme.of(context).accentColor,
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            UserAccountsDrawerHeader(
+              currentAccountPicture: Image.asset('res/ic_launcher-web.png'),
+              accountName: Text('Tujian R'),
+              accountEmail: Text('无人为孤岛，一图一世界。'),
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor.withAlpha(200),
+              ),
             ),
-          ),
-          ListTile(
-            leading: Icon(MdiIcons.widgets),
-            title: Text('杂烩'),
-            onTap: () => _setType(0),
-            selected: _index == 0,
-          ),
-          ListTile(
-            leading: Icon(MdiIcons.drawing),
-            title: Text('插画'),
-            onTap: () => _setType(1),
-            selected: _index == 1,
-          ),
-          Divider(),
-          ListTile(
-            leading: Icon(MdiIcons.monitor),
-            title: Text('桌面'),
-            onTap: () => _setType(2),
-            selected: _index == 2,
-          ),
-          ListTile(
-            leading: Icon(MdiIcons.text),
-            title: Text('一句'),
-            onTap: () {
-              showDialog(context: context, builder: (_) => _TextDialog());
-            },
-          ),
-          Divider(),
-          ListTile(
-            leading: Icon(MdiIcons.telegram),
-            title: Text('推送'),
-            onTap: () => _launch('https://t.me/Tujiansays'),
-          ),
-          ListTile(
-            leading: Icon(MdiIcons.qqchat),
-            title: Text('群组'),
-            onTap: () => _launch(
-                'mqqapi://card/show_pslcard?src_type=internal&verson=1&uin=4728'
-                '63370&card_type=group&source=qrcode'),
-          ),
-          ListTile(
-            leading: Icon(MdiIcons.cloud_upload),
-            title: Text('投稿'),
-            onTap: () {
-              /*Navigator.of(context).push(
+            ListTile(
+              leading: Icon(MdiIcons.widgets),
+              title: Text('杂烩'),
+              onTap: () => _setType(0),
+              selected: _index == 0,
+            ),
+            ListTile(
+              leading: Icon(MdiIcons.drawing),
+              title: Text('插画'),
+              onTap: () => _setType(1),
+              selected: _index == 1,
+            ),
+            Divider(),
+            ListTile(
+              leading: Icon(MdiIcons.monitor),
+              title: Text('桌面'),
+              onTap: () => _setType(2),
+              selected: _index == 2,
+            ),
+            ListTile(
+              leading: Icon(MdiIcons.text),
+              title: Text('一句'),
+              onTap: () {
+                showDialog(context: context, builder: (_) => _TextDialog());
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: Icon(MdiIcons.telegram),
+              title: Text('推送'),
+              onTap: () => Tools.safeLaunch('https://t.me/Tujiansays'),
+            ),
+            ListTile(
+              leading: Icon(MdiIcons.qqchat),
+              title: Text('群组'),
+              onTap: () => Tools.safeLaunch(
+                  'mqqapi://card/show_pslcard?src_type=internal&verson=1&uin=47'
+                      '2863370&card_type=group&source=qrcode'),
+            ),
+            ListTile(
+              leading: Icon(MdiIcons.cloud_upload),
+              title: Text('投稿'),
+              onTap: () {
+                /*Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => UploadPage()),
               );*/
-              Toast(context, '暂未开放').show();
-            },
-          ),
-          Divider(),
-          ListTile(
-            leading: Icon(MdiIcons.settings),
-            title: Text('设置'),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => SettingsPage()),
-              );
-            },
-          ),
-          ListTile(
-            leading: Icon(MdiIcons.information),
-            title: Text('关于'),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => AboutPage()),
-              );
-            },
-          )
-        ],
+                Toast(context, '暂未开放').show();
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: Icon(MdiIcons.settings),
+              title: Text('设置'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => SettingsPage()),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(MdiIcons.information),
+              title: Text('关于'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => AboutPage()),
+                );
+              },
+            )
+          ],
+        ),
       ),
     );
-  }
-
-  Future<void> _launch(String url) async {
-    if (await canLaunch(url)) await launch(url);
   }
 
   void _setType(int index) {
@@ -193,15 +192,13 @@ class _HomePageState extends State<HomePage> {
         );
         break;
       case 1:
-        Toast(context, '正在开始下载...').show();
-        Tools.cacheImage(_data)
-            .then((file) => Plugins.syncGallery(file))
-            .then((val) => Toast(context, '下载完成').show());
-        break;
       case 2:
-        Tools.cacheImage(_data)
-            .then((file) => Plugins.setWallpaper(file))
-            .then((val) => Toast(context, '设置完成').show());
+        Toast(context, '正在开始下载...').show();
+        File file = await Tools.cacheImage(_data);
+        String path = await Plugins.syncGallery(file);
+        Toast(context, '下载完成').show();
+        if (index != 2) break;
+        await Plugins.setWallpaper(File(path));
         break;
       case 3:
         Share.share('${_data.title}\n${_data.user}:${_data.info}\n'

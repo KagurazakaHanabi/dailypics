@@ -1,6 +1,6 @@
+import 'package:daily_pics/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:daily_pics/pages/home.dart';
 
 void main() => runApp(MyApp());
 
@@ -23,7 +23,11 @@ class MyApp extends StatelessWidget {
 }
 
 class ThemeModel extends Model {
-  ThemeData _theme = ThemeData(primarySwatch: Colors.teal);
+  ThemeData _theme = ThemeData(
+    primaryColor: Colors.white,
+    primaryColorDark: Colors.black45,
+    accentColor: Colors.black87,
+  );
 
   ThemeData get theme => _theme;
 

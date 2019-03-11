@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/pages/view.dart';
+import 'package:daily_pics/pages/viewer.dart';
 
 class ArchiveComponent extends StatefulWidget {
   final String type;
@@ -17,73 +17,75 @@ class ArchiveComponent extends StatefulWidget {
   ArchiveComponentState createState() => ArchiveComponentState();
 }
 
-class ArchiveComponentState extends State<ArchiveComponent> {
+class ArchiveComponentState extends State<ArchiveComponent> with AutomaticKeepAliveClientMixin {
   bool _debug = false;
-  List<Picture> _pictures = [];
+  List<Picture> _pictures;
+  dynamic _error;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _fetch());
     SharedPreferences.getInstance()
         .then((pref) => _debug = pref.getBool('debug') ?? false);
   }
 
   @override
   Widget build(BuildContext context) {
-    String type = Uri.decodeQueryComponent(widget.type);
-    int crossAxisCount = type == '电脑壁纸' ? 1 : 2;
-    return FutureBuilder(
-      future: _fetch(),
-      builder: (context, snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.done:
-            if (snapshot.hasError) {
-              dynamic error = snapshot.error;
-              String trace = '';
-              if (error is Error) {
-                trace = error.stackTrace.toString() + '\n';
-              }
-              return GestureDetector(
-                onTap: () => setState(() {}),
-                child: Center(
-                  child: Text(
-                    '${snapshot.error}\n${_debug ? trace : ''}加载失败，点击重试',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Theme.of(context).hintColor),
-                  ),
-                ),
-              );
-            }
-            return Scrollbar(
-              child: StaggeredGridView.countBuilder(
-                crossAxisCount: crossAxisCount,
-                itemCount: _pictures.length,
-                itemBuilder: (context, index) => _Tile(_pictures[index]),
-                staggeredTileBuilder: (_) => StaggeredTile.fit(1),
-              ),
-            );
-          default:
-            return Center(child: CircularProgressIndicator());
-        }
-      },
-    );
+    Widget result = Center(child: CircularProgressIndicator());
+    if (_error != null && _error is Error) {
+      String trace = _error.stackTrace.toString() + '\n';
+      result = GestureDetector(
+        onTap: () => setState(() => _error = null),
+        child: Center(
+          child: Text(
+            '$_error\n${_debug ? trace : ''}加载失败，点击重试',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Theme.of(context).hintColor),
+          ),
+        ),
+      );
+    }
+    if (_pictures != null) {
+      String type = Uri.decodeQueryComponent(widget.type);
+      int crossAxisCount = type == '电脑壁纸' ? 1 : 2;
+      result = Scrollbar(
+        child: StaggeredGridView.countBuilder(
+          crossAxisCount: crossAxisCount,
+          itemCount: _pictures.length,
+          itemBuilder: (_, index) => _Tile(_pictures[index], '#$index'),
+          staggeredTileBuilder: (_) => StaggeredTile.fit(1),
+        ),
+      );
+    }
+    return result;
   }
 
   Future<void> _fetch() async {
-    Uri uri = Uri.parse('https://wallpaper.yaerin.com/api?type=${widget.type}');
-    HttpClient client = HttpClient();
-    HttpClientRequest request = await client.getUrl(uri);
-    HttpClientResponse response = await request.close();
-    String body = await response.transform(utf8.decoder).join();
-    Response res = Response.fromJson(jsonDecode(body));
-    _pictures = res.data ?? [];
+    try {
+      _error = null;
+      String uri = 'https://dp.chimon.me/api/bysort.php?sort=${widget.type}';
+      HttpClient client = HttpClient();
+      HttpClientRequest request = await client.getUrl(Uri.parse(uri));
+      HttpClientResponse response = await request.close();
+      String body = await response.transform(utf8.decoder).join();
+      Response res = Response.fromJson(jsonDecode(body));
+      setState(() => _pictures = res.data ?? []);
+    } catch (err) {
+      if (mounted) setState(() => _error = err);
+    }
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class _Tile extends StatelessWidget {
   final Picture data;
 
-  _Tile(this.data);
+  final String heroTag;
+
+  _Tile(this.data, this.heroTag);
 
   @override
   Widget build(BuildContext context) {
@@ -95,16 +97,19 @@ class _Tile extends StatelessWidget {
       child: InkWell(
         onTap: () {
           Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => ViewPage(data)),
+            MaterialPageRoute(builder: (_) => ViewerPage(data, heroTag)),
           );
         },
         child: Column(
           children: <Widget>[
             AspectRatio(
               aspectRatio: data.width / data.height,
-              child: CachedNetworkImage(
-                imageUrl: data.url,
-                placeholder: Placeholder(), // TODO: 2019/3/1 Yaerin: 等待提供占位图
+              child: Hero(
+                tag: heroTag,
+                child: CachedNetworkImage(
+                  imageUrl: data.url,
+                  placeholder: Placeholder(),
+                ),
               ),
             ),
             Container(

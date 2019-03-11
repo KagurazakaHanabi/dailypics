@@ -6,10 +6,12 @@ import 'package:daily_pics/misc/plugins.dart';
 import 'package:daily_pics/misc/tools.dart';
 import 'package:daily_pics/widgets/toast.dart';
 
-class ViewPage extends StatelessWidget {
+class ViewerPage extends StatelessWidget {
   final Picture data;
 
-  ViewPage(this.data);
+  final String heroTag;
+
+  ViewerPage(this.data, [this.heroTag = '##']);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +20,7 @@ class ViewPage extends StatelessWidget {
         onTap: () => Navigator.of(context).pop(),
         onLongPress: () => _onLongPress(context),
         child: PhotoView(
-          heroTag: 'Image',
+          heroTag: heroTag,
           imageProvider: CachedNetworkImageProvider(data.url),
           loadingChild: Center(child: CircularProgressIndicator()),
         ),

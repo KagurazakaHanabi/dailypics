@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:daily_pics/misc/bean.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Tools {
   static Future<File> cacheImage(Picture source) async {
@@ -22,5 +23,9 @@ class Tools {
     File file = File('$dest/${source.id}$suffix');
     await response.pipe(file.openWrite());
     return file;
+  }
+
+  static void safeLaunch(String url) async {
+    if (await canLaunch(url)) await launch(url);
   }
 }

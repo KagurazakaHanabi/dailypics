@@ -22,18 +22,23 @@ class ViewerComponent extends StatefulWidget {
 
 class _ViewerComponentState extends State<ViewerComponent>
     with AutomaticKeepAliveClientMixin {
+  bool _debug = false;
   Picture _data;
-  Object _error;
+  dynamic _error;
   Color _color;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => _fetch());
+    SharedPreferences.getInstance()
+        .then((pref) => _debug = pref.getBool('debug') ?? false);
     eventBus.on<OnPageChangedEvent>().listen((event) {
-      if (_data != null && _color != null && event.value == widget.index) {
+      if (_data != null && event.value == widget.index) {
         eventBus.fire(ReceivedDataEvent(widget.index, _data));
-        _switchTheme();
+        if (_color != null) {
+          _switchTheme();
+        }
       }
     });
   }
@@ -42,12 +47,13 @@ class _ViewerComponentState extends State<ViewerComponent>
   Widget build(BuildContext context) {
     super.build(context);
     Widget result = Center(child: CircularProgressIndicator());
-    if (_error != null) {
+    if (_error != null && _error is Error) {
+      String trace = _error.stackTrace.toString() + '\n';
       result = GestureDetector(
-        onTap: () => setState(() {}),
+        onTap: () => setState(() => _error = null),
         child: Center(
           child: Text(
-            '$_error\n加载失败，点击重试',
+            '$_error\n${_debug ? trace : ''}加载失败，点击重试',
             textAlign: TextAlign.center,
             style: TextStyle(color: Theme.of(context).hintColor),
           ),
@@ -93,7 +99,7 @@ class _ViewerComponentState extends State<ViewerComponent>
   Future<void> _fetch() async {
     try {
       _error = null;
-      String s = 'https://wallpaper.yaerin.com/api?type=${widget.type}&limit=1';
+      String s = 'https://dp.chimon.me/api/today.php?sort=${widget.type}';
       HttpClient client = HttpClient();
       HttpClientRequest request = await client.getUrl(Uri.parse(s));
       HttpClientResponse response = await request.close();

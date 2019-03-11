@@ -1,3 +1,4 @@
+import 'package:daily_pics/misc/tools.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons/material_design_icons.dart';
 
@@ -7,6 +8,7 @@ class AboutPage extends StatefulWidget {
 }
 
 class AboutPageState extends State<AboutPage> {
+  String _repo = 'https://github.com/KagurazakaHanabi/daily_pics';
   String _about = """
 　　图鉴是一款简洁的壁纸推荐软件，有杂烩（摄影）、插画（二次元）以及桌面壁纸三个分类。均由人工从 Pixiv、酷安、Unsplash 等网站摘取而来，经过精挑细选，会更适合用作壁纸。
 
@@ -31,7 +33,7 @@ class AboutPageState extends State<AboutPage> {
             actions: <Widget>[
               IconButton(
                 icon: Icon(MdiIcons.github_circle),
-                onPressed: () {},
+                onPressed: () => Tools.safeLaunch(_repo),
               ),
             ],
             flexibleSpace: FlexibleSpaceBar(
