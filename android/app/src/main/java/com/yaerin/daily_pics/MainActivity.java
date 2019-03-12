@@ -9,8 +9,6 @@ import com.yaerin.daily_pics.plugins.PlatformPlugin;
 import io.flutter.app.FlutterActivity;
 import io.flutter.plugins.GeneratedPluginRegistrant;
 
-import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-
 public class MainActivity extends FlutterActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,9 +16,10 @@ public class MainActivity extends FlutterActivity {
         GeneratedPluginRegistrant.registerWith(this);
         PlatformPlugin.registerWith(registrarFor("ml.cerasus.pics"));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission_group.STORAGE) != PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission_group.STORAGE}, 100);
-            }
+            requestPermissions(new String[]{
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+            }, 1000);
         }
     }
 }

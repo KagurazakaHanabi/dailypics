@@ -194,6 +194,11 @@ class _HomePageState extends State<HomePage> {
         break;
       case 1:
       case 2:
+      // FIXME: 2019/3/12 Yaerin: 等待 iOS 开发
+        if (Platform.isIOS) {
+          Toast(context, '将在后续版本中支持').show();
+          break;
+        }
         Toast(context, '正在开始下载...').show();
         File file = await Tools.cacheImage(_data);
         String path = await Plugins.syncGallery(file);

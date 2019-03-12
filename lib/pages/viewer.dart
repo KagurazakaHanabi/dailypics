@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/plugins.dart';
@@ -29,6 +31,8 @@ class ViewerPage extends StatelessWidget {
   }
 
   void _onLongPress(BuildContext context) async {
+    // FIXME: 2019/3/12 Yaerin: 等待 iOS 开发
+    if (Platform.isIOS) return;
     if (await showDialog(
       context: context,
       builder: (_) {

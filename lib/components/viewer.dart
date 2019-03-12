@@ -36,9 +36,7 @@ class _ViewerComponentState extends State<ViewerComponent>
     eventBus.on<OnPageChangedEvent>().listen((event) {
       if (_data != null && event.value == widget.index) {
         eventBus.fire(ReceivedDataEvent(widget.index, _data));
-        if (_color != null) {
-          _switchTheme();
-        }
+        _switchTheme();
       }
     });
   }
@@ -112,7 +110,7 @@ class _ViewerComponentState extends State<ViewerComponent>
       PaletteGenerator.fromImageProvider(
         CachedNetworkImageProvider(_data.url),
       ).then((generator) {
-        _color = generator.mutedColor.color;
+        _color = generator.mutedColor?.color;
         _switchTheme();
       });
     } catch (err) {
@@ -121,6 +119,7 @@ class _ViewerComponentState extends State<ViewerComponent>
   }
 
   void _switchTheme() {
+    if (_color == null) return;
     ThemeModel.of(context).theme = ThemeData(
       primaryColor: _color,
       primaryColorDark: _color,

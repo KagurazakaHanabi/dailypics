@@ -23,10 +23,10 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.yaerin.daily_pics"
+        applicationId "ml.cerasus.pics.g"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 19
+        versionCode 190312
         versionName '2.5β'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
