@@ -2,6 +2,7 @@ package com.yaerin.daily_pics.service;
 
 import android.os.Build;
 import android.service.quicksettings.TileService;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
@@ -14,6 +15,6 @@ import androidx.annotation.RequiresApi;
 public class QuickService extends TileService {
     @Override
     public void onClick() {
-        // TODO: 2019/3/3 Yaerin: Tile 逻辑
+        Toast.makeText(this, "暂未实现", Toast.LENGTH_SHORT).show();
     }
 }

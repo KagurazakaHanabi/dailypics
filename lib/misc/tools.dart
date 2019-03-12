@@ -1,7 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 
-import 'package:path_provider/path_provider.dart';
 import 'package:daily_pics/misc/bean.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Tools {
@@ -27,5 +28,13 @@ class Tools {
 
   static void safeLaunch(String url) async {
     if (await canLaunch(url)) await launch(url);
+  }
+
+  static Future<String> fetchText() async {
+    Uri uri = Uri.parse('https://dp.chimon.me/api/hitokoto.php');
+    HttpClient client = HttpClient();
+    HttpClientRequest request = await client.getUrl(uri);
+    HttpClientResponse response = await request.close();
+    return await response.transform(utf8.decoder).join();
   }
 }

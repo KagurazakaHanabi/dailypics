@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:photo_view/photo_view.dart';
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/plugins.dart';
 import 'package:daily_pics/misc/tools.dart';
 import 'package:daily_pics/widgets/toast.dart';
+import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
 
 class ViewerPage extends StatelessWidget {
   final Picture data;
@@ -33,6 +33,7 @@ class ViewerPage extends StatelessWidget {
       context: context,
       builder: (_) {
         return SimpleDialog(
+          contentPadding: EdgeInsets.symmetric(vertical: 8),
           children: <Widget>[
             ListTile(
               title: Text('保存到相册'),

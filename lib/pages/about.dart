@@ -20,6 +20,15 @@ class AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
     EdgeInsets windowPadding = MediaQuery.of(context).padding;
+    Color color = Theme
+        .of(context)
+        .primaryColor;
+    Color textColor;
+    if (color.red * 0.299 + color.green * 0.578 + color.blue * 0.114 >= 192) {
+      textColor = Colors.black;
+    } else {
+      textColor = Colors.white;
+    }
     return Scaffold(
       body: CustomScrollView(
         slivers: <Widget>[
@@ -38,10 +47,6 @@ class AboutPageState extends State<AboutPage> {
             ],
             flexibleSpace: FlexibleSpaceBar(
               collapseMode: CollapseMode.parallax,
-              /*title: Text(
-                '图鉴 R',
-                style: TextStyle(color: Theme.of(context).primaryColor),
-              ),*/
               background: Padding(
                 padding: windowPadding + EdgeInsets.fromLTRB(0, 28, 8, 24),
                 child: Column(
@@ -49,10 +54,10 @@ class AboutPageState extends State<AboutPage> {
                   children: <Widget>[
                     Image.asset('res/ic_launcher-web.png', width: 96),
                     Text(
-                      '「无人为孤岛，一图一世界。」',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
+                      '「无人为孤岛，一图一世界」',
+                      style: TextStyle(color: textColor, fontSize: 16),
                     ),
-                    Text('v2.4.2', style: TextStyle(color: Colors.white)),
+                    Text('v2.5β', style: TextStyle(color: textColor)),
                   ],
                 ),
               ),

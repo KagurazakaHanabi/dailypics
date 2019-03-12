@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:daily_pics/components/archive.dart';
@@ -18,7 +17,8 @@ import 'package:flutter/services.dart';
 import 'package:material_design_icons/material_design_icons.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
+
+String _initial = '';
 
 class HomePage extends StatefulWidget {
   @override
@@ -38,6 +38,7 @@ class _HomePageState extends State<HomePage> {
     SharedPreferences.getInstance()
         .then((prefs) => prefs.getInt(C.pref_page))
         .then((index) => _index = index);*/
+    Tools.fetchText().then((val) => _initial = val);
     eventBus.on<ReceivedDataEvent>().listen((event) {
       if (event.from == _index) {
         setState(() => _data = event.data);
@@ -141,9 +142,9 @@ class _HomePageState extends State<HomePage> {
               title: Text('投稿'),
               onTap: () {
                 /*Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => UploadPage()),
-              );*/
-                Toast(context, '暂未开放').show();
+                  MaterialPageRoute(builder: (_) => UploadPage()),
+                );*/
+                Tools.safeLaunch('https://dpic.dev/tg');
               },
             ),
             Divider(),
@@ -214,23 +215,32 @@ class _TextDialog extends StatefulWidget {
 }
 
 class _TextDialogState extends State<_TextDialog> {
-  String content = '';
+  String content;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((duration) => _fetch());
+    WidgetsBinding.instance.addPostFrameCallback((_) => Tools.fetchText());
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text('一句'),
-      content: Text(content),
+      content: Text(content ?? _initial),
       contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
       actions: <Widget>[
-        FlatButton(child: Text('复制'), onPressed: () => _writeClipboard()),
-        FutureButton(child: Text('然后'), onPressed: () => _fetch()),
+        FlatButton(
+          child: Text('复制'),
+          onPressed: () => Clipboard.setData(ClipboardData(text: content)),
+        ),
+        FutureButton(
+          child: Text('然后'),
+          onPressed: () async {
+            content = await Tools.fetchText();
+            setState(() {});
+          },
+        ),
         FlatButton(
           child: Text('阅毕'),
           onPressed: () => Navigator.of(context).pop(),
@@ -238,15 +248,4 @@ class _TextDialogState extends State<_TextDialog> {
       ],
     );
   }
-
-  Future<void> _fetch() async {
-    Uri uri = Uri.parse('https://yijuzhan.com/api/word.php');
-    HttpClient client = HttpClient();
-    HttpClientRequest request = await client.getUrl(uri);
-    HttpClientResponse response = await request.close();
-    content = await response.transform(utf8.decoder).join();
-    if (mounted) setState(() {});
-  }
-
-  void _writeClipboard() => Clipboard.setData(ClipboardData(text: content));
 }
