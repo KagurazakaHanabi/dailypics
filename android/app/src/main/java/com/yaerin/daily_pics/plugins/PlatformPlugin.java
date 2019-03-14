@@ -50,7 +50,7 @@ public class PlatformPlugin implements MethodCallHandler {
                 }
 
                 case "syncGallery": {
-                    syncGallery(call.argument("file"), result);
+                    syncGallery(call, result);
 
                     break;
                 }
@@ -65,14 +65,14 @@ public class PlatformPlugin implements MethodCallHandler {
 
     private void setWallpaper(MethodCall call, Result result) throws IOException {
         Context context = mRegistrar.activity();
-        String path = call.argument("file");
+        String path = (String) call.arguments;
         WallpaperManager manager = (WallpaperManager) context.getSystemService(WALLPAPER_SERVICE);
         manager.setStream(new FileInputStream(new File(path)));
         result.success(null);
     }
 
-    private void syncGallery(String path, Result result) throws IOException {
-        File file = new File(path);
+    private void syncGallery(MethodCall call, Result result) throws IOException {
+        File file = new File((String) call.arguments);
         File destDir = new File(getExternalStoragePublicDirectory(DIRECTORY_PICTURES), "/Tujian");
         if (!destDir.exists()) destDir.mkdirs();
         File dest = new File(destDir, file.getName());
