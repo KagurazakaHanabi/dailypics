@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:daily_pics/misc/bean.dart';
+import 'package:daily_pics/pages/viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/pages/viewer.dart';
 
 class ArchiveComponent extends StatefulWidget {
   final String type;
@@ -17,7 +17,8 @@ class ArchiveComponent extends StatefulWidget {
   ArchiveComponentState createState() => ArchiveComponentState();
 }
 
-class ArchiveComponentState extends State<ArchiveComponent> with AutomaticKeepAliveClientMixin {
+class ArchiveComponentState extends State<ArchiveComponent>
+    with AutomaticKeepAliveClientMixin {
   bool _debug = false;
   List<Picture> _pictures;
   dynamic _error;
@@ -89,6 +90,9 @@ class _Tile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color accentColor = Theme
+        .of(context)
+        .accentColor;
     return Card(
       elevation: 0,
       color: Color(0xFFF5F5F5),
@@ -115,11 +119,17 @@ class _Tile extends StatelessWidget {
             Container(
               alignment: Alignment.topLeft,
               padding: EdgeInsets.all(8),
-              child: Text(
-                data.info.trim(),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
-                style: TextStyle(color: Colors.black54, fontSize: 12),
+              child: Text.rich(
+                TextSpan(
+                  text: '${data.user.trim()}: ',
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: data.info.trim(),
+                      style: TextStyle(color: Colors.black54),
+                    ),
+                  ],
+                ),
+                style: TextStyle(color: accentColor, fontSize: 12),
               ),
             ),
           ],

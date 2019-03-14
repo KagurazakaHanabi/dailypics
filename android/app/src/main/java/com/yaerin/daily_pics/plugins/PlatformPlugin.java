@@ -73,7 +73,9 @@ public class PlatformPlugin implements MethodCallHandler {
 
     private void syncGallery(String path, Result result) throws IOException {
         File file = new File(path);
-        File dest = new File(getExternalStoragePublicDirectory(DIRECTORY_PICTURES), file.getName());
+        File destDir = new File(getExternalStoragePublicDirectory(DIRECTORY_PICTURES), "/Tujian");
+        if (!destDir.exists()) destDir.mkdirs();
+        File dest = new File(destDir, file.getName());
         BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
         BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(dest));
         byte[] bytes = new byte[1024];

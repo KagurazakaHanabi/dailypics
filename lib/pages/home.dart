@@ -67,20 +67,24 @@ class _HomePageState extends State<HomePage> {
     List<Widget> actions = <Widget>[
       PopupMenuButton<int>(
         onSelected: _onMenuSelected,
-        itemBuilder: (context) {
-          return <PopupMenuEntry<int>>[
-            PopupMenuItem<int>(child: Text('查看归档'), value: 0),
-            PopupMenuItem<int>(child: Text('下载原图'), value: 1),
-            PopupMenuItem<int>(child: Text('设为壁纸'), value: 2),
-            PopupMenuItem<int>(child: Text('分享到...'), value: 3),
-          ];
-        },
+        itemBuilder: (_) => _buildMenus(),
       ),
     ];
     return AppBar(
       title: Text(_index != 2 ? _data?.title ?? '' : '归档: 桌面'),
       actions: _index == 2 ? null : actions,
     );
+  }
+
+  List<PopupMenuEntry<int>> _buildMenus() {
+    List<PopupMenuEntry<int>> entries = [];
+    entries.add(PopupMenuItem<int>(child: Text('查看归档'), value: 0));
+    entries.add(PopupMenuItem<int>(child: Text('下载原图'), value: 1));
+    if (Platform.isAndroid) {
+      entries.add(PopupMenuItem<int>(child: Text('设为壁纸'), value: 2));
+    }
+    entries.add(PopupMenuItem<int>(child: Text('分享到...'), value: 3));
+    return entries;
   }
 
   Widget _buildDrawer() {
@@ -94,9 +98,6 @@ class _HomePageState extends State<HomePage> {
               currentAccountPicture: Image.asset('res/ic_launcher-web.png'),
               accountName: Text('Tujian R'),
               accountEmail: Text('无人为孤岛，一图一世界。'),
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor.withAlpha(200),
-              ),
             ),
             ListTile(
               leading: Icon(MdiIcons.widgets),
@@ -185,15 +186,15 @@ class _HomePageState extends State<HomePage> {
 
   void _onMenuSelected(int index) async {
     switch (index) {
-      case 0:
+      case C.menu_view_archive:
         Navigator.of(context).push(
           MaterialPageRoute(builder: (_) {
             return ArchivePage(_index == 0 ? C.type_chowder : C.type_illus);
           }),
         );
         break;
-      case 1:
-      case 2:
+      case C.menu_download:
+      case C.menu_set_wallpaper:
       // FIXME: 2019/3/12 Yaerin: 等待 iOS 开发
         if (Platform.isIOS) {
           Toast(context, '将在后续版本中支持').show();
@@ -203,10 +204,10 @@ class _HomePageState extends State<HomePage> {
         File file = await Tools.cacheImage(_data);
         String path = await Plugins.syncGallery(file);
         Toast(context, '下载完成').show();
-        if (index != 2) break;
+        if (index != C.menu_set_wallpaper) break;
         await Plugins.setWallpaper(File(path));
         break;
-      case 3:
+      case C.menu_share:
         Share.share('${_data.title}\n${_data.user}:${_data.info}\n'
             '${_data.url} 分享自@图鉴R');
         break;
