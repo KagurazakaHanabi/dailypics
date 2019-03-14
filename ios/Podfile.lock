@@ -1,0 +1,46 @@
+PODS:
+  - Flutter (1.0.0)
+  - path_provider (0.0.1):
+    - Flutter
+  - quick_actions (0.0.1):
+    - Flutter
+  - share (0.5.2):
+    - Flutter
+  - shared_preferences (0.0.1):
+    - Flutter
+  - url_launcher (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `.symlinks/flutter/ios`)
+  - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - quick_actions (from `.symlinks/plugins/quick_actions/ios`)
+  - share (from `.symlinks/plugins/share/ios`)
+  - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+  - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: ".symlinks/flutter/ios"
+  path_provider:
+    :path: ".symlinks/plugins/path_provider/ios"
+  quick_actions:
+    :path: ".symlinks/plugins/quick_actions/ios"
+  share:
+    :path: ".symlinks/plugins/share/ios"
+  shared_preferences:
+    :path: ".symlinks/plugins/shared_preferences/ios"
+  url_launcher:
+    :path: ".symlinks/plugins/url_launcher/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
+  path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
+  quick_actions: 07414f1e5cb71fc4d32a0670b62c460e619366b2
+  share: 7d22fe8baedfe93aefd864bf0b73f29711fbb0a3
+  shared_preferences: 1feebfa37bb57264736e16865e7ffae7fc99b523
+  url_launcher: 0067ddb8f10d36786672aa0722a21717dba3a298
+
+PODFILE CHECKSUM: ebd43b443038e611b86ede96e613bd6033c49497
+
+COCOAPODS: 1.6.1
