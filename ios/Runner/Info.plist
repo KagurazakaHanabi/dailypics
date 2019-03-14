@@ -24,10 +24,8 @@
 	<string>190314</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>We need to access to the gallery to save images.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>We need to access to the gallery to save images.</string>
+	<string>需要访问相册以保存图片</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

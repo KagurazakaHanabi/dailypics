@@ -31,8 +31,6 @@ class ViewerPage extends StatelessWidget {
   }
 
   void _onLongPress(BuildContext context) async {
-    // FIXME: 2019/3/12 Yaerin: 等待 iOS 开发
-    if (Platform.isIOS) return;
     if (await showDialog(
       context: context,
       builder: (_) {
