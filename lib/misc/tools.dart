@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:daily_pics/misc/bean.dart';
+import 'package:daily_pics/misc/plugins.dart';
+import 'package:daily_pics/widgets/toast.dart';
+import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -36,5 +39,22 @@ class Tools {
     HttpClientRequest request = await client.getUrl(uri);
     HttpClientResponse response = await request.close();
     return await response.transform(utf8.decoder).join();
+  }
+
+  static Future<void> fetchImage(
+    BuildContext context,
+    Picture data,
+    bool wallpaper,
+  ) async {
+    try {
+      Toast(context, '正在开始下载...').show();
+      File file = await Tools.cacheImage(data);
+      String path = await Plugins.syncGallery(file);
+      Toast(context, '下载完成').show();
+      if (!wallpaper) return;
+      await Plugins.setWallpaper(File(path));
+    } catch (err) {
+      Toast(context, '$err').show();
+    }
   }
 }

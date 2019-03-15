@@ -36,7 +36,7 @@ public class QuickService extends TileService implements Runnable {
     @Override
     public void run() {
         try {
-            toast("正在开始下载");
+            toast("正在开始下载...");
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
                     .url("https://dp.chimon.me/api/random.php?api=yes")
