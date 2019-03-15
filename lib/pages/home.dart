@@ -195,12 +195,16 @@ class _HomePageState extends State<HomePage> {
         break;
       case C.menu_download:
       case C.menu_set_wallpaper:
-        Toast(context, '正在开始下载...').show();
-        File file = await Tools.cacheImage(_data);
-        String path = await Plugins.syncGallery(file);
-        Toast(context, '下载完成').show();
-        if (index != C.menu_set_wallpaper) break;
-        await Plugins.setWallpaper(File(path));
+        try {
+          Toast(context, '正在开始下载...').show();
+          File file = await Tools.cacheImage(_data);
+          String path = await Plugins.syncGallery(file);
+          Toast(context, '下载完成').show();
+          if (index != C.menu_set_wallpaper) break;
+          await Plugins.setWallpaper(File(path));
+        } catch (err) {
+          Toast(context, '$err').show();
+        }
         break;
       case C.menu_share:
         Share.share('${_data.title}\n${_data.user}:${_data.info}\n'
@@ -217,12 +221,6 @@ class _TextDialog extends StatefulWidget {
 
 class _TextDialogState extends State<_TextDialog> {
   String content;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => Tools.fetchText());
-  }
 
   @override
   Widget build(BuildContext context) {

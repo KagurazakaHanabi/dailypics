@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/plugins.dart';
@@ -48,7 +46,8 @@ class ViewerPage extends StatelessWidget {
       Toast(context, '正在开始下载...').show();
       Tools.cacheImage(data)
           .then((file) => Plugins.syncGallery(file))
-          .then((val) => Toast(context, '下载完成').show());
+          .then((val) => Toast(context, '下载完成').show())
+          .catchError((err) => Toast(context, '$err').show());
     }
   }
 }
