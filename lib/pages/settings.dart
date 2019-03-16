@@ -26,7 +26,7 @@ class _SettingsPageState extends State<SettingsPage> {
             value: _pref?.getBool('pick_color') ?? false,
             onChanged: (val) => setState(() => _setBool('pick_color', val)),
             title: Text('主题适应'),
-            subtitle: Text('主题将自动变更'),
+            subtitle: Text('主题将自动变更（取色时会卡死，等待修复）'),
           ),
           SwitchListTile(
             value: _pref?.getBool('debug') ?? false,

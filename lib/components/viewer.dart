@@ -109,6 +109,7 @@ class _ViewerComponentState extends State<ViewerComponent>
       if (!(pref.getBool('pick_color') ?? false)) return;
       PaletteGenerator.fromImageProvider(
         CachedNetworkImageProvider(_data.url),
+        timeout: Duration(seconds: 5),
       ).then((generator) {
         _color = generator.mutedColor?.color;
         _switchTheme();
