@@ -21,6 +21,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
       appBar: AppBar(title: Text('设置')),
       body: ListView(
+        padding: EdgeInsets.only(top: 8),
         children: <Widget>[
           SwitchListTile(
             value: _pref?.getBool('pick_color') ?? false,

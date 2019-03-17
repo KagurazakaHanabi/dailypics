@@ -79,7 +79,7 @@ class _ViewerComponentState extends State<ViewerComponent>
             children: <Widget>[
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.all(8),
+                  padding: EdgeInsets.all(16),
                   color: Colors.black26,
                   child: Text(
                     _data.info,

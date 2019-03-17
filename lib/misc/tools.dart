@@ -6,6 +6,7 @@ import 'package:daily_pics/misc/plugins.dart';
 import 'package:daily_pics/widgets/toast.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Tools {
@@ -56,5 +57,10 @@ class Tools {
     } catch (err) {
       Toast(context, '$err').show();
     }
+  }
+
+  static Future<void> share(Picture data) async {
+    return Share.share('${data.title}\n${data.user}:${data.info}\n'
+        '${data.url} 分享自@图鉴R');
   }
 }

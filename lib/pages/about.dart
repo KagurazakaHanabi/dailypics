@@ -14,7 +14,7 @@ class AboutPageState extends State<AboutPage> {
 
 　　在经历常常找壁纸无果后，我和我的朋友们开发出了这样一款应用，希望你能喜欢。
 
-　　在本应用的开发过程中，特此感谢 @Createlite、@Gadgetry、@Copyright³、@Chimon、@神楽坂花火以及项目运营 @Galentwww。
+　　在本应用的开发过程中，特此感谢 @Createlite、@Gadgetry、@Copyright³、@Chimon、@神楽坂花火、@浦东吃西瓜以及项目运营 @Galentwww。
   """;
 
   @override
@@ -57,7 +57,7 @@ class AboutPageState extends State<AboutPage> {
                       '「无人为孤岛，一图一世界」',
                       style: TextStyle(color: textColor, fontSize: 16),
                     ),
-                    Text('v2.5.4β', style: TextStyle(color: textColor)),
+                    Text('v2.5.5β', style: TextStyle(color: textColor)),
                   ],
                 ),
               ),

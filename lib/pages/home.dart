@@ -19,6 +19,7 @@ import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 String _initial = '';
+String _shopping = '【图鉴周边手机壳（购买时请备注材质以及款式）】￥Gs4cbDHUv7u￥';
 
 class HomePage extends StatefulWidget {
   @override
@@ -166,6 +167,14 @@ class _HomePageState extends State<HomePage> {
                   MaterialPageRoute(builder: (_) => AboutPage()),
                 );
               },
+            ),
+            ListTile(
+              leading: Icon(MdiIcons.shopping),
+              title: Text('周边'),
+              onTap: () {
+                Clipboard.setData(ClipboardData(text: _shopping));
+                Toast(context, '已复制淘口令').show();
+              },
             )
           ],
         ),
@@ -198,8 +207,7 @@ class _HomePageState extends State<HomePage> {
         Tools.fetchImage(context, _data, index == C.menu_set_wallpaper);
         break;
       case C.menu_share:
-        Share.share('${_data.title}\n${_data.user}:${_data.info}\n'
-            '${_data.url} 分享自@图鉴R');
+        Tools.share(_data);
         break;
     }
   }

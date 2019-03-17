@@ -1,11 +1,8 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:daily_pics/main.dart';
 import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/misc/plugins.dart';
 import 'package:daily_pics/misc/tools.dart';
-import 'package:daily_pics/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
@@ -18,42 +15,77 @@ class ViewerPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextStyle hintStyle = TextStyle(color: Theme.of(context).hintColor);
     return Scaffold(
-      body: GestureDetector(
-        onTap: () => Navigator.of(context).pop(),
-        onLongPress: () => _onLongPress(context),
-        child: PhotoView(
-          heroTag: heroTag,
-          imageProvider: CachedNetworkImageProvider(data.url),
-          loadingChild: Center(child: CircularProgressIndicator()),
-        ),
+      appBar: AppBar(
+        title: Text('预览'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.share),
+            onPressed: () => Tools.share(data),
+          )
+        ],
+      ),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(2),
+                child: Hero(
+                  tag: heroTag,
+                  child: CachedNetworkImage(imageUrl: data.url),
+                ),
+              ),
+            ),
+          ),
+          Card(
+            elevation: 4,
+            margin: EdgeInsets.zero,
+            shape: RoundedRectangleBorder(),
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    margin: EdgeInsets.only(bottom: 8),
+                    child: Text(data.info ?? '', style: hintStyle),
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Text(
+                          '${data.width}W${data.height}H',
+                          style: hintStyle,
+                        ),
+                      ),
+                      Offstage(
+                        offstage: Platform.isIOS,
+                        child: FlatButton(
+                          child: _buildText(context, '设为壁纸'),
+                          onPressed: () {
+                            Tools.fetchImage(context, data, true);
+                          },
+                        ),
+                      ),
+                      FlatButton(
+                        child: _buildText(context, '保存图片'),
+                        onPressed: () => Tools.fetchImage(context, data, false),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  void _onLongPress(BuildContext context) async {
-    List<Widget> children = <Widget>[
-      ListTile(
-        title: Text('保存到相册'),
-        onTap: () => Navigator.of(context).pop(C.menu_download),
-      ),
-    ];
-    if (Platform.isAndroid) {
-      children.add(ListTile(
-        title: Text('设置为壁纸'),
-        onTap: () => Navigator.of(context).pop(C.menu_set_wallpaper),
-      ));
-    }
-    int index = await showDialog(
-      context: context,
-      builder: (_) {
-        return SimpleDialog(
-          contentPadding: EdgeInsets.symmetric(vertical: 8),
-          children: children,
-        );
-      },
-    );
-    if (index == null) return;
-    Tools.fetchImage(context, data, index == C.menu_set_wallpaper);
+  Widget _buildText(BuildContext context, String data) {
+    return Text(data, style: TextStyle(color: Theme.of(context).accentColor));
   }
 }
