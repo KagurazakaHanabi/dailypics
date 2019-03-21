@@ -4,7 +4,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/tools.dart';
 import 'package:flutter/material.dart';
-import 'package:photo_view/photo_view.dart';
 
 class ViewerPage extends StatelessWidget {
   final Picture data;
@@ -18,7 +17,7 @@ class ViewerPage extends StatelessWidget {
     TextStyle hintStyle = TextStyle(color: Theme.of(context).hintColor);
     return Scaffold(
       appBar: AppBar(
-        title: Text('预览'),
+        title: Text(data.title),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.share),

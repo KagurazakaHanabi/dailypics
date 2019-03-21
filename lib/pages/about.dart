@@ -57,7 +57,7 @@ class AboutPageState extends State<AboutPage> {
                       '「无人为孤岛，一图一世界」',
                       style: TextStyle(color: textColor, fontSize: 16),
                     ),
-                    Text('v2.5.5β', style: TextStyle(color: textColor)),
+                    Text('v2.5.6β', style: TextStyle(color: textColor)),
                   ],
                 ),
               ),

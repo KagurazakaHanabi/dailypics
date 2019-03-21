@@ -60,7 +60,7 @@ class Tools {
   }
 
   static Future<void> share(Picture data) async {
-    return Share.share('${data.title}\n${data.user}:${data.info}\n'
-        '${data.url} 分享自@图鉴R');
+    return Share.share('推荐一张图片，「${data.title}」\n图片信息：\n${data.info}\n'
+        '查看链接：${data.url}\n来自 Tujian R');
   }
 }

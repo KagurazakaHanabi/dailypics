@@ -17,9 +17,10 @@ import 'package:flutter/services.dart';
 import 'package:material_design_icons/material_design_icons.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 String _initial = '';
-String _shopping = '【图鉴周边手机壳（购买时请备注材质以及款式）】￥Gs4cbDHUv7u￥';
+String _shopping = 'taobao://item.taobao.com/item.htm?id=588056088134';
 
 class HomePage extends StatefulWidget {
   @override
@@ -171,9 +172,12 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               leading: Icon(MdiIcons.shopping),
               title: Text('周边'),
-              onTap: () {
-                Clipboard.setData(ClipboardData(text: _shopping));
-                Toast(context, '已复制淘口令').show();
+              onTap: () async {
+                if (await canLaunch(_shopping)) {
+                  launch(_shopping);
+                } else {
+                  launch(_shopping.replaceFirst('taobao', 'https'));
+                }
               },
             )
           ],
