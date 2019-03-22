@@ -136,9 +136,15 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               leading: Icon(MdiIcons.qqchat),
               title: Text('群组'),
-              onTap: () => Tools.safeLaunch(
-                  'mqqapi://card/show_pslcard?src_type=internal&verson=1&uin=47'
-                      '2863370&card_type=group&source=qrcode'),
+              onTap: () async {
+                String uri = 'mqqapi://card/show_pslcard?src_type=internal&'
+                    'verson=1&uin=472863370&card_type=group&source=qrcode';
+                if (await canLaunch(uri)) {
+                  launch(uri);
+                } else {
+                  launch('https://jq.qq.com/?_wv=1027&k=5RQibWy');
+                }
+              },
             ),
             ListTile(
               leading: Icon(MdiIcons.cloud_upload),
@@ -169,16 +175,19 @@ class _HomePageState extends State<HomePage> {
                 );
               },
             ),
-            ListTile(
-              leading: Icon(MdiIcons.shopping),
-              title: Text('周边'),
-              onTap: () async {
-                if (await canLaunch(_shopping)) {
-                  launch(_shopping);
-                } else {
-                  launch(_shopping.replaceFirst('taobao', 'https'));
-                }
-              },
+            Offstage(
+              offstage: Platform.isIOS,
+              child: ListTile(
+                leading: Icon(MdiIcons.shopping),
+                title: Text('周边'),
+                onTap: () async {
+                  if (await canLaunch(_shopping)) {
+                    launch(_shopping);
+                  } else {
+                    launch(_shopping.replaceFirst('taobao', 'https'));
+                  }
+                },
+              ),
             )
           ],
         ),

@@ -1,6 +1,7 @@
 import 'package:daily_pics/misc/tools.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons/material_design_icons.dart';
+import 'package:get_version/get_version.dart';
 
 class AboutPage extends StatefulWidget {
   @override
@@ -16,6 +17,14 @@ class AboutPageState extends State<AboutPage> {
 
 　　在本应用的开发过程中，特此感谢 @Createlite、@Gadgetry、@Copyright³、@Chimon、@神楽坂花火、@浦东吃西瓜以及项目运营 @Galentwww。
   """;
+  String _versionName = '0.0.0';
+
+
+  @override
+  void initState() {
+    super.initState();
+    GetVersion.projectVersion.then((ver) => setState(() => _versionName = ver));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,16 +57,16 @@ class AboutPageState extends State<AboutPage> {
             flexibleSpace: FlexibleSpaceBar(
               collapseMode: CollapseMode.parallax,
               background: Padding(
-                padding: windowPadding + EdgeInsets.fromLTRB(0, 28, 8, 24),
+                padding: windowPadding + EdgeInsets.only(top: 32),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     Image.asset('res/ic_launcher-web.png', width: 96),
                     Text(
                       '「无人为孤岛，一图一世界」',
                       style: TextStyle(color: textColor, fontSize: 16),
                     ),
-                    Text('v2.5.6β', style: TextStyle(color: textColor)),
+                    Text('v$_versionName', style: TextStyle(color: textColor)),
                   ],
                 ),
               ),
