@@ -1,4 +1,7 @@
+import 'package:daily_pics/pages/about.dart';
+import 'package:daily_pics/pages/welcome.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons/material_design_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -34,7 +37,28 @@ class _SettingsPageState extends State<SettingsPage> {
             onChanged: (val) => setState(() => _setBool('debug', val)),
             title: Text('调试模式'),
             subtitle: Text('将会显示堆栈信息'),
-          )
+          ),
+          ListTile(
+            title: Text('关于我们'),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => AboutPage()),
+              );
+            },
+          ),
+          ListTile(
+            title: Text('显示欢迎页'),
+            onTap: () {
+              Navigator.of(context).push(
+                PageRouteBuilder(
+                  pageBuilder: (_, __, ___) => WelcomePage(),
+                  transitionsBuilder: (_, animation, __, child) {
+                    return FadeTransition(opacity: animation, child: child);
+                  },
+                ),
+              );
+            },
+          ),
         ],
       ),
     );

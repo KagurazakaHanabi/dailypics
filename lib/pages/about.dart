@@ -19,7 +19,6 @@ class AboutPageState extends State<AboutPage> {
   """;
   String _versionName = '0.0.0';
 
-
   @override
   void initState() {
     super.initState();
@@ -29,9 +28,7 @@ class AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
     EdgeInsets windowPadding = MediaQuery.of(context).padding;
-    Color color = Theme
-        .of(context)
-        .primaryColor;
+    Color color = Theme.of(context).primaryColor;
     Color textColor;
     if (color.red * 0.299 + color.green * 0.578 + color.blue * 0.114 >= 192) {
       textColor = Colors.black;

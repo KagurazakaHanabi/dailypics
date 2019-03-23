@@ -10,6 +10,7 @@ import 'package:daily_pics/misc/tools.dart';
 import 'package:daily_pics/pages/about.dart';
 import 'package:daily_pics/pages/archive.dart';
 import 'package:daily_pics/pages/settings.dart';
+import 'package:daily_pics/pages/welcome.dart';
 import 'package:daily_pics/widgets/buttons.dart';
 import 'package:daily_pics/widgets/toast.dart';
 import 'package:flutter/material.dart';
@@ -36,10 +37,21 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     // FIXME: 2019/3/4 Yaerin: 无法在启动时修改 PageView 的 index
-    /*WidgetsBinding.instance.addPostFrameCallback((_) => _setType(_index));
+    // WidgetsBinding.instance.addPostFrameCallback((_) => _setType(_index));
     SharedPreferences.getInstance()
-        .then((prefs) => prefs.getInt(C.pref_page))
-        .then((index) => _index = index);*/
+        .then((prefs) => prefs.getBool(C.pref_first) ?? true)
+        .then((first) {
+      if (first) {
+        Navigator.of(context).push(
+          PageRouteBuilder(
+            pageBuilder: (_, __, ___) => WelcomePage(),
+            transitionsBuilder: (_, animation, __, child) {
+              return FadeTransition(opacity: animation, child: child);
+            },
+          ),
+        );
+      }
+    });
     Tools.fetchText().then((val) => _initial = val);
     eventBus.on<ReceivedDataEvent>().listen((event) {
       if (event.from == _index) {
@@ -163,15 +175,6 @@ class _HomePageState extends State<HomePage> {
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (_) => SettingsPage()),
-                );
-              },
-            ),
-            ListTile(
-              leading: Icon(MdiIcons.information),
-              title: Text('关于'),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => AboutPage()),
                 );
               },
             ),
