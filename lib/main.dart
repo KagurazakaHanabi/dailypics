@@ -45,6 +45,7 @@ class C {
   static const String type_chowder = '%E6%9D%82%E7%83%A9';
   static const String type_illus = '%E6%8F%92%E7%94%BB';
   static const String type_desktop = '%E7%94%B5%E8%84%91%E5%A3%81%E7%BA%B8';
+  static const String type_bing =  '%E5%BF%85%E5%BA%94';
   static const String pref_page = 'page';
   static const String pref_debug = 'debug';
   static const String pref_theme = 'theme';

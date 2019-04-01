@@ -1,7 +1,6 @@
 import 'package:daily_pics/pages/about.dart';
 import 'package:daily_pics/pages/welcome.dart';
 import 'package:flutter/material.dart';
-import 'package:material_design_icons/material_design_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -39,15 +38,7 @@ class _SettingsPageState extends State<SettingsPage> {
             subtitle: Text('将会显示堆栈信息'),
           ),
           ListTile(
-            title: Text('关于我们'),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => AboutPage()),
-              );
-            },
-          ),
-          ListTile(
-            title: Text('显示欢迎页'),
+            title: Text('欢迎页'),
             onTap: () {
               Navigator.of(context).push(
                 PageRouteBuilder(
@@ -56,6 +47,14 @@ class _SettingsPageState extends State<SettingsPage> {
                     return FadeTransition(opacity: animation, child: child);
                   },
                 ),
+              );
+            },
+          ),
+          ListTile(
+            title: Text('关于'),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => AboutPage()),
               );
             },
           ),

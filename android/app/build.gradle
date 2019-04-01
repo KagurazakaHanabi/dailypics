@@ -26,7 +26,7 @@ android {
         applicationId "ml.cerasus.pics.g"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 190322
+        versionCode 190331
         versionName '2.5.7β'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

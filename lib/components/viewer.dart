@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_pics/main.dart';
@@ -97,12 +98,33 @@ class _ViewerComponentState extends State<ViewerComponent>
   Future<void> _fetch() async {
     try {
       _error = null;
-      String s = 'https://dp.chimon.me/api/today.php?sort=${widget.type}';
-      HttpClient client = HttpClient();
-      HttpClientRequest request = await client.getUrl(Uri.parse(s));
-      HttpClientResponse response = await request.close();
-      String body = await response.transform(utf8.decoder).join();
-      _data = Response.fromJson(jsonDecode(body)).data[0];
+      if (widget.type != C.type_bing) {
+        String s = 'https://dp.chimon.me/api/today.php?sort=${widget.type}';
+        HttpClient client = HttpClient();
+        HttpClientRequest request = await client.getUrl(Uri.parse(s));
+        HttpClientResponse response = await request.close();
+        String body = await response.transform(utf8.decoder).join();
+        _data = Response.fromJson(jsonDecode(body)).data[0];
+      } else {
+        HttpClient client = HttpClient();
+        HttpClientRequest request = await client.getUrl(Uri.parse(
+          'https://cn.bing.com/HPImageArchive.aspx?format=js&n=1&idx=0',
+        ));
+        HttpClientResponse response = await request.close();
+        String body = await response.transform(utf8.decoder).join();
+        Map<String, dynamic> json = jsonDecode(body)['images'][0];
+        _data = Picture(
+          id: '',
+          title: '',
+          info: json['copyright'],
+          width: 1080,
+          height: 1920,
+          user: '',
+          url: 'https://cn.bing.com${json['urlbase']}_1080x1920.jpg',
+          date: json['enddate'],
+          type: '必应',
+        );
+      }
       eventBus.fire(ReceivedDataEvent(widget.index, _data));
       setState(() {});
       SharedPreferences pref = await SharedPreferences.getInstance();

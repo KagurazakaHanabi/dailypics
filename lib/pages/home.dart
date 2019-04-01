@@ -5,18 +5,14 @@ import 'package:daily_pics/components/viewer.dart';
 import 'package:daily_pics/main.dart';
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/events.dart';
-import 'package:daily_pics/misc/plugins.dart';
 import 'package:daily_pics/misc/tools.dart';
-import 'package:daily_pics/pages/about.dart';
 import 'package:daily_pics/pages/archive.dart';
 import 'package:daily_pics/pages/settings.dart';
 import 'package:daily_pics/pages/welcome.dart';
 import 'package:daily_pics/widgets/buttons.dart';
-import 'package:daily_pics/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:material_design_icons/material_design_icons.dart';
-import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -71,6 +67,7 @@ class _HomePageState extends State<HomePage> {
         children: <Widget>[
           ViewerComponent(C.type_chowder, 0),
           ViewerComponent(C.type_illus, 1),
+          ViewerComponent(C.type_bing, 2),
           ArchiveComponent(C.type_desktop),
         ],
       ),
@@ -85,8 +82,8 @@ class _HomePageState extends State<HomePage> {
       ),
     ];
     return AppBar(
-      title: Text(_index != 2 ? _data?.title ?? '' : '归档: 桌面'),
-      actions: _index == 2 ? null : actions,
+      title: Text(_index != 3 ? _data?.title ?? '' : '归档: 桌面'),
+      actions: _index == 3 ? null : actions,
     );
   }
 
@@ -116,21 +113,27 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               leading: Icon(MdiIcons.widgets),
               title: Text('杂烩'),
-              onTap: () => _setType(0),
+              onTap: () => _setIndex(0),
               selected: _index == 0,
             ),
             ListTile(
               leading: Icon(MdiIcons.drawing),
               title: Text('插画'),
-              onTap: () => _setType(1),
+              onTap: () => _setIndex(1),
               selected: _index == 1,
             ),
             Divider(),
             ListTile(
+              leading: Icon(MdiIcons.bing),
+              title: Text('必应'),
+              onTap: () => _setIndex(2),
+              selected: _index == 2,
+            ),
+            ListTile(
               leading: Icon(MdiIcons.monitor),
               title: Text('桌面'),
-              onTap: () => _setType(2),
-              selected: _index == 2,
+              onTap: () => _setIndex(3),
+              selected: _index == 3,
             ),
             ListTile(
               leading: Icon(MdiIcons.text),
@@ -198,7 +201,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _setType(int index) {
+  void _setIndex(int index) {
     _data = null;
     eventBus.fire(OnPageChangedEvent(index));
     setState(() => _index = index);
@@ -209,12 +212,27 @@ class _HomePageState extends State<HomePage> {
         .then((prefs) => prefs.setInt(C.pref_page, index));
   }
 
+  String _convertIndexToType(int index) {
+    switch(index) {
+      case 0:
+        return C.type_chowder;
+      case 1:
+        return C.type_illus;
+      case 2:
+        return C.type_bing;
+      case 3:
+        return C.type_desktop;
+      default:
+        return null;
+    }
+  }
+
   void _onMenuSelected(int index) async {
     switch (index) {
       case C.menu_view_archive:
         Navigator.of(context).push(
           MaterialPageRoute(builder: (_) {
-            return ArchivePage(_index == 0 ? C.type_chowder : C.type_illus);
+            return ArchivePage(_convertIndexToType(_index));
           }),
         );
         break;

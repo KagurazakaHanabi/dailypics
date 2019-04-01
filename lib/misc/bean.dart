@@ -13,8 +13,9 @@ class Response {
 
   Response({this.data, this.status});
 
-  factory Response.fromJson(Map<String, dynamic> json) =>
-      _$ResponseFromJson(json);
+  factory Response.fromJson(Map<String, dynamic> json) {
+    return _$ResponseFromJson(json);
+  }
 
   String toJson() => jsonEncode(_$ResponseToJson(this));
 }
@@ -46,7 +47,7 @@ class Picture {
   @JsonKey(name: 'TNAME')
   String type;
 
-  Picture(
+  Picture({
     this.id,
     this.title,
     this.info,
@@ -56,10 +57,11 @@ class Picture {
     this.url,
     this.date,
     this.type,
-  );
+  });
 
-  factory Picture.fromJson(Map<String, dynamic> json) =>
-      _$PictureFromJson(json);
+  factory Picture.fromJson(Map<String, dynamic> json) {
+    return _$PictureFromJson(json);
+  }
 
   String toJson() => jsonEncode(_$PictureToJson(this));
 }

@@ -8,19 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class WelcomePage extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _WelcomePageState();
-}
-
-class _WelcomePageState extends State<WelcomePage> {
-  @override
-  void initState() {
-    super.initState();
-    SharedPreferences.getInstance()
-        .then((prefs) => prefs.setBool(C.pref_first, false));
-  }
-
+class WelcomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,14 +16,23 @@ class _WelcomePageState extends State<WelcomePage> {
       body: Center(
         child: Hero(
           tag: '#',
-          child: Image.asset('res/Icon-App-40x40@3x.png'),
+          child: Image.asset(
+            'res/Icon-App-1024x1024@1x.png',
+            width: 128,
+            height: 128,
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.chevron_right),
         onPressed: () {
           Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => _InternalPage()),
+            PageRouteBuilder(
+              pageBuilder: (_, __, ___) => _InternalPage(),
+              transitionsBuilder: (_, animation, __, child) {
+                return FadeTransition(opacity: animation, child: child);
+              },
+            ),
           );
         },
       ),
@@ -43,14 +40,8 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 }
 
-class _InternalPage extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _InternalPageState();
-}
-
-class _InternalPageState extends State<_InternalPage> {
-  bool _willPop = false;
-  String _desc = """
+class _InternalPage extends StatelessWidget {
+  final String _desc = """
 　　Tujian 是一款简约的人工精选壁纸软件，每天由维护者们在众多图片中为每个分类挑选出一张，作为今日的精选图片。自项目发起，我们已经收集了大量的优质精选图片。
 
 　　我们的想法及理念「无人为孤岛，一图一世界」。这句话出自《岛上书店》中的「无人为孤岛，一书一世界」，因此，我们希望图片，优质的图片，能够作为一种艺术来深深的感染您。
@@ -61,11 +52,11 @@ class _InternalPageState extends State<_InternalPage> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () => Future.value(_willPop),
+      onWillPop: () => Future.value(false),
       child: Scaffold(
         backgroundColor: Colors.white,
         body: Padding(
-          padding: EdgeInsets.only(left: 32, right: 32, bottom: 16),
+          padding: EdgeInsets.fromLTRB(32, 40, 32, 16),
           child: Column(
             children: <Widget>[
               Flexible(
@@ -74,7 +65,11 @@ class _InternalPageState extends State<_InternalPage> {
                   children: <Widget>[
                     Hero(
                       tag: '#',
-                      child: Image.asset('res/Icon-App-1024x1024@1x.png'),
+                      child: Image.asset(
+                        'res/Icon-App-1024x1024@1x.png',
+                        width: 108,
+                        height: 108,
+                      ),
                     ),
                     Text(
                       'Tujian',
@@ -127,7 +122,9 @@ class _InternalPageState extends State<_InternalPage> {
         ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.chevron_right),
-          onPressed: () {
+          onPressed: () async {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            prefs.setBool(C.pref_first, false);
             Navigator.of(context).pop();
             Navigator.of(context).pop();
           },

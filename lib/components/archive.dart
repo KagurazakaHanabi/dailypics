@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:daily_pics/main.dart';
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/pages/viewer.dart';
 import 'package:flutter/material.dart';
@@ -63,6 +64,9 @@ class ArchiveComponentState extends State<ArchiveComponent>
   }
 
   Future<void> _fetch() async {
+    if (widget.type == C.type_bing) {
+      return _fetchBing();
+    }
     try {
       _error = null;
       String uri = 'https://dp.chimon.me/api/bysort.php?sort=${widget.type}';
@@ -71,6 +75,40 @@ class ArchiveComponentState extends State<ArchiveComponent>
       HttpClientResponse response = await request.close();
       String body = await response.transform(utf8.decoder).join();
       Response res = Response.fromJson(jsonDecode(body));
+      setState(() => _pictures = res.data ?? []);
+    } catch (err) {
+      if (mounted) setState(() => _error = err);
+    }
+  }
+
+  Future<void> _fetchBing() async {
+    try {
+      _error = null;
+      HttpClient client = HttpClient();
+      HttpClientRequest request = await client.getUrl(Uri.parse(
+        'https://cn.bing.com/HPImageArchive.aspx?format=js&n=8&idx=1',
+      ));
+      HttpClientResponse response = await request.close();
+      String body = await response.transform(utf8.decoder).join();
+      Map<String, dynamic> json = jsonDecode(body);
+      Response res = Response(
+        data: (json['images'] as List).map((e) {
+          if (e != null) {
+            return Picture(
+              id: '',
+              title: '',
+              info: e['copyright'],
+              width: 1080,
+              height: 1920,
+              user: null,
+              url: 'https://cn.bing.com${e['urlbase']}_1080x1920.jpg',
+              date: e['enddate'],
+              type: '必应',
+            );
+          }
+        }).toList(),
+        status: 'ok',
+      );
       setState(() => _pictures = res.data ?? []);
     } catch (err) {
       if (mounted) setState(() => _error = err);
@@ -90,9 +128,7 @@ class _Tile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color accentColor = Theme
-        .of(context)
-        .accentColor;
+    Color accentColor = Theme.of(context).accentColor;
     return Card(
       elevation: 0,
       color: Color(0xFFF5F5F5),
@@ -112,7 +148,7 @@ class _Tile extends StatelessWidget {
                 tag: heroTag,
                 child: CachedNetworkImage(
                   imageUrl: data.url,
-                  placeholder: Placeholder(),
+                  placeholder: (_, __) => Placeholder(),
                 ),
               ),
             ),
@@ -121,7 +157,7 @@ class _Tile extends StatelessWidget {
               padding: EdgeInsets.all(8),
               child: Text.rich(
                 TextSpan(
-                  text: '${data.user.trim()}: ',
+                  text: data.user == null ? '' : '${data.user.trim()}: ',
                   children: <TextSpan>[
                     TextSpan(
                       text: data.info.trim(),

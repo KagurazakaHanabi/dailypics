@@ -20,15 +20,15 @@ Map<String, dynamic> _$ResponseToJson(Response instance) =>
 
 Picture _$PictureFromJson(Map<String, dynamic> json) {
   return Picture(
-      json['PID'] as String,
-      json['p_title'] as String,
-      json['p_content'] as String,
-      json['width'] as int,
-      json['height'] as int,
-      json['username'] as String,
-      json['p_link'] as String,
-      json['p_date'] as String,
-      json['TNAME'] as String);
+      id: json['PID'] as String,
+      title: json['p_title'] as String,
+      info: json['p_content'] as String,
+      width: json['width'] as int,
+      height: json['height'] as int,
+      user: json['username'] as String,
+      url: json['p_link'] as String,
+      date: json['p_date'] as String,
+      type: json['TNAME'] as String);
 }
 
 Map<String, dynamic> _$PictureToJson(Picture instance) => <String, dynamic>{

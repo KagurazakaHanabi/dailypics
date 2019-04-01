@@ -1,7 +1,7 @@
 import 'package:daily_pics/misc/tools.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons/material_design_icons.dart';
-import 'package:get_version/get_version.dart';
+import 'package:package_info/package_info.dart';
 
 class AboutPage extends StatefulWidget {
   @override
@@ -22,7 +22,8 @@ class AboutPageState extends State<AboutPage> {
   @override
   void initState() {
     super.initState();
-    GetVersion.projectVersion.then((ver) => setState(() => _versionName = ver));
+    PackageInfo.fromPlatform()
+        .then((info) => setState(() => _versionName = info.version));
   }
 
   @override
