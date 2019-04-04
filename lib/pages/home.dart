@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:daily_pics/components/archive.dart';
@@ -15,6 +16,7 @@ import 'package:flutter/services.dart';
 import 'package:material_design_icons/material_design_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:package_info/package_info.dart';
 
 String _initial = '';
 String _shopping = 'taobao://item.taobao.com/item.htm?id=588056088134';
@@ -54,6 +56,7 @@ class _HomePageState extends State<HomePage> {
         setState(() => _data = event.data);
       }
     });
+    _checkUpdate();
   }
 
   @override
@@ -213,7 +216,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   String _convertIndexToType(int index) {
-    switch(index) {
+    switch (index) {
       case 0:
         return C.type_chowder;
       case 1:
@@ -244,6 +247,52 @@ class _HomePageState extends State<HomePage> {
         Tools.share(_data);
         break;
     }
+  }
+
+  void _checkUpdate() async {
+    if (!Platform.isAndroid) return;
+    HttpClient client = HttpClient();
+    HttpClientRequest request = await client.getUrl(Uri.parse(
+      'https://aus.nowtime.cc/api/query/update?appid=10831',
+    ));
+    HttpClientResponse response = await request.close();
+    String body = await response.transform(utf8.decoder).join();
+    dynamic data = jsonDecode(body);
+    String buildNumber = (await PackageInfo.fromPlatform()).buildNumber;
+    if ((data.version_code ?? 0) <= (int.tryParse(buildNumber) ?? 0)-1) {
+      showDialog(
+        context: context,
+        builder: (_) {
+          return _UpdateDialog(data.update_log, data.apk_url);
+        },
+      );
+    }
+  }
+}
+
+class _UpdateDialog extends StatelessWidget {
+  final String content;
+
+  final String url;
+
+  _UpdateDialog(this.content, this.url);
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('发现可用的更新'),
+      content: Text(content),
+      actions: <Widget>[
+        FlatButton(
+          child: Text('取消'),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        FlatButton(
+          child: Text('去往酷安'),
+          onPressed: () => Tools.safeLaunch(url),
+        ),
+      ],
+    );
   }
 }
 

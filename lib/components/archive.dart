@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_pics/main.dart';
 import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/pages/viewer.dart';
+import 'package:daily_pics/pages/details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -137,7 +137,7 @@ class _Tile extends StatelessWidget {
       child: InkWell(
         onTap: () {
           Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => ViewerPage(data, heroTag)),
+            MaterialPageRoute(builder: (_) => DetailsPage(data, heroTag)),
           );
         },
         child: Column(

@@ -11,11 +11,13 @@ class AboutPage extends StatefulWidget {
 class AboutPageState extends State<AboutPage> {
   String _repo = 'https://github.com/KagurazakaHanabi/daily_pics';
   String _about = """
-　　图鉴是一款简洁的壁纸推荐软件，有杂烩（摄影）、插画（二次元）以及桌面壁纸三个分类。均由人工从 Pixiv、酷安、Unsplash 等网站摘取而来，经过精挑细选，会更适合用作壁纸。
+　　Tujian 是我在经历数次找壁纸无果后，与几个朋友共同完成的一款精选图片壁纸软件，每日两张，两个分类，两种风味。
 
-　　在经历常常找壁纸无果后，我和我的朋友们开发出了这样一款应用，希望你能喜欢。
+　　虽然每一天选出的图片至多只有三张，但是全部是投稿者和维护者们的精挑细选。
 
-　　在本应用的开发过程中，特此感谢 @Createlite、@Gadgetry、@Copyright³、@Chimon、@神楽坂花火、@浦东吃西瓜以及项目运营 @Galentwww。
+　　虽然小众，希望大众。希望你能在享受图片的同时，将 Tujian 也推荐给你的好友，一千个人眼中一千个哈姆雷特，让图片更有内涵。
+
+　　本应用开发过程中，感谢 @Createlite、@Gadgetry、@Copyright³、@Chimon、@神楽坂花火、@浦东吃西瓜以及项目运营 @Galentwww。
   """;
   String _versionName = '0.0.0';
 

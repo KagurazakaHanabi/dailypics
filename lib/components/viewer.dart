@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_pics/main.dart';
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/events.dart';
+import 'package:daily_pics/pages/details.dart';
 import 'package:flutter/material.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,7 +50,7 @@ class _ViewerComponentState extends State<ViewerComponent>
     if (_error != null && _error is Error) {
       String trace = _error.stackTrace.toString() + '\n';
       result = GestureDetector(
-        onTap: () => setState(() => _error = null),
+        onTap: () => setState(() {}),
         child: Center(
           child: Text(
             '$_error\n${_debug ? trace : ''}加载失败，点击重试',
@@ -66,31 +67,38 @@ class _ViewerComponentState extends State<ViewerComponent>
   }
 
   Widget _buildViewer() {
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          fit: BoxFit.cover,
-          image: CachedNetworkImageProvider(_data.url),
+    return GestureDetector(
+      onLongPress: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => DetailsPage(_data)),
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            image: CachedNetworkImageProvider(_data.url),
+          ),
         ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.all(16),
-                  color: Colors.black26,
-                  child: Text(
-                    _data.info,
-                    style: TextStyle(color: Colors.white),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.all(16),
+                    color: Colors.black26,
+                    child: Text(
+                      _data.info,
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ),
-              ),
-            ],
-          )
-        ],
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
@@ -105,6 +113,7 @@ class _ViewerComponentState extends State<ViewerComponent>
         HttpClientResponse response = await request.close();
         String body = await response.transform(utf8.decoder).join();
         _data = Response.fromJson(jsonDecode(body)).data[0];
+        if (_data == null) _error = body;
       } else {
         HttpClient client = HttpClient();
         HttpClientRequest request = await client.getUrl(Uri.parse(

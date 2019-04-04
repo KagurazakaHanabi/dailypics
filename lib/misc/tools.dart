@@ -35,9 +35,10 @@ class Tools {
   }
 
   static Future<String> fetchText() async {
-    Uri uri = Uri.parse('https://dp.chimon.me/api/hitokoto.php');
     HttpClient client = HttpClient();
-    HttpClientRequest request = await client.getUrl(uri);
+    HttpClientRequest request = await client.getUrl(Uri.parse(
+      'https://api.lwl12.com/hitokoto/v1?encode=text&charset=utf-8',
+    ));
     HttpClientResponse response = await request.close();
     return await response.transform(utf8.decoder).join();
   }

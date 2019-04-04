@@ -1,9 +1,11 @@
 package com.yaerin.daily_pics.plugins;
 
 import android.app.WallpaperManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.provider.MediaStore;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -51,7 +53,6 @@ public class PlatformPlugin implements MethodCallHandler {
 
                 case "syncGallery": {
                     syncGallery(call, result);
-
                     break;
                 }
 
