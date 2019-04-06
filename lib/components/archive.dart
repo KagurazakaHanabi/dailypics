@@ -29,7 +29,7 @@ class ArchiveComponentState extends State<ArchiveComponent>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => _fetch());
     SharedPreferences.getInstance()
-        .then((pref) => _debug = pref.getBool('debug') ?? false);
+        .then((pref) => _debug = pref.getBool(C.pref_debug) ?? false);
   }
 
   @override
@@ -128,10 +128,12 @@ class _Tile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool light = Theme.of(context).brightness == Brightness.light;
+    Color textColor = light ? Colors.black54 : Colors.white70;
     Color accentColor = Theme.of(context).accentColor;
     return Card(
       elevation: 0,
-      color: Color(0xFFF5F5F5),
+      color: light ? Color(0xFFF5F5F5) : Colors.black,
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
       child: InkWell(
@@ -161,7 +163,7 @@ class _Tile extends StatelessWidget {
                   children: <TextSpan>[
                     TextSpan(
                       text: data.info.trim(),
-                      style: TextStyle(color: Colors.black54),
+                      style: TextStyle(color: textColor),
                     ),
                   ],
                 ),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:daily_pics/components/archive.dart';
 import 'package:daily_pics/components/viewer.dart';
@@ -14,9 +15,9 @@ import 'package:daily_pics/widgets/buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:material_design_icons/material_design_icons.dart';
+import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:package_info/package_info.dart';
 
 String _initial = '';
 String _shopping = 'taobao://item.taobao.com/item.htm?id=588056088134';
@@ -27,6 +28,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+
   PageController _pageCtrl = PageController();
   int _index = 0;
   Picture _data;
@@ -36,10 +39,8 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     // FIXME: 2019/3/4 Yaerin: 无法在启动时修改 PageView 的 index
     // WidgetsBinding.instance.addPostFrameCallback((_) => _setType(_index));
-    SharedPreferences.getInstance()
-        .then((prefs) => prefs.getBool(C.pref_first) ?? true)
-        .then((first) {
-      if (first) {
+    SharedPreferences.getInstance().then((prefs) async {
+      if (prefs.getBool(C.pref_first) ?? true) {
         Navigator.of(context).push(
           PageRouteBuilder(
             pageBuilder: (_, __, ___) => WelcomePage(),
@@ -48,6 +49,9 @@ class _HomePageState extends State<HomePage> {
             },
           ),
         );
+      }
+      if (prefs.getBool(C.pref_night) ?? false) {
+        ThemeModel.of(context).theme = Themes.night;
       }
     });
     Tools.fetchText().then((val) => _initial = val);
@@ -61,17 +65,29 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    double extent = kToolbarHeight + MediaQuery.of(context).padding.top;
     return Scaffold(
-      appBar: _buildAppBar(),
+      key: _scaffoldKey,
       drawer: _buildDrawer(),
-      body: PageView(
-        controller: _pageCtrl,
-        physics: NeverScrollableScrollPhysics(),
+      body: Stack(
         children: <Widget>[
-          ViewerComponent(C.type_chowder, 0),
-          ViewerComponent(C.type_illus, 1),
-          ViewerComponent(C.type_bing, 2),
-          ArchiveComponent(C.type_desktop),
+          PageView(
+            controller: _pageCtrl,
+            physics: NeverScrollableScrollPhysics(),
+            children: <Widget>[
+              ViewerComponent(C.type_chowder, 0),
+              ViewerComponent(C.type_illus, 1),
+              ViewerComponent(C.type_bing, 2),
+              ArchiveComponent(C.type_desktop),
+            ],
+          ),
+          ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: extent),
+            child: FlexibleSpaceBar.createSettings(
+              currentExtent: extent,
+              child: _buildAppBar(),
+            ),
+          ),
         ],
       ),
     );
@@ -84,7 +100,13 @@ class _HomePageState extends State<HomePage> {
         itemBuilder: (_) => _buildMenus(),
       ),
     ];
-    return AppBar(
+    return _AppBar(
+      color: Colors.white,
+      leading: IconButton(
+        icon: Icon(Icons.menu),
+        onPressed: () => _scaffoldKey.currentState.openDrawer(),
+        tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+      ),
       title: Text(_index != 3 ? _data?.title ?? '' : '归档: 桌面'),
       actions: _index == 3 ? null : actions,
     );
@@ -259,14 +281,66 @@ class _HomePageState extends State<HomePage> {
     String body = await response.transform(utf8.decoder).join();
     dynamic data = jsonDecode(body);
     String buildNumber = (await PackageInfo.fromPlatform()).buildNumber;
-    if ((data.version_code ?? 0) <= (int.tryParse(buildNumber) ?? 0)-1) {
+    if ((data['version_code'] ?? 0) > (int.tryParse(buildNumber) ?? 0)) {
       showDialog(
         context: context,
         builder: (_) {
-          return _UpdateDialog(data.update_log, data.apk_url);
+          return _UpdateDialog(
+            data['update_log'],
+            data['apk_url'],
+            data['version_name'],
+          );
         },
       );
     }
+  }
+}
+
+class _AppBar extends StatelessWidget {
+  final Color color;
+
+  final Widget leading;
+
+  final Widget title;
+
+  final List<Widget> actions;
+
+  _AppBar({this.color, this.leading, this.title, this.actions});
+
+  @override
+  Widget build(BuildContext context) {
+    double statusBar = window.padding.top / window.devicePixelRatio;
+    ThemeData theme = Theme.of(context);
+    return Container(
+      color: Colors.black26, // TODO: 2019/4/5 Yaerin: 感觉这样有点丑...
+      margin: EdgeInsets.only(top: statusBar),
+      height: kToolbarHeight,
+      child: IconTheme.merge(
+        data: theme.primaryIconTheme.copyWith(color: color),
+        child: Row(
+          children: <Widget>[
+            ConstrainedBox(
+              constraints: BoxConstraints.tightFor(width: kToolbarHeight),
+              child: leading,
+            ),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(left: 16),
+                child: DefaultTextStyle(
+                  style: theme.primaryTextTheme.title.copyWith(color: color),
+                  child: title,
+                ),
+              ),
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: actions,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -275,12 +349,14 @@ class _UpdateDialog extends StatelessWidget {
 
   final String url;
 
-  _UpdateDialog(this.content, this.url);
+  final String version;
+
+  _UpdateDialog(this.content, this.url, this.version);
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('发现可用的更新'),
+      title: Text('发现可用的更新: v$version'),
       content: Text(content),
       actions: <Widget>[
         FlatButton(

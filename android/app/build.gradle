@@ -26,8 +26,8 @@ android {
         applicationId "ml.cerasus.pics.g"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 190327
-        versionName '2.5.7β'
+        versionCode 190331
+        versionName '2.5.8'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -47,6 +47,6 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation "com.squareup.okhttp3:okhttp:3.14.0"
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.2-alpha02'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-alpha02'
+    androidTestImplementation 'androidx.test:runner:1.2.0-alpha03'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-alpha03'
 }

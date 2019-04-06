@@ -33,13 +33,16 @@ class _ViewerComponentState extends State<ViewerComponent>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => _fetch());
-    SharedPreferences.getInstance()
-        .then((pref) => _debug = pref.getBool('debug') ?? false);
-    eventBus.on<OnPageChangedEvent>().listen((event) {
-      if (_data != null && event.value == widget.index) {
-        eventBus.fire(ReceivedDataEvent(widget.index, _data));
-        _switchTheme();
-      }
+    SharedPreferences.getInstance().then((prefs) {
+      _debug = prefs.getBool(C.pref_debug) ?? false;
+      eventBus.on<OnPageChangedEvent>().listen((event) {
+        if (_data != null && event.value == widget.index) {
+          eventBus.fire(ReceivedDataEvent(widget.index, _data));
+          if (!(prefs.getBool(C.pref_night) ?? false)) {
+            _switchTheme();
+          }
+        }
+      });
     });
   }
 
@@ -73,32 +76,35 @@ class _ViewerComponentState extends State<ViewerComponent>
           MaterialPageRoute(builder: (_) => DetailsPage(_data)),
         );
       },
-      child: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
+      child: Stack(
+        children: <Widget>[
+          CachedNetworkImage(
             fit: BoxFit.cover,
-            image: CachedNetworkImageProvider(_data.url),
+            imageUrl: _data.url,
+            width: window.physicalSize.width,
+            height: window.physicalSize.height,
+            placeholder: (_, __) => Center(child: CircularProgressIndicator()),
           ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.all(16),
-                    color: Colors.black26,
-                    child: Text(
-                      _data.info,
-                      style: TextStyle(color: Colors.white),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.all(16),
+                      color: Colors.black26,
+                      child: Text(
+                        _data.info,
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
-                ),
-              ],
-            )
-          ],
-        ),
+                ],
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -122,9 +128,10 @@ class _ViewerComponentState extends State<ViewerComponent>
         HttpClientResponse response = await request.close();
         String body = await response.transform(utf8.decoder).join();
         Map<String, dynamic> json = jsonDecode(body)['images'][0];
+        DateTime date = DateTime.now();
         _data = Picture(
           id: '',
-          title: '',
+          title: '${date.year} 年 ${date.month} 月 ${date.day} 日',
           info: json['copyright'],
           width: 1080,
           height: 1920,
@@ -137,7 +144,7 @@ class _ViewerComponentState extends State<ViewerComponent>
       eventBus.fire(ReceivedDataEvent(widget.index, _data));
       setState(() {});
       SharedPreferences pref = await SharedPreferences.getInstance();
-      if (!(pref.getBool('pick_color') ?? false)) return;
+      if (!(pref.getBool(C.pref_theme) ?? false)) return;
       PaletteGenerator.fromImageProvider(
         CachedNetworkImageProvider(_data.url),
         timeout: Duration(seconds: 5),

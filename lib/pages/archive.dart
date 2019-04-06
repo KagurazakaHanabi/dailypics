@@ -8,10 +8,11 @@ class ArchivePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Brightness brightness = Theme.of(context).brightness;
     String decodedType = Uri.decodeQueryComponent(type);
     String title = '归档: ${decodedType == '电脑壁纸' ? '桌面' : decodedType}';
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: brightness == Brightness.light ? Colors.white : null,
       appBar: AppBar(title: Text(title)),
       body: ArchiveComponent(type),
     );

@@ -53,7 +53,6 @@ public class QuickService extends TileService implements Runnable {
             WallpaperManager manager = (WallpaperManager) getSystemService(WALLPAPER_SERVICE);
             manager.setStream(is);
             toast("下载完成");
-
         } catch (IOException e) {
             toast(getString(R.string.err_set_failed, e.getLocalizedMessage()));
         }

@@ -11,13 +11,14 @@ import 'package:url_launcher/url_launcher.dart';
 class WelcomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    bool light = Theme.of(context).brightness == Brightness.light;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: light ? Colors.white : null,
       body: Center(
         child: Hero(
           tag: '#',
           child: Image.asset(
-            'res/Icon-App-1024x1024@1x.png',
+            light ? 'res/ic_app_dark.png': 'res/ic_app_light.png',
             width: 128,
             height: 128,
           ),
@@ -51,10 +52,11 @@ class _InternalPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool light = Theme.of(context).brightness == Brightness.light;
     return WillPopScope(
       onWillPop: () => Future.value(false),
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: light ? Colors.white : null,
         body: Padding(
           padding: EdgeInsets.fromLTRB(32, 40, 32, 16),
           child: Column(
@@ -66,7 +68,7 @@ class _InternalPage extends StatelessWidget {
                     Hero(
                       tag: '#',
                       child: Image.asset(
-                        'res/Icon-App-1024x1024@1x.png',
+                        light ? 'res/ic_app_dark.png': 'res/ic_app_light.png',
                         width: 108,
                         height: 108,
                       ),
