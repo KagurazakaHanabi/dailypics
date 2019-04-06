@@ -56,9 +56,14 @@ class Themes {
     primaryColorDark: Colors.black45,
     accentColor: Colors.black87,
   );
-  static final ThemeData night = ThemeData(
+  static final ThemeData amoled = ThemeData(
     brightness: Brightness.dark,
     primaryColor: Colors.black,
+    backgroundColor: Colors.black,
+    scaffoldBackgroundColor: Colors.black,
+  );
+  static final ThemeData night = ThemeData(
+    brightness: Brightness.dark,
   );
 }
 
@@ -76,4 +81,7 @@ class C {
   static const int menu_download = 1;
   static const int menu_set_wallpaper = 2;
   static const int menu_share = 3;
+  static const int theme_normal = 0;
+  static const int theme_amoled = 1;
+  static const int theme_auto = 2;
 }

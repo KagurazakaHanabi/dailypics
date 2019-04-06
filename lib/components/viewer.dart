@@ -143,8 +143,10 @@ class _ViewerComponentState extends State<ViewerComponent>
       }
       eventBus.fire(ReceivedDataEvent(widget.index, _data));
       setState(() {});
-      SharedPreferences pref = await SharedPreferences.getInstance();
-      if (!(pref.getBool(C.pref_theme) ?? false)) return;
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      if ((prefs.getInt(C.pref_theme) ?? C.theme_normal) != C.theme_auto) {
+        return;
+      }
       PaletteGenerator.fromImageProvider(
         CachedNetworkImageProvider(_data.url),
         timeout: Duration(seconds: 5),

@@ -33,6 +33,7 @@ class _HomePageState extends State<HomePage> {
   PageController _pageCtrl = PageController();
   int _index = 0;
   Picture _data;
+  bool _transAppBar = false;
 
   @override
   void initState() {
@@ -40,6 +41,7 @@ class _HomePageState extends State<HomePage> {
     // FIXME: 2019/3/4 Yaerin: 无法在启动时修改 PageView 的 index
     // WidgetsBinding.instance.addPostFrameCallback((_) => _setType(_index));
     SharedPreferences.getInstance().then((prefs) async {
+      setState(() => _transAppBar = prefs?.getBool('trans') ?? false);
       if (prefs.getBool(C.pref_first) ?? true) {
         Navigator.of(context).push(
           PageRouteBuilder(
@@ -52,6 +54,11 @@ class _HomePageState extends State<HomePage> {
       }
       if (prefs.getBool(C.pref_night) ?? false) {
         ThemeModel.of(context).theme = Themes.night;
+      } else {
+        switch (prefs.getInt(C.pref_theme) ?? C.theme_normal) {
+          case C.theme_amoled:
+            ThemeModel.of(context).theme = Themes.amoled;
+        }
       }
     });
     Tools.fetchText().then((val) => _initial = val);
@@ -71,15 +78,20 @@ class _HomePageState extends State<HomePage> {
       drawer: _buildDrawer(),
       body: Stack(
         children: <Widget>[
-          PageView(
-            controller: _pageCtrl,
-            physics: NeverScrollableScrollPhysics(),
-            children: <Widget>[
-              ViewerComponent(C.type_chowder, 0),
-              ViewerComponent(C.type_illus, 1),
-              ViewerComponent(C.type_bing, 2),
-              ArchiveComponent(C.type_desktop),
-            ],
+          Padding(
+            padding: _transAppBar
+                ? EdgeInsets.zero
+                : EdgeInsets.only(top: kToolbarHeight),
+            child: PageView(
+              controller: _pageCtrl,
+              physics: NeverScrollableScrollPhysics(),
+              children: <Widget>[
+                ViewerComponent(C.type_chowder, 0),
+                ViewerComponent(C.type_illus, 1),
+                ViewerComponent(C.type_bing, 2),
+                ArchiveComponent(C.type_desktop),
+              ],
+            ),
           ),
           ConstrainedBox(
             constraints: BoxConstraints(maxHeight: extent),
@@ -94,22 +106,32 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildAppBar() {
+    Widget leading = IconButton(
+      icon: Icon(Icons.menu),
+      onPressed: () => _scaffoldKey.currentState.openDrawer(),
+      tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+    );
+    Widget title = Text(_index != 3 ? _data?.title ?? '' : '归档: 桌面');
     List<Widget> actions = <Widget>[
       PopupMenuButton<int>(
         onSelected: _onMenuSelected,
         itemBuilder: (_) => _buildMenus(),
       ),
     ];
-    return _AppBar(
-      color: Colors.white,
-      leading: IconButton(
-        icon: Icon(Icons.menu),
-        onPressed: () => _scaffoldKey.currentState.openDrawer(),
-        tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-      ),
-      title: Text(_index != 3 ? _data?.title ?? '' : '归档: 桌面'),
-      actions: _index == 3 ? null : actions,
-    );
+    if (_transAppBar) {
+      return _AppBar(
+        color: Colors.white,
+        leading: leading,
+        title: title,
+        actions: _index == 3 ? null : actions,
+      );
+    } else {
+      return AppBar(
+        leading: leading,
+        title: title,
+        actions: _index == 3 ? null : actions,
+      );
+    }
   }
 
   List<PopupMenuEntry<int>> _buildMenus() {
@@ -125,102 +147,105 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildDrawer() {
     return Drawer(
-      child: ListTileTheme(
-        selectedColor: Theme.of(context).accentColor,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            UserAccountsDrawerHeader(
-              currentAccountPicture: Image.asset('res/ic_launcher-web.png'),
-              accountName: Text('Tujian R'),
-              accountEmail: Text('无人为孤岛，一图一世界。'),
-            ),
-            ListTile(
-              leading: Icon(MdiIcons.widgets),
-              title: Text('杂烩'),
-              onTap: () => _setIndex(0),
-              selected: _index == 0,
-            ),
-            ListTile(
-              leading: Icon(MdiIcons.drawing),
-              title: Text('插画'),
-              onTap: () => _setIndex(1),
-              selected: _index == 1,
-            ),
-            Divider(),
-            ListTile(
-              leading: Icon(MdiIcons.bing),
-              title: Text('必应'),
-              onTap: () => _setIndex(2),
-              selected: _index == 2,
-            ),
-            ListTile(
-              leading: Icon(MdiIcons.monitor),
-              title: Text('桌面'),
-              onTap: () => _setIndex(3),
-              selected: _index == 3,
-            ),
-            ListTile(
-              leading: Icon(MdiIcons.text),
-              title: Text('一句'),
-              onTap: () {
-                showDialog(context: context, builder: (_) => _TextDialog());
-              },
-            ),
-            Divider(),
-            ListTile(
-              leading: Icon(MdiIcons.telegram),
-              title: Text('推送'),
-              onTap: () => Tools.safeLaunch('https://t.me/Tujiansays'),
-            ),
-            ListTile(
-              leading: Icon(MdiIcons.qqchat),
-              title: Text('群组'),
-              onTap: () async {
-                String uri = 'mqqapi://card/show_pslcard?src_type=internal&'
-                    'verson=1&uin=472863370&card_type=group&source=qrcode';
-                if (await canLaunch(uri)) {
-                  launch(uri);
-                } else {
-                  launch('https://jq.qq.com/?_wv=1027&k=5RQibWy');
-                }
-              },
-            ),
-            ListTile(
-              leading: Icon(MdiIcons.cloud_upload),
-              title: Text('投稿'),
-              onTap: () {
-                /*Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => UploadPage()),
-                );*/
-                Tools.safeLaunch('https://dpic.dev/tg');
-              },
-            ),
-            Divider(),
-            ListTile(
-              leading: Icon(MdiIcons.settings),
-              title: Text('设置'),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => SettingsPage()),
-                );
-              },
-            ),
-            Offstage(
-              offstage: Platform.isIOS,
-              child: ListTile(
-                leading: Icon(MdiIcons.shopping),
-                title: Text('周边'),
+      child: Container(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        child: ListTileTheme(
+          selectedColor: Theme.of(context).accentColor,
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              UserAccountsDrawerHeader(
+                currentAccountPicture: Image.asset('res/ic_launcher-web.png'),
+                accountName: Text('Tujian R'),
+                accountEmail: Text('无人为孤岛，一图一世界。'),
+              ),
+              ListTile(
+                leading: Icon(MdiIcons.widgets),
+                title: Text('杂烩'),
+                onTap: () => _setIndex(0),
+                selected: _index == 0,
+              ),
+              ListTile(
+                leading: Icon(MdiIcons.drawing),
+                title: Text('插画'),
+                onTap: () => _setIndex(1),
+                selected: _index == 1,
+              ),
+              Divider(),
+              ListTile(
+                leading: Icon(MdiIcons.bing),
+                title: Text('必应'),
+                onTap: () => _setIndex(2),
+                selected: _index == 2,
+              ),
+              ListTile(
+                leading: Icon(MdiIcons.monitor),
+                title: Text('桌面'),
+                onTap: () => _setIndex(3),
+                selected: _index == 3,
+              ),
+              ListTile(
+                leading: Icon(MdiIcons.text),
+                title: Text('一句'),
+                onTap: () {
+                  showDialog(context: context, builder: (_) => _TextDialog());
+                },
+              ),
+              Divider(),
+              ListTile(
+                leading: Icon(MdiIcons.telegram),
+                title: Text('推送'),
+                onTap: () => Tools.safeLaunch('https://t.me/Tujiansays'),
+              ),
+              ListTile(
+                leading: Icon(MdiIcons.qqchat),
+                title: Text('群组'),
                 onTap: () async {
-                  if (await canLaunch(_shopping)) {
-                    launch(_shopping);
+                  String uri = 'mqqapi://card/show_pslcard?src_type=internal&'
+                      'verson=1&uin=472863370&card_type=group&source=qrcode';
+                  if (await canLaunch(uri)) {
+                    launch(uri);
                   } else {
-                    launch(_shopping.replaceFirst('taobao', 'https'));
+                    launch('https://jq.qq.com/?_wv=1027&k=5RQibWy');
                   }
                 },
               ),
-            )
-          ],
+              ListTile(
+                leading: Icon(MdiIcons.cloud_upload),
+                title: Text('投稿'),
+                onTap: () {
+                  /*Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => UploadPage()),
+                );*/
+                  Tools.safeLaunch('https://dpic.dev/tg');
+                },
+              ),
+              Divider(),
+              ListTile(
+                leading: Icon(MdiIcons.settings),
+                title: Text('设置'),
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => SettingsPage()),
+                  );
+                },
+              ),
+              Offstage(
+                offstage: Platform.isIOS,
+                child: ListTile(
+                  leading: Icon(MdiIcons.shopping),
+                  title: Text('周边'),
+                  onTap: () async {
+                    if (await canLaunch(_shopping)) {
+                      launch(_shopping);
+                    } else {
+                      launch(_shopping.replaceFirst('taobao', 'https'));
+                    }
+                  },
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -312,7 +337,7 @@ class _AppBar extends StatelessWidget {
     double statusBar = window.padding.top / window.devicePixelRatio;
     ThemeData theme = Theme.of(context);
     return Container(
-      color: Colors.black26, // TODO: 2019/4/5 Yaerin: 感觉这样有点丑...
+      color: Colors.black26,
       margin: EdgeInsets.only(top: statusBar),
       height: kToolbarHeight,
       child: IconTheme.merge(
@@ -335,7 +360,7 @@ class _AppBar extends StatelessWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: actions,
+              children: actions ?? [],
             ),
           ],
         ),

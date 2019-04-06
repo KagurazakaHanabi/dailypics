@@ -22,6 +22,8 @@ class ViewerPage extends StatelessWidget {
         onLongPress: () => _onLongPress(context),
         child: PhotoView(
           heroTag: heroTag,
+          minScale: PhotoViewComputedScale.contained * 0.8,
+          maxScale: PhotoViewComputedScale.covered * 1.8,
           imageProvider: CachedNetworkImageProvider(data.url),
           loadingChild: Center(child: CircularProgressIndicator()),
         ),
