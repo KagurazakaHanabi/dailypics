@@ -338,8 +338,8 @@ class _AppBar extends StatelessWidget {
     ThemeData theme = Theme.of(context);
     return Container(
       color: Colors.black26,
-      margin: EdgeInsets.only(top: statusBar),
-      height: kToolbarHeight,
+      padding: EdgeInsets.only(top: statusBar),
+      height: kToolbarHeight + statusBar,
       child: IconTheme.merge(
         data: theme.primaryIconTheme.copyWith(color: color),
         child: Row(
