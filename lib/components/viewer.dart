@@ -54,7 +54,7 @@ class _ViewerComponentState extends State<ViewerComponent>
     if (_error != null && _error is Error) {
       String trace = _error.stackTrace.toString() + '\n';
       result = GestureDetector(
-        onTap: () => setState(() {}),
+        onTap: () => setState(() => _error = null),
         child: Center(
           child: Text(
             '$_error\n${_debug ? trace : ''}加载失败，点击重试',
@@ -129,16 +129,15 @@ class _ViewerComponentState extends State<ViewerComponent>
         HttpClientResponse response = await request.close();
         String body = await response.transform(utf8.decoder).join();
         Map<String, dynamic> json = jsonDecode(body)['images'][0];
-        String url = 'https://cn.bing.com${json['urlbase']}_1080x1920.jpg';
         DateTime date = DateTime.now();
         _data = Picture(
-          id: Uuid().v5(Uuid.NAMESPACE_URL, url),
+          id: '${json['urlbase']}_1080x1920'.split('?')[1],
           title: '${date.year} 年 ${date.month} 月 ${date.day} 日',
           info: json['copyright'],
           width: 1080,
           height: 1920,
           user: '',
-          url: url,
+          url: 'https://cn.bing.com${json['urlbase']}_1080x1920.jpg',
           date: json['enddate'],
           type: '必应',
         );

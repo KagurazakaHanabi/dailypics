@@ -94,15 +94,19 @@ class ArchiveComponentState extends State<ArchiveComponent>
       Response res = Response(
         data: (json['images'] as List).map((e) {
           if (e != null) {
+            String date = e['enddate'];
+            String yy = date.substring(0, 4);
+            String mm = date.substring(5, 6).replaceFirst(RegExp('^0'), '');
+            String dd = date.substring(7, 8).replaceFirst(RegExp('^0'), '');
             return Picture(
-              id: '',
-              title: '',
+              id: '${e['urlbase']}_1080x1920'.split('?')[1],
+              title: '$yy 年 $mm 月 $dd 日',
               info: e['copyright'],
               width: 1080,
               height: 1920,
               user: null,
               url: 'https://cn.bing.com${e['urlbase']}_1080x1920.jpg',
-              date: e['enddate'],
+              date: date,
               type: '必应',
             );
           }

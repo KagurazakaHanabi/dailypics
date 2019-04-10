@@ -61,6 +61,7 @@ class Themes {
     primaryColor: Colors.black,
     backgroundColor: Colors.black,
     scaffoldBackgroundColor: Colors.black,
+    dialogBackgroundColor: Colors.black,
   );
   static final ThemeData night = ThemeData(
     brightness: Brightness.dark,

@@ -10,7 +10,6 @@ import 'package:daily_pics/misc/events.dart';
 import 'package:daily_pics/misc/tools.dart';
 import 'package:daily_pics/pages/archive.dart';
 import 'package:daily_pics/pages/settings.dart';
-import 'package:daily_pics/pages/upload.dart';
 import 'package:daily_pics/pages/welcome.dart';
 import 'package:daily_pics/widgets/buttons.dart';
 import 'package:flutter/material.dart';
@@ -335,11 +334,17 @@ class _AppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (Platform.isAndroid) {
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: Colors.black26,
+      ));
+    }
     double statusBar = window.padding.top / window.devicePixelRatio;
     ThemeData theme = Theme.of(context);
     return Container(
       color: Colors.black26,
-      padding: EdgeInsets.only(top: statusBar),
+      margin: EdgeInsets.only(top: Platform.isIOS ? 0 : statusBar),
+      padding: EdgeInsets.only(top: Platform.isIOS ? statusBar : 0),
       height: kToolbarHeight + statusBar,
       child: IconTheme.merge(
         data: theme.primaryIconTheme.copyWith(color: color),

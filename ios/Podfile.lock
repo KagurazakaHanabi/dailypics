@@ -3,11 +3,11 @@ PODS:
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
+  - image_picker (0.0.1):
+    - Flutter
   - package_info (0.0.1):
     - Flutter
   - path_provider (0.0.1):
-    - Flutter
-  - quick_actions (0.0.1):
     - Flutter
   - share (0.5.2):
     - Flutter
@@ -21,9 +21,9 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `.symlinks/flutter/ios`)
+  - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
-  - quick_actions (from `.symlinks/plugins/quick_actions/ios`)
   - share (from `.symlinks/plugins/share/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
@@ -36,12 +36,12 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   Flutter:
     :path: ".symlinks/flutter/ios"
+  image_picker:
+    :path: ".symlinks/plugins/image_picker/ios"
   package_info:
     :path: ".symlinks/plugins/package_info/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
-  quick_actions:
-    :path: ".symlinks/plugins/quick_actions/ios"
   share:
     :path: ".symlinks/plugins/share/ios"
   shared_preferences:
@@ -54,9 +54,9 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  image_picker: a211f28b95a560433c00f5cd3773f4710a20404d
   package_info: 78cabb3c322943c55d39676f4a5bfc748c01d055
   path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
-  quick_actions: 07414f1e5cb71fc4d32a0670b62c460e619366b2
   share: 7d22fe8baedfe93aefd864bf0b73f29711fbb0a3
   shared_preferences: 1feebfa37bb57264736e16865e7ffae7fc99b523
   sqflite: ff1d9da63c06588cc8d1faf7256d741f16989d5a
