@@ -10,6 +10,7 @@ import 'package:daily_pics/pages/details.dart';
 import 'package:flutter/material.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 class ViewerComponent extends StatefulWidget {
   final String type;
@@ -128,15 +129,16 @@ class _ViewerComponentState extends State<ViewerComponent>
         HttpClientResponse response = await request.close();
         String body = await response.transform(utf8.decoder).join();
         Map<String, dynamic> json = jsonDecode(body)['images'][0];
+        String url = 'https://cn.bing.com${json['urlbase']}_1080x1920.jpg';
         DateTime date = DateTime.now();
         _data = Picture(
-          id: '',
+          id: Uuid().v5(Uuid.NAMESPACE_URL, url),
           title: '${date.year} 年 ${date.month} 月 ${date.day} 日',
           info: json['copyright'],
           width: 1080,
           height: 1920,
           user: '',
-          url: 'https://cn.bing.com${json['urlbase']}_1080x1920.jpg',
+          url: url,
           date: json['enddate'],
           type: '必应',
         );

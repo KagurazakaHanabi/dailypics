@@ -20,7 +20,7 @@ class Tools {
     String s = response.headers.value('Content-Disposition') ?? '';
     if (s.isEmpty) {
       s = source.url;
-      filename = s.split('?')[0].substring(s.lastIndexOf('/') + 1);
+      filename = s.substring(s.lastIndexOf('/') + 1);
     } else {
       filename = s.replaceRange(0, s.indexOf('filename=') + 9, '');
     }

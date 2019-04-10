@@ -10,6 +10,7 @@ import 'package:daily_pics/misc/events.dart';
 import 'package:daily_pics/misc/tools.dart';
 import 'package:daily_pics/pages/archive.dart';
 import 'package:daily_pics/pages/settings.dart';
+import 'package:daily_pics/pages/upload.dart';
 import 'package:daily_pics/pages/welcome.dart';
 import 'package:daily_pics/widgets/buttons.dart';
 import 'package:flutter/material.dart';
@@ -215,8 +216,8 @@ class _HomePageState extends State<HomePage> {
                 title: Text('投稿'),
                 onTap: () {
                   /*Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => UploadPage()),
-                );*/
+                    MaterialPageRoute(builder: (_) => UploadPage()),
+                  );*/
                   Tools.safeLaunch('https://dpic.dev/tg');
                 },
               ),
