@@ -12,6 +12,7 @@ import 'package:daily_pics/pages/archive.dart';
 import 'package:daily_pics/pages/settings.dart';
 import 'package:daily_pics/pages/welcome.dart';
 import 'package:daily_pics/widgets/buttons.dart';
+import 'package:daily_pics/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:material_design_icons/material_design_icons.dart';
@@ -413,14 +414,18 @@ class _TextDialogState extends State<_TextDialog> {
 
   @override
   Widget build(BuildContext context) {
+    if (content == null) content = _initial;
     return AlertDialog(
       title: Text('一句'),
-      content: Text(content ?? _initial),
+      content: Text(content),
       contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
       actions: <Widget>[
         FlatButton(
           child: Text('复制'),
-          onPressed: () => Clipboard.setData(ClipboardData(text: content)),
+          onPressed: () {
+            Toast(context, '已复制到剪贴板').show();
+            Clipboard.setData(ClipboardData(text: content));
+          },
         ),
         FutureButton(
           child: Text('然后'),
@@ -436,4 +441,12 @@ class _TextDialogState extends State<_TextDialog> {
       ],
     );
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    Tools.fetchText().then((text) => _initial = text);
+  }
+
+
 }

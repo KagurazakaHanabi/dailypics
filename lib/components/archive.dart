@@ -96,8 +96,8 @@ class ArchiveComponentState extends State<ArchiveComponent>
           if (e != null) {
             String date = e['enddate'];
             String yy = date.substring(0, 4);
-            String mm = date.substring(5, 6).replaceFirst(RegExp('^0'), '');
-            String dd = date.substring(7, 8).replaceFirst(RegExp('^0'), '');
+            String mm = date.substring(4, 6).replaceAll(RegExp(r'^0'), '');
+            String dd = date.substring(6, 8).replaceAll(RegExp(r'^0'), '');
             return Picture(
               id: '${e['urlbase']}_1080x1920'.split('?')[1],
               title: '$yy 年 $mm 月 $dd 日',
