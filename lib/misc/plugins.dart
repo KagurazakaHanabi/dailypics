@@ -5,14 +5,11 @@ import 'package:flutter/services.dart';
 class Plugins {
   static MethodChannel _channel = MethodChannel('ml.cerasus.pics');
 
-  /// 将图片文件设置为壁纸
-  static Future<void> setWallpaper(File file) {
-    return _channel.invokeMethod('setWallpaper', file.path);
+  static Future<void> setWallpaper(String url) {
+    return _channel.invokeMethod('setWallpaper', url);
   }
 
-  /// 将图片文件从缓存移至相册
-  /// @return 移动后的位置
-  static Future<String> syncGallery(File file) async {
+  static Future<void> syncGallery(File file) async {
     return _channel.invokeMethod('syncGallery', file.path);
   }
 }

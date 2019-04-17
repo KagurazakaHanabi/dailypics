@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_pics/main.dart';
 import 'package:daily_pics/misc/bean.dart';
+import 'package:daily_pics/misc/plugins.dart';
 import 'package:daily_pics/misc/tools.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
@@ -54,6 +55,13 @@ class ViewerPage extends StatelessWidget {
       },
     );
     if (index == null) return;
-    Tools.fetchImage(context, data, index == C.menu_set_wallpaper);
+    switch (index) {
+      case C.menu_download:
+        Tools.fetchImage(context, data);
+        break;
+      case C.menu_set_wallpaper:
+        Plugins.setWallpaper(data.url);
+        break;
+    }
   }
 }

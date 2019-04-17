@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_pics/misc/bean.dart';
+import 'package:daily_pics/misc/plugins.dart';
 import 'package:daily_pics/misc/tools.dart';
 import 'package:daily_pics/pages/viewer.dart';
 import 'package:flutter/material.dart';
@@ -78,13 +79,13 @@ class DetailsPage extends StatelessWidget {
                         child: FlatButton(
                           child: _buildText(context, '设为壁纸'),
                           onPressed: () {
-                            Tools.fetchImage(context, data, true);
+                            Plugins.setWallpaper(data.url);
                           },
                         ),
                       ),
                       FlatButton(
                         child: _buildText(context, '保存图片'),
-                        onPressed: () => Tools.fetchImage(context, data, false),
+                        onPressed: () => Tools.fetchImage(context, data),
                       ),
                     ],
                   ),

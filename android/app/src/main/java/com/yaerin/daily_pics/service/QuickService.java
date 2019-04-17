@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.yaerin.daily_pics.R;
+import com.yaerin.daily_pics.util.WallpaperHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,18 +42,12 @@ public class QuickService extends TileService implements Runnable {
             Request request = new Request.Builder()
                     .url("https://dp.chimon.me/api/random.php?api=yes")
                     .build();
-            okhttp3.Response response = client.newCall(request).execute();
-            ResponseBody body = response.body();
+            ResponseBody body = client.newCall(request).execute().body();
             if (body == null) {
                 throw new IOException("ERR_EMPTY_RESPONSE");
             }
             Response res = new Gson().fromJson(body.string(), Response.class);
-            String imageUrl = res.data.get(0).url;
-            URL url = new URL(imageUrl);
-            InputStream is = url.openConnection().getInputStream();
-            WallpaperManager manager = (WallpaperManager) getSystemService(WALLPAPER_SERVICE);
-            manager.setStream(is);
-            toast("下载完成");
+            WallpaperHelper.set(this, res.data.get(0).url);
         } catch (IOException e) {
             toast(getString(R.string.err_set_failed, e.getLocalizedMessage()));
         }

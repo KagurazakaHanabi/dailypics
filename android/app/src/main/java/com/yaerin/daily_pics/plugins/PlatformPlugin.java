@@ -1,9 +1,10 @@
 package com.yaerin.daily_pics.plugins;
 
-import android.app.WallpaperManager;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
+
+import com.yaerin.daily_pics.util.WallpaperHelper;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -18,7 +19,6 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
-import static android.content.Context.WALLPAPER_SERVICE;
 import static android.os.Environment.DIRECTORY_PICTURES;
 import static android.os.Environment.getExternalStoragePublicDirectory;
 
@@ -45,7 +45,15 @@ public class PlatformPlugin implements MethodCallHandler {
         try {
             switch (call.method) {
                 case "setWallpaper": {
-                    setWallpaper(call, result);
+                    new Thread(() -> {
+                        String url = (String) call.arguments;
+                        boolean success = WallpaperHelper.set(mRegistrar.activity(), url);
+                        if (success) {
+                            result.success(null);
+                        } else {
+                            result.error(null, null, null);
+                        }
+                    }).start();
                     break;
                 }
 
@@ -62,17 +70,12 @@ public class PlatformPlugin implements MethodCallHandler {
         }
     }
 
-    private void setWallpaper(MethodCall call, Result result) throws IOException {
-        Context context = mRegistrar.activity();
-        String path = (String) call.arguments;
-        WallpaperManager manager = (WallpaperManager) context.getSystemService(WALLPAPER_SERVICE);
-        manager.setStream(new FileInputStream(new File(path)));
-        result.success(null);
-    }
-
     private void syncGallery(MethodCall call, Result result) throws IOException {
         File file = new File((String) call.arguments);
         File destDir = new File(getExternalStoragePublicDirectory(DIRECTORY_PICTURES), "/Tujian");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            destDir = new File(mRegistrar.context().getExternalMediaDirs()[0], "/Tujian");
+        }
         if (!destDir.exists()) destDir.mkdirs();
         File dest = new File(destDir, file.getName());
         BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));

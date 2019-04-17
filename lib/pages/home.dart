@@ -7,6 +7,7 @@ import 'package:daily_pics/components/viewer.dart';
 import 'package:daily_pics/main.dart';
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/events.dart';
+import 'package:daily_pics/misc/plugins.dart';
 import 'package:daily_pics/misc/tools.dart';
 import 'package:daily_pics/pages/archive.dart';
 import 'package:daily_pics/pages/settings.dart';
@@ -288,8 +289,10 @@ class _HomePageState extends State<HomePage> {
         );
         break;
       case C.menu_download:
+        Tools.fetchImage(context, _data);
+        break;
       case C.menu_set_wallpaper:
-        Tools.fetchImage(context, _data, index == C.menu_set_wallpaper);
+        Plugins.setWallpaper(_data.url);
         break;
       case C.menu_share:
         Tools.share(_data);
