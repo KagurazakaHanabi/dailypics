@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_pics/main.dart';
 import 'package:daily_pics/misc/bean.dart';
+import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/pages/details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -28,12 +29,14 @@ class ArchiveComponentState extends State<ArchiveComponent>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => _fetch());
-    SharedPreferences.getInstance()
-        .then((pref) => _debug = pref.getBool(C.pref_debug) ?? false);
+    SharedPreferences.getInstance().then((prefs) {
+      _debug = prefs.getBool(C.pref_debug) ?? false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     Widget result = Center(child: CircularProgressIndicator());
     if (_error != null && _error is Error) {
       String trace = _error.stackTrace.toString() + '\n';
@@ -101,7 +104,7 @@ class ArchiveComponentState extends State<ArchiveComponent>
             return Picture(
               id: '${e['urlbase']}_1080x1920'.split('?')[1],
               title: '$yy 年 $mm 月 $dd 日',
-              info: e['copyright'],
+              content: e['copyright'],
               width: 1080,
               height: 1920,
               user: null,
@@ -111,7 +114,6 @@ class ArchiveComponentState extends State<ArchiveComponent>
             );
           }
         }).toList(),
-        status: 'ok',
       );
       setState(() => _pictures = res.data ?? []);
     } catch (err) {
@@ -153,7 +155,7 @@ class _Tile extends StatelessWidget {
               child: Hero(
                 tag: heroTag,
                 child: CachedNetworkImage(
-                  imageUrl: data.url,
+                  imageUrl: Utils.getCompressed(data),
                   placeholder: (_, __) => Placeholder(),
                 ),
               ),
@@ -166,7 +168,7 @@ class _Tile extends StatelessWidget {
                   text: data.user == null ? '' : '${data.user.trim()}: ',
                   children: <TextSpan>[
                     TextSpan(
-                      text: data.info.trim(),
+                      text: data.content.trim(),
                       style: TextStyle(color: textColor),
                     ),
                   ],

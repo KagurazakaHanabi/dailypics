@@ -7,8 +7,7 @@ import 'package:daily_pics/components/viewer.dart';
 import 'package:daily_pics/main.dart';
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/events.dart';
-import 'package:daily_pics/misc/plugins.dart';
-import 'package:daily_pics/misc/tools.dart';
+import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/pages/archive.dart';
 import 'package:daily_pics/pages/settings.dart';
 import 'package:daily_pics/pages/welcome.dart';
@@ -63,7 +62,7 @@ class _HomePageState extends State<HomePage> {
         }
       }
     });
-    Tools.fetchText().then((val) => _initial = val);
+    Utils.fetchText().then((val) => _initial = val);
     eventBus.on<ReceivedDataEvent>().listen((event) {
       if (event.from == _index) {
         setState(() => _data = event.data);
@@ -139,8 +138,10 @@ class _HomePageState extends State<HomePage> {
   List<PopupMenuEntry<int>> _buildMenus() {
     List<PopupMenuEntry<int>> entries = [];
     entries.add(PopupMenuItem<int>(child: Text('查看归档'), value: 0));
-    entries.add(PopupMenuItem<int>(child: Text('下载原图'), value: 1));
-    if (Platform.isAndroid) {
+    if (_data != null) {
+      entries.add(PopupMenuItem<int>(child: Text('下载原图'), value: 1));
+    }
+    if (Platform.isAndroid && _data != null) {
       entries.add(PopupMenuItem<int>(child: Text('设为壁纸'), value: 2));
     }
     entries.add(PopupMenuItem<int>(child: Text('分享到...'), value: 3));
@@ -197,7 +198,7 @@ class _HomePageState extends State<HomePage> {
               ListTile(
                 leading: Icon(MdiIcons.telegram),
                 title: Text('推送'),
-                onTap: () => Tools.safeLaunch('https://t.me/Tujiansays'),
+                onTap: () => Utils.safeLaunch('https://t.me/Tujiansays'),
               ),
               ListTile(
                 leading: Icon(MdiIcons.qqchat),
@@ -219,7 +220,7 @@ class _HomePageState extends State<HomePage> {
                   /*Navigator.of(context).push(
                     MaterialPageRoute(builder: (_) => UploadPage()),
                   );*/
-                  Tools.safeLaunch('https://dpic.dev/tg');
+                  Utils.safeLaunch('https://dpic.dev/tg');
                 },
               ),
               Divider(),
@@ -289,13 +290,13 @@ class _HomePageState extends State<HomePage> {
         );
         break;
       case C.menu_download:
-        Tools.fetchImage(context, _data);
+        Utils.fetchImage(context, _data, false);
         break;
       case C.menu_set_wallpaper:
-        Plugins.setWallpaper(_data.url);
+        Utils.fetchImage(context, _data, true);
         break;
       case C.menu_share:
-        Tools.share(_data);
+        Utils.share(_data);
         break;
     }
   }
@@ -400,7 +401,7 @@ class _UpdateDialog extends StatelessWidget {
         ),
         FlatButton(
           child: Text('去往酷安'),
-          onPressed: () => Tools.safeLaunch(url),
+          onPressed: () => Utils.safeLaunch(url),
         ),
       ],
     );
@@ -433,7 +434,7 @@ class _TextDialogState extends State<_TextDialog> {
         FutureButton(
           child: Text('然后'),
           onPressed: () async {
-            content = await Tools.fetchText();
+            content = await Utils.fetchText();
             setState(() {});
           },
         ),
@@ -448,8 +449,7 @@ class _TextDialogState extends State<_TextDialog> {
   @override
   void dispose() {
     super.dispose();
-    Tools.fetchText().then((text) => _initial = text);
+    Utils.fetchText().then((text) => _initial = text);
   }
-
 
 }

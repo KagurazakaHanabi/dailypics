@@ -1,4 +1,4 @@
-import 'package:daily_pics/misc/tools.dart';
+import 'package:daily_pics/misc/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons/material_design_icons.dart';
 import 'package:package_info/package_info.dart';
@@ -24,8 +24,9 @@ class AboutPageState extends State<AboutPage> {
   @override
   void initState() {
     super.initState();
-    PackageInfo.fromPlatform()
-        .then((info) => setState(() => _versionName = info.version));
+    PackageInfo.fromPlatform().then((info) {
+      setState(() => _versionName = info.version);
+    });
   }
 
   @override
@@ -51,7 +52,7 @@ class AboutPageState extends State<AboutPage> {
             actions: <Widget>[
               IconButton(
                 icon: Icon(MdiIcons.github_circle),
-                onPressed: () => Tools.safeLaunch(_repo),
+                onPressed: () => Utils.safeLaunch(_repo),
               ),
             ],
             flexibleSpace: FlexibleSpaceBar(

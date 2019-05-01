@@ -1,26 +1,32 @@
 package com.yaerin.daily_pics.service;
 
-import android.app.WallpaperManager;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.service.quicksettings.TileService;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.yaerin.daily_pics.R;
 import com.yaerin.daily_pics.util.WallpaperHelper;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.List;
 
-import androidx.annotation.RequiresApi;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.ResponseBody;
+
+import static android.os.Environment.DIRECTORY_PICTURES;
+import static android.os.Environment.getExternalStoragePublicDirectory;
 
 /**
  * Create by Yaerin on 2019/3/2
@@ -46,8 +52,30 @@ public class QuickService extends TileService implements Runnable {
             if (body == null) {
                 throw new IOException("ERR_EMPTY_RESPONSE");
             }
-            Response res = new Gson().fromJson(body.string(), Response.class);
-            WallpaperHelper.set(this, res.data.get(0).url);
+            Picture data = new Gson().fromJson(body.string(), Response.class).data.get(0);
+            String url = data.url;
+            String suffix = url.substring(url.lastIndexOf("."));
+            File destDir = new File(getExternalStoragePublicDirectory(DIRECTORY_PICTURES), "/Tujian");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                destDir = new File(getExternalMediaDirs()[0], "/Tujian");
+            }
+            if (!destDir.exists()) destDir.mkdirs();
+            File dest = new File(destDir, data.id + suffix);
+            InputStream is = client.newCall(
+                    new Request.Builder().url(url).build()
+            ).execute().body().byteStream();
+            FileOutputStream os = new FileOutputStream(dest);
+            byte[] bytes = new byte[2048];
+            int len;
+            while ((len = is.read(bytes)) != -1) {
+                os.write(bytes, 0, len);
+            }
+            is.close();
+            os.close();
+            Uri uri = Uri.fromFile(dest);
+            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE).setData(uri));
+            toast("下载完成");
+            WallpaperHelper.set(this, uri);
         } catch (IOException e) {
             toast(getString(R.string.err_set_failed, e.getLocalizedMessage()));
         }

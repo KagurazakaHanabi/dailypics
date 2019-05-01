@@ -2,8 +2,7 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/misc/plugins.dart';
-import 'package:daily_pics/misc/tools.dart';
+import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/pages/viewer.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +22,7 @@ class DetailsPage extends StatelessWidget {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.share),
-            onPressed: () => Tools.share(data),
+            onPressed: () => Utils.share(data),
           )
         ],
       ),
@@ -47,7 +46,9 @@ class DetailsPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(2),
                   child: Hero(
                     tag: heroTag,
-                    child: CachedNetworkImage(imageUrl: data.url),
+                    child: CachedNetworkImage(
+                      imageUrl: Utils.getCompressed(data),
+                    ),
                   ),
                 ),
               ),
@@ -64,7 +65,7 @@ class DetailsPage extends StatelessWidget {
                   Container(
                     alignment: Alignment.centerLeft,
                     margin: EdgeInsets.only(bottom: 8),
-                    child: Text(data.info ?? '', style: hintStyle),
+                    child: Text(data.content ?? '', style: hintStyle),
                   ),
                   Row(
                     children: <Widget>[
@@ -79,13 +80,13 @@ class DetailsPage extends StatelessWidget {
                         child: FlatButton(
                           child: _buildText(context, '设为壁纸'),
                           onPressed: () {
-                            Plugins.setWallpaper(data.url);
+                            Utils.fetchImage(context, data, true);
                           },
                         ),
                       ),
                       FlatButton(
                         child: _buildText(context, '保存图片'),
-                        onPressed: () => Tools.fetchImage(context, data),
+                        onPressed: () => Utils.fetchImage(context, data, false),
                       ),
                     ],
                   ),

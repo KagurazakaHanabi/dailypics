@@ -6,11 +6,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_pics/main.dart';
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/events.dart';
+import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/pages/details.dart';
 import 'package:flutter/material.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uuid/uuid.dart';
 
 class ViewerComponent extends StatefulWidget {
   final String type;
@@ -39,7 +39,7 @@ class _ViewerComponentState extends State<ViewerComponent>
       eventBus.on<OnPageChangedEvent>().listen((event) {
         if (_data != null && event.value == widget.index) {
           eventBus.fire(ReceivedDataEvent(widget.index, _data));
-          if (!(prefs.getBool(C.pref_night) ?? false)) {
+          if ((prefs.getInt(C.pref_theme) ?? C.theme_normal) == C.theme_auto) {
             _switchTheme();
           }
         }
@@ -81,7 +81,7 @@ class _ViewerComponentState extends State<ViewerComponent>
         children: <Widget>[
           CachedNetworkImage(
             fit: BoxFit.cover,
-            imageUrl: _data.url,
+            imageUrl: Utils.getCompressed(_data),
             width: window.physicalSize.width,
             height: window.physicalSize.height,
             placeholder: (_, __) => Center(child: CircularProgressIndicator()),
@@ -96,7 +96,7 @@ class _ViewerComponentState extends State<ViewerComponent>
                       padding: EdgeInsets.all(16),
                       color: Colors.black26,
                       child: Text(
-                        _data.info,
+                        _data.content,
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
@@ -133,7 +133,7 @@ class _ViewerComponentState extends State<ViewerComponent>
         _data = Picture(
           id: '${json['urlbase']}_1080x1920'.split('?')[1],
           title: '${date.year} 年 ${date.month} 月 ${date.day} 日',
-          info: json['copyright'],
+          content: json['copyright'],
           width: 1080,
           height: 1920,
           user: '',
@@ -148,13 +148,14 @@ class _ViewerComponentState extends State<ViewerComponent>
       if ((prefs.getInt(C.pref_theme) ?? C.theme_normal) != C.theme_auto) {
         return;
       }
-      PaletteGenerator.fromImageProvider(
-        CachedNetworkImageProvider(_data.url),
-        timeout: Duration(seconds: 5),
-      ).then((generator) {
-        _color = generator.mutedColor?.color;
-        _switchTheme();
-      });
+      _color = _data.color;
+      if (_color == null) {
+        _color = (await PaletteGenerator.fromImageProvider(
+          CachedNetworkImageProvider(_data.url),
+          timeout: Duration(seconds: 5),
+        )).mutedColor.color;
+      }
+      _switchTheme();
     } catch (err) {
       if (mounted) setState(() => _error = err);
     }

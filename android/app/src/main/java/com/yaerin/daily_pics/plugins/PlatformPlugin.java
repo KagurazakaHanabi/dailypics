@@ -1,8 +1,10 @@
 package com.yaerin.daily_pics.plugins;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.widget.Toast;
 
 import com.yaerin.daily_pics.util.WallpaperHelper;
 
@@ -46,8 +48,10 @@ public class PlatformPlugin implements MethodCallHandler {
             switch (call.method) {
                 case "setWallpaper": {
                     new Thread(() -> {
-                        String url = (String) call.arguments;
-                        boolean success = WallpaperHelper.set(mRegistrar.activity(), url);
+                        boolean success = WallpaperHelper.set(
+                                mRegistrar.activity(),
+                                Uri.parse((String) call.arguments)
+                        );
                         if (success) {
                             result.success(null);
                         } else {
@@ -71,10 +75,11 @@ public class PlatformPlugin implements MethodCallHandler {
     }
 
     private void syncGallery(MethodCall call, Result result) throws IOException {
+        Context context = mRegistrar.activity();
         File file = new File((String) call.arguments);
         File destDir = new File(getExternalStoragePublicDirectory(DIRECTORY_PICTURES), "/Tujian");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            destDir = new File(mRegistrar.context().getExternalMediaDirs()[0], "/Tujian");
+            destDir = new File(context.getExternalMediaDirs()[0], "/Tujian");
         }
         if (!destDir.exists()) destDir.mkdirs();
         File dest = new File(destDir, file.getName());
@@ -87,8 +92,10 @@ public class PlatformPlugin implements MethodCallHandler {
         }
         bis.close();
         bos.close();
-        mRegistrar.context().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
+        file.delete();
+        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
                 .setData(Uri.fromFile(dest)));
         result.success(dest.getPath());
+        Toast.makeText(context, "下载完成", Toast.LENGTH_SHORT).show();
     }
 }

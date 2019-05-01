@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:daily_pics/main.dart';
-import 'package:daily_pics/misc/tools.dart';
+import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -100,7 +100,7 @@ class _InternalPage extends StatelessWidget {
                   FlatButton(
                     child: Text('隐私政策'),
                     onPressed: () {
-                      Tools.safeLaunch('https://dpic.dev/licenses/privacy');
+                      Utils.safeLaunch('https://dpic.dev/licenses/privacy');
                     },
                   ),
                   FlatButton(

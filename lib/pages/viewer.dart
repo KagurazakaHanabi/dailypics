@@ -3,8 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_pics/main.dart';
 import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/misc/plugins.dart';
-import 'package:daily_pics/misc/tools.dart';
+import 'package:daily_pics/misc/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
@@ -25,7 +24,9 @@ class ViewerPage extends StatelessWidget {
           heroTag: heroTag,
           minScale: PhotoViewComputedScale.contained * 0.8,
           maxScale: PhotoViewComputedScale.covered * 1.8,
-          imageProvider: CachedNetworkImageProvider(data.url),
+          imageProvider: CachedNetworkImageProvider(
+            Utils.getCompressed(data),
+          ),
           loadingChild: Center(child: CircularProgressIndicator()),
         ),
       ),
@@ -57,10 +58,10 @@ class ViewerPage extends StatelessWidget {
     if (index == null) return;
     switch (index) {
       case C.menu_download:
-        Tools.fetchImage(context, data);
+        Utils.fetchImage(context, data, false);
         break;
       case C.menu_set_wallpaper:
-        Plugins.setWallpaper(data.url);
+        Utils.fetchImage(context, data, true);
         break;
     }
   }
