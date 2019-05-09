@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:android_intent/android_intent.dart';
 import 'package:daily_pics/components/archive.dart';
 import 'package:daily_pics/components/viewer.dart';
 import 'package:daily_pics/main.dart';
@@ -16,12 +17,21 @@ import 'package:daily_pics/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:material_design_icons/material_design_icons.dart';
-import 'package:package_info/package_info.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 String _initial = '';
-String _shopping = 'taobao://item.taobao.com/item.htm?id=588056088134';
+String _donate = '''
+　　众所周知，Tujian 是一个公益项目。随着用户的增加、图片收录数量等方面的问题，Tujian 服务器已经不堪重负...
+
+　　因此，经过 第 3195 次 Tujian 事务所 圆桌会议，我们决定放一个微信收款二维码...欢迎捐赠以支持 Tujian 发展
+''';
+String _final = '''
+　　由于业务发展需要以及一直以来的亏本运营，图鉴事务所决定即日起终止对 Tujian R 的维护及后续更新，但仍会在短时间内支持查看每日日图等服务，Tujian X 会继续维护更新。若您想继续正常使用 Tujian 及其全部服务，请安装 Tujian X。感谢您一直以来对 Tujian R 的陪伴！
+
+　　无人为孤岛，一图一世界。
+''';
 
 class HomePage extends StatefulWidget {
   @override
@@ -68,7 +78,11 @@ class _HomePageState extends State<HomePage> {
         setState(() => _data = event.data);
       }
     });
-    _checkUpdate();
+    _makeCaches();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!Platform.isAndroid) return;
+      showDialog(context: context, builder: (_) => _FinalDialog());
+    });
   }
 
   @override
@@ -144,7 +158,9 @@ class _HomePageState extends State<HomePage> {
     if (Platform.isAndroid && _data != null) {
       entries.add(PopupMenuItem<int>(child: Text('设为壁纸'), value: 2));
     }
-    entries.add(PopupMenuItem<int>(child: Text('分享到...'), value: 3));
+    if (_data != null) {
+      entries.add(PopupMenuItem<int>(child: Text('分享到...'), value: 3));
+    }
     return entries;
   }
 
@@ -225,6 +241,16 @@ class _HomePageState extends State<HomePage> {
               ),
               Divider(),
               ListTile(
+                leading: Icon(MdiIcons.currency_usd),
+                title: Text('捐赠'),
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (_) => _DonateDialog(),
+                  );
+                },
+              ),
+              ListTile(
                 leading: Icon(MdiIcons.settings),
                 title: Text('设置'),
                 onTap: () {
@@ -233,20 +259,6 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
               ),
-              Offstage(
-                offstage: Platform.isIOS,
-                child: ListTile(
-                  leading: Icon(MdiIcons.shopping),
-                  title: Text('周边'),
-                  onTap: () async {
-                    if (await canLaunch(_shopping)) {
-                      launch(_shopping);
-                    } else {
-                      launch(_shopping.replaceFirst('taobao', 'https'));
-                    }
-                  },
-                ),
-              )
             ],
           ),
         ),
@@ -301,28 +313,16 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _checkUpdate() async {
-    if (!Platform.isAndroid) return;
+  // TODO: 2019/5/9 Yaerin: 等待测试
+  void _makeCaches() async {
+    Uri uri = Uri.parse('https://dp.chimon.me/api/today.php');
     HttpClient client = HttpClient();
-    HttpClientRequest request = await client.getUrl(Uri.parse(
-      'https://aus.nowtime.cc/api/query/update?appid=10831',
-    ));
+    HttpClientRequest request = await client.getUrl(uri);
     HttpClientResponse response = await request.close();
-    String body = await response.transform(utf8.decoder).join();
-    dynamic data = jsonDecode(body);
-    String buildNumber = (await PackageInfo.fromPlatform()).buildNumber;
-    if ((data['version_code'] ?? 0) > (int.tryParse(buildNumber) ?? 0)) {
-      showDialog(
-        context: context,
-        builder: (_) {
-          return _UpdateDialog(
-            data['update_log'],
-            data['apk_url'],
-            data['version_name'],
-          );
-        },
-      );
-    }
+    String json = await response.transform(utf8.decoder).join();
+    String cacheDir = (await getTemporaryDirectory()).path;
+    File file = File('$cacheDir/today.json');
+    file.writeAsStringSync(json);
   }
 }
 
@@ -380,34 +380,6 @@ class _AppBar extends StatelessWidget {
   }
 }
 
-class _UpdateDialog extends StatelessWidget {
-  final String content;
-
-  final String url;
-
-  final String version;
-
-  _UpdateDialog(this.content, this.url, this.version);
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text('发现可用的更新: v$version'),
-      content: Text(content),
-      actions: <Widget>[
-        FlatButton(
-          child: Text('取消'),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        FlatButton(
-          child: Text('去往酷安'),
-          onPressed: () => Utils.safeLaunch(url),
-        ),
-      ],
-    );
-  }
-}
-
 class _TextDialog extends StatefulWidget {
   @override
   _TextDialogState createState() => _TextDialogState();
@@ -451,5 +423,50 @@ class _TextDialogState extends State<_TextDialog> {
     super.dispose();
     Utils.fetchText().then((text) => _initial = text);
   }
+}
 
+class _DonateDialog extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('推荐使用微信支付'),
+      contentPadding: EdgeInsets.symmetric(vertical: 4, horizontal: 20),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Image.asset(
+            'res/1557232409.png',
+            width: 128,
+            height: 128,
+          ),
+          Text(_donate),
+        ],
+      ),
+    );
+  }
+}
+
+class _FinalDialog extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('停止更新通知'),
+      content: Text(_final),
+      contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+      actions: <Widget>[
+        FlatButton(
+          child: Text('继续使用'),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        FlatButton(
+          child: Text('下载 / 打开 Tujian X'),
+          onPressed: () async {
+            if (!await Utils.launchTujianX()) {
+              Utils.safeLaunch('https://www.coolapk.com/apk/ml.cerasus.pics');
+            }
+          },
+        ),
+      ],
+    );
+  }
 }

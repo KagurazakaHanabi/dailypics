@@ -34,24 +34,24 @@ class ViewerPage extends StatelessWidget {
   }
 
   void _onLongPress(BuildContext context) async {
-    List<Widget> children = <Widget>[
-      ListTile(
-        title: Text('保存到相册'),
-        onTap: () => Navigator.of(context).pop(C.menu_download),
-      ),
-    ];
-    if (Platform.isAndroid) {
-      children.add(ListTile(
-        title: Text('设置为壁纸'),
-        onTap: () => Navigator.of(context).pop(C.menu_set_wallpaper),
-      ));
-    }
     int index = await showDialog(
       context: context,
       builder: (_) {
         return SimpleDialog(
           contentPadding: EdgeInsets.symmetric(vertical: 8),
-          children: children,
+          children: <Widget>[
+            ListTile(
+              title: Text('保存到相册'),
+              onTap: () => Navigator.of(context).pop(C.menu_download),
+            ),
+            Offstage(
+              offstage: Platform.isIOS,
+              child: ListTile(
+                title: Text('设置为壁纸'),
+                onTap: () => Navigator.of(context).pop(C.menu_set_wallpaper),
+              ),
+            )
+          ],
         );
       },
     );

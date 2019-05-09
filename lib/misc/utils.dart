@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/widgets/toast.dart';
@@ -11,6 +12,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 class Utils {
   static MethodChannel _channel = MethodChannel('ml.cerasus.pics');
+
+  static Future<bool> launchTujianX() {
+    return _channel.invokeMethod('launchTujianX');
+  }
 
   static Future<void> _setWallpaper(String url) {
     return _channel.invokeMethod('setWallpaper', url);
@@ -62,6 +67,7 @@ class Utils {
       if (wallpaper) {
         await _setWallpaper(path);
       }
+      Toast(context, '下载完成').show();
     } catch (err) {
       Toast(context, '$err').show();
     }
@@ -83,5 +89,39 @@ class Utils {
       return data.url;
     }
     return data.url + '?f=jpg&q=50&w=$w';
+  }
+
+  static double abs(double a) {
+    if (a < 0) {
+      return -a;
+    }
+    return a;
+  }
+
+  static List<double> colorToHsv(Color c) {
+    double r = c.red / 255;
+    double g = c.green / 255;
+    double b = c.blue / 255;
+    double max = math.max(math.max(r, g), math.max(g, b));
+    double min = math.min(math.min(r, g), math.min(g, b));
+    double v = max;
+    double s = (max - min) / max;
+    double h;
+    if (r == max) {
+      h = (g - b) / (max - min) * 60;
+    } else if (g == max) {
+      h = 120 + (b - r) / (max - min) * 60;
+    } else if (b == max) {
+      h = 240 + (r - g) / (max - min) * 60;
+    }
+    if (h < 0) h = h + 360;
+    return [h, s, v];
+  }
+
+  static bool isColorSimilar(Color c1, Color c2) {
+    if (abs(colorToHsv(c1)[2] - colorToHsv(c2)[2]) < 0.2) {
+      return true;
+    }
+    return false;
   }
 }

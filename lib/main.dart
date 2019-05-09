@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             title: 'Tujian R',
             theme: model.theme,
+            darkTheme: Themes.night,
             home: HomePage(),
             supportedLocales: [
               Locale('zh'),

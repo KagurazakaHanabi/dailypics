@@ -10,7 +10,7 @@ class AboutPage extends StatefulWidget {
 
 class AboutPageState extends State<AboutPage> {
   String _repo = 'https://github.com/KagurazakaHanabi/daily_pics';
-  String _about = """
+  String _about = '''
 　　Tujian 是我在经历数次找壁纸无果后，与几个朋友共同完成的一款精选图片壁纸软件，每日两张，两个分类，两种风味。
 
 　　虽然每一天选出的图片至多只有三张，但是全部是投稿者和维护者们的精挑细选。
@@ -18,7 +18,7 @@ class AboutPageState extends State<AboutPage> {
 　　虽然小众，希望大众。希望你能在享受图片的同时，将 Tujian 也推荐给你的好友，一千个人眼中一千个哈姆雷特，让图片更有内涵。
 
 　　本应用开发过程中，感谢 @Createlite、@Gadgetry、@Copyright³、@Chimon、@神楽坂花火、@浦东吃西瓜以及项目运营 @Galentwww。
-  """;
+''';
   String _versionName = '0.0.0';
 
   @override

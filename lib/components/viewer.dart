@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:daily_pics/main.dart';
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/events.dart';
@@ -10,6 +11,7 @@ import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/pages/details.dart';
 import 'package:flutter/material.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ViewerComponent extends StatefulWidget {
@@ -33,7 +35,24 @@ class _ViewerComponentState extends State<ViewerComponent>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _fetch());
+    Connectivity().checkConnectivity().then((result) async {
+      if (result == ConnectivityResult.none) {
+        String cacheDir = (await getTemporaryDirectory()).path;
+        File file = File('$cacheDir/today.json');
+        if (!file.existsSync()) return;
+        String json = file.readAsStringSync();
+        Response response = Response.fromJson(jsonDecode(json));
+        List<Picture> data = response.data;
+        for (int i = 0; i < data.length; i++) {
+          if (data[i].type == widget.type) {
+            _data = data[i];
+          }
+        }
+        setState(() {});
+      } else {
+        _fetch();
+      }
+    });
     SharedPreferences.getInstance().then((prefs) {
       _debug = prefs.getBool(C.pref_debug) ?? false;
       eventBus.on<OnPageChangedEvent>().listen((event) {
@@ -142,13 +161,13 @@ class _ViewerComponentState extends State<ViewerComponent>
           type: '必应',
         );
       }
+      _color = _data.color;
       eventBus.fire(ReceivedDataEvent(widget.index, _data));
       setState(() {});
       SharedPreferences prefs = await SharedPreferences.getInstance();
       if ((prefs.getInt(C.pref_theme) ?? C.theme_normal) != C.theme_auto) {
         return;
       }
-      _color = _data.color;
       if (_color == null) {
         _color = (await PaletteGenerator.fromImageProvider(
           CachedNetworkImageProvider(_data.url),
@@ -163,10 +182,17 @@ class _ViewerComponentState extends State<ViewerComponent>
 
   void _switchTheme() {
     if (_color == null) return;
+    ThemeData theme = Theme.of(context);
+    Color accentColor = _color;
+    if (Utils.isColorSimilar(_color, theme.backgroundColor)) {
+      accentColor = theme.brightness == Brightness.light
+          ? Colors.black87
+          : Color(0xff64ffda);
+    }
     ThemeModel.of(context).theme = ThemeData(
       primaryColor: _color,
       primaryColorDark: _color,
-      accentColor: _color,
+      accentColor: accentColor,
     );
   }
 

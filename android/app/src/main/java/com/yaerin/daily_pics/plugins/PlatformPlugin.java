@@ -2,6 +2,7 @@ package com.yaerin.daily_pics.plugins;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.widget.Toast;
@@ -63,6 +64,19 @@ public class PlatformPlugin implements MethodCallHandler {
 
                 case "syncGallery": {
                     syncGallery(call, result);
+                    break;
+                }
+
+                case "launchTujianX": {
+                    Context context = mRegistrar.activity();
+                    PackageManager pm = context.getPackageManager();
+                    Intent intent = pm.getLaunchIntentForPackage("ml.cerasus.pics");
+                    try {
+                        context.startActivity(intent);
+                        result.success(true);
+                    } catch (Exception e) {
+                        result.success(false);
+                    }
                     break;
                 }
 
