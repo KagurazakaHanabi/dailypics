@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:android_intent/android_intent.dart';
 import 'package:daily_pics/components/archive.dart';
 import 'package:daily_pics/components/viewer.dart';
 import 'package:daily_pics/main.dart';
@@ -71,6 +70,9 @@ class _HomePageState extends State<HomePage> {
             ThemeModel.of(context).theme = Themes.amoled;
         }
       }
+      if ((prefs.getInt(C.pref_final) ?? 0) <= 5 && Platform.isAndroid) {
+        showDialog(context: context, builder: (_) => _FinalDialog());
+      }
     });
     Utils.fetchText().then((val) => _initial = val);
     eventBus.on<ReceivedDataEvent>().listen((event) {
@@ -79,10 +81,6 @@ class _HomePageState extends State<HomePage> {
       }
     });
     _makeCaches();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!Platform.isAndroid) return;
-      showDialog(context: context, builder: (_) => _FinalDialog());
-    });
   }
 
   @override
@@ -456,7 +454,12 @@ class _FinalDialog extends StatelessWidget {
       actions: <Widget>[
         FlatButton(
           child: Text('继续使用'),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            SharedPreferences.getInstance().then((prefs) {
+              prefs.setInt(C.pref_final, (prefs.getInt(C.pref_final) ?? 0) + 1);
+              Navigator.of(context).pop();
+            });
+          },
         ),
         FlatButton(
           child: Text('下载 / 打开 Tujian X'),

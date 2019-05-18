@@ -1,6 +1,6 @@
 name: daily_pics
 description: A new Flutter application.
-version: 2.5.10
+version: 3.0.1
 
 environment:
   sdk: ">=2.1.0 <3.0.0"

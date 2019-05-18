@@ -56,7 +56,7 @@ packages:
       name: build_daemon
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.6.0"
+    version: "0.6.1"
   build_resolvers:
     dependency: transitive
     description:
@@ -84,7 +84,7 @@ packages:
       name: built_collection
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.2.1"
+    version: "4.2.2"
   built_value:
     dependency: transitive
     description:
@@ -248,7 +248,7 @@ packages:
       name: image_picker
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.6.0+2"
+    version: "0.6.0+3"
   intl:
     dependency: transitive
     description:
@@ -276,14 +276,14 @@ packages:
       name: json_annotation
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.2.0"
+    version: "2.3.0"
   json_serializable:
     dependency: "direct dev"
     description:
       name: json_serializable
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.2.2"
+    version: "2.3.0"
   kernel:
     dependency: transitive
     description:
@@ -310,7 +310,7 @@ packages:
     description:
       path: material_design_icons
       ref: HEAD
-      resolved-ref: bb5412090870b3e7687cce10c37c2c66ec07a1f4
+      resolved-ref: "9c995356fcf300f387e73a0e815c326d34a690d7"
       url: "https://github.com/Yaerin/flutter_packages.git"
     source: git
     version: "3.3.92"
@@ -376,7 +376,7 @@ packages:
       name: pedantic
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.6.0"
+    version: "1.7.0"
   photo_view:
     dependency: "direct main"
     description:

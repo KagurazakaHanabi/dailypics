@@ -81,17 +81,17 @@ class Utils {
   static String getCompressed(Picture data) {
     int w;
     if (data.width > data.height) {
-      w = data.width > 1920 ? 1920 : data.width;
+      w = data.width > 1280 ? 1280 : data.width;
     } else {
-      w = data.width > 1080 ? 1080 : data.width;
+      w = data.width > 720 ? 720 : data.width;
     }
     if (data.url.contains('bing.com/')) {
       return data.url;
     }
-    return data.url + '?f=jpg&q=50&w=$w';
+    return data.url + '?f=jpg&q=70&w=$w';
   }
 
-  static double abs(double a) {
+  static T abs<T extends num>(T a) {
     if (a < 0) {
       return -a;
     }
@@ -119,7 +119,7 @@ class Utils {
   }
 
   static bool isColorSimilar(Color c1, Color c2) {
-    if (abs(colorToHsv(c1)[2] - colorToHsv(c2)[2]) < 0.2) {
+    if (abs(colorToHsv(c1)[2] - colorToHsv(c2)[2]) < 0.1) {
       return true;
     }
     return false;
