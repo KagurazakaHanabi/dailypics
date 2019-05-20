@@ -70,9 +70,6 @@ class _HomePageState extends State<HomePage> {
             ThemeModel.of(context).theme = Themes.amoled;
         }
       }
-      if ((prefs.getInt(C.pref_final) ?? 0) <= 5 && Platform.isAndroid) {
-        showDialog(context: context, builder: (_) => _FinalDialog());
-      }
     });
     Utils.fetchText().then((val) => _initial = val);
     eventBus.on<ReceivedDataEvent>().listen((event) {
@@ -238,16 +235,6 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               Divider(),
-              ListTile(
-                leading: Icon(MdiIcons.currency_usd),
-                title: Text('捐赠'),
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (_) => _DonateDialog(),
-                  );
-                },
-              ),
               ListTile(
                 leading: Icon(MdiIcons.settings),
                 title: Text('设置'),
@@ -420,56 +407,5 @@ class _TextDialogState extends State<_TextDialog> {
   void dispose() {
     super.dispose();
     Utils.fetchText().then((text) => _initial = text);
-  }
-}
-
-class _DonateDialog extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text('推荐使用微信支付'),
-      contentPadding: EdgeInsets.symmetric(vertical: 4, horizontal: 20),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Image.asset(
-            'res/1557232409.png',
-            width: 128,
-            height: 128,
-          ),
-          Text(_donate),
-        ],
-      ),
-    );
-  }
-}
-
-class _FinalDialog extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text('停止更新通知'),
-      content: Text(_final),
-      contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
-      actions: <Widget>[
-        FlatButton(
-          child: Text('继续使用'),
-          onPressed: () {
-            SharedPreferences.getInstance().then((prefs) {
-              prefs.setInt(C.pref_final, (prefs.getInt(C.pref_final) ?? 0) + 1);
-              Navigator.of(context).pop();
-            });
-          },
-        ),
-        FlatButton(
-          child: Text('下载 / 打开 Tujian X'),
-          onPressed: () async {
-            if (!await Utils.launchTujianX()) {
-              Utils.safeLaunch('https://www.coolapk.com/apk/ml.cerasus.pics');
-            }
-          },
-        ),
-      ],
-    );
   }
 }

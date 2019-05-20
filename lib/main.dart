@@ -97,7 +97,6 @@ class C {
   static const String pref_theme = 'theme';
   static const String pref_first = 'first';
   static const String pref_night = 'night';
-  static const String pref_final = 'final';
   static const int menu_view_archive = 0;
   static const int menu_download = 1;
   static const int menu_set_wallpaper = 2;
