@@ -1,81 +1,47 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/widgets/toast.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:share/share.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class Utils {
   static MethodChannel _channel = MethodChannel('ml.cerasus.pics');
 
-  static Future<bool> launchTujianX() {
-    return _channel.invokeMethod('launchTujianX');
-  }
-
-  static Future<void> _setWallpaper(String url) {
-    return _channel.invokeMethod('setWallpaper', url);
-  }
-
-  static Future<String> _syncGallery(File file) async {
-    return _channel.invokeMethod('syncGallery', file.path);
-  }
-
-  static Future<File> cacheImage(Picture source) async {
-    Uri uri = Uri.parse(source.url + '?p=0&f=jpg');
+  static Future<void> download(String url, void Function(int, int) cb) async {
     String dest = (await getTemporaryDirectory()).path;
-    HttpClient client = HttpClient();
-    HttpClientRequest request = await client.getUrl(uri);
-    HttpClientResponse response = await request.close();
     File file;
-    if (source.url.contains('bing.com/')) {
-      String name = source.url.substring(source.url.lastIndexOf('=') + 1);
-      file = File('$dest/$name');
+    String name;
+    if (url.contains('bing.com/')) {
+      name = url.substring(url.lastIndexOf('=') + 1);
     } else {
-      file = File('$dest/${source.id}.jpg');
+      name = url.substring(url.lastIndexOf('/') + 1) + '.jpg';
+      url += '?p=0&f=jpg';
     }
-    await response.pipe(file.openWrite());
-    return file;
-  }
-
-  static void safeLaunch(String url) async {
-    if (await canLaunch(url)) await launch(url);
-  }
-
-  static Future<String> fetchText() async {
+    file = File('$dest/$name');
+    if (file.existsSync()) {
+      file.deleteSync();
+    }
     HttpClient client = HttpClient();
-    HttpClientRequest request = await client.getUrl(Uri.parse(
-      'https://api.lwl12.com/hitokoto/v1?encode=text&charset=utf-8',
-    ));
+    HttpClientRequest request = await client.getUrl(Uri.parse(url));
     HttpClientResponse response = await request.close();
-    return await response.transform(utf8.decoder).join();
-  }
-
-  static Future<void> fetchImage(
-      BuildContext context,
-      Picture data,
-      bool wallpaper
-  ) async {
-    try {
-      Toast(context, '正在开始下载...').show();
-      File file = await Utils.cacheImage(data);
-      String path = await _syncGallery(file);
-      if (wallpaper) {
-        await _setWallpaper(path);
+    int count = 0;
+    response.listen((data) {
+      file.writeAsBytesSync(data, mode: FileMode.writeOnlyAppend);
+      if (cb != null) {
+        cb(count += data.length, response.contentLength);
       }
-      Toast(context, '下载完成').show();
-    } catch (err) {
-      Toast(context, '$err').show();
-    }
+    }).onDone(() async {
+      await _channel.invokeMethod('syncAlbum', file.path);
+      if (file.existsSync()) {
+        file.deleteSync();
+      }
+    });
   }
 
-  static Future<void> share(Picture data) async {
-    return Share.share('推荐一张图片，「${data.title}」\n图片信息：\n${data.content}\n'
-        '查看链接：${data.url}\n来自 Tujian R');
+  static Future<void> share(File imageFile) async {
+    await _channel.invokeMethod('share', imageFile.path);
   }
 
   static String getCompressed(Picture data) {
@@ -119,9 +85,9 @@ class Utils {
   }
 
   static bool isColorSimilar(Color c1, Color c2) {
-    if (abs(colorToHsv(c1)[2] - colorToHsv(c2)[2]) < 0.1) {
-      return true;
+    if (c1 == null || c2 == null) {
+      return false;
     }
-    return false;
+    return abs(colorToHsv(c1)[2] - colorToHsv(c2)[2]) < 0.1;
   }
 }

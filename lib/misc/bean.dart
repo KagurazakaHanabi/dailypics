@@ -7,7 +7,6 @@ part 'bean.g.dart';
 
 @JsonSerializable()
 class Response {
-  @JsonKey(name: 'pictures')
   List<Picture> data;
 
   String status;
@@ -42,8 +41,11 @@ class Picture {
   @JsonKey(name: 'local_url')
   String url;
 
-  @JsonKey(name: 'ThemeColor', fromJson: _colorFromHex, toJson: _colorToHex)
+  @JsonKey(name: 'theme_color', fromJson: _colorFromHex, toJson: _colorToHex)
   Color color;
+
+  @JsonKey(name: 'text_color', fromJson: _colorFromHex, toJson: _colorToHex)
+  Color textColor;
 
   @JsonKey(name: 'TNAME')
   String type;

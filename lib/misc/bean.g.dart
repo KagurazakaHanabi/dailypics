@@ -8,7 +8,7 @@ part of 'bean.dart';
 
 Response _$ResponseFromJson(Map<String, dynamic> json) {
   return Response(
-      data: (json['pictures'] as List)
+      data: (json['data'] as List)
           ?.map((e) =>
               e == null ? null : Picture.fromJson(e as Map<String, dynamic>))
           ?.toList(),
@@ -16,7 +16,7 @@ Response _$ResponseFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$ResponseToJson(Response instance) =>
-    <String, dynamic>{'pictures': instance.data, 'status': instance.status};
+    <String, dynamic>{'data': instance.data, 'status': instance.status};
 
 Picture _$PictureFromJson(Map<String, dynamic> json) {
   return Picture(
@@ -29,9 +29,12 @@ Picture _$PictureFromJson(Map<String, dynamic> json) {
       url: json['local_url'] as String,
       date: json['p_date'] as String,
       type: json['TNAME'] as String)
-    ..color = json['ThemeColor'] == null
+    ..color = json['theme_color'] == null
         ? null
-        : Picture._colorFromHex(json['ThemeColor'] as String);
+        : Picture._colorFromHex(json['theme_color'] as String)
+    ..textColor = json['text_color'] == null
+        ? null
+        : Picture._colorFromHex(json['text_color'] as String);
 }
 
 Map<String, dynamic> _$PictureToJson(Picture instance) => <String, dynamic>{
@@ -42,8 +45,11 @@ Map<String, dynamic> _$PictureToJson(Picture instance) => <String, dynamic>{
       'width': instance.width,
       'height': instance.height,
       'local_url': instance.url,
-      'ThemeColor':
+      'theme_color':
           instance.color == null ? null : Picture._colorToHex(instance.color),
+      'text_color': instance.textColor == null
+          ? null
+          : Picture._colorToHex(instance.textColor),
       'TNAME': instance.type,
       'p_date': instance.date
     };

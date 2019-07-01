@@ -1,12 +1,10 @@
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/utils.dart';
-import 'package:daily_pics/pages/viewer.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart' show CircularProgressIndicator;
 
-class DetailsPage extends StatelessWidget {
+class DetailsPage extends StatefulWidget {
   final Picture data;
 
   final String heroTag;
@@ -14,92 +12,188 @@ class DetailsPage extends StatelessWidget {
   DetailsPage(this.data, [this.heroTag = '##']);
 
   @override
+  State<StatefulWidget> createState() => _DetailsPageState();
+}
+
+class _DetailsPageState extends State<DetailsPage> {
+  bool popped = false;
+
+  @override
   Widget build(BuildContext context) {
-    TextStyle hintStyle = TextStyle(color: Theme.of(context).hintColor);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(data.title),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.share),
-            onPressed: () => Utils.share(data),
-          )
-        ],
-      ),
-      body: Column(
+    return CupertinoPageScaffold(
+      child: Stack(
         children: <Widget>[
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.all(16),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                    PageRouteBuilder(
-                      pageBuilder: (_, __, ___) => ViewerPage(data, heroTag),
-                      transitionsBuilder: (_, animation, __, child) {
-                        return FadeTransition(opacity: animation, child: child);
-                      },
-                    ),
-                  );
-                },
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(2),
-                  child: Hero(
-                    tag: heroTag,
-                    child: CachedNetworkImage(
-                      imageUrl: Utils.getCompressed(data),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Card(
-            elevation: 4,
-            margin: EdgeInsets.zero,
-            shape: RoundedRectangleBorder(),
-            child: Padding(
-              padding: EdgeInsets.all(16),
-              child: Column(
+          CupertinoScrollbar(
+            child: NotificationListener<ScrollUpdateNotification>(
+              onNotification: (ScrollUpdateNotification n) {
+                if (n.metrics.outOfRange && n.metrics.pixels < -90 && !popped) {
+                  Navigator.of(context).pop();
+                  popped = true;
+                }
+                return false;
+              },
+              child: ListView(
+                padding: EdgeInsets.zero,
                 children: <Widget>[
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    margin: EdgeInsets.only(bottom: 8),
-                    child: Text(data.content ?? '', style: hintStyle),
+                  AspectRatio(
+                    aspectRatio: widget.data.width / widget.data.height,
+                    child: Hero(
+                      tag: widget.heroTag,
+                      child: CachedNetworkImage(
+                        placeholder: (_, __) => Placeholder(),
+                        imageUrl: Utils.getCompressed(widget.data),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Text(
-                          '${data.width}W${data.height}H',
-                          style: hintStyle,
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          widget.data.title,
+                          style: TextStyle(fontSize: 22),
                         ),
+                        SaveButton(url: widget.data.url),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      widget.data.content,
+                      style: TextStyle(
+                        color: Color(0x8a000000),
+                        fontSize: 14,
+                        height: 1.2,
                       ),
-                      Offstage(
-                        offstage: Platform.isIOS,
-                        child: FlatButton(
-                          child: _buildText(context, '设为壁纸'),
-                          onPressed: () {
-                            Utils.fetchImage(context, data, true);
-                          },
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    margin: EdgeInsets.only(top: 48),
+                    padding: EdgeInsets.symmetric(vertical: 24),
+                    decoration: BoxDecoration(
+                      border: Border(top: BorderSide(color: Color(0x1f000000))),
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                        color: Color(0xfff2f2f7),
+                      ),
+                      child: CupertinoButton(
+                        pressedOpacity: 0.4,
+                        padding: EdgeInsets.fromLTRB(24, 8, 24, 8),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Icon(CupertinoIcons.share),
+                            Text('分享'),
+                          ],
                         ),
+                        onPressed: () {
+                          // TODO: 2019/6/29 Utils.share(imageFile);
+                        },
                       ),
-                      FlatButton(
-                        child: _buildText(context, '保存图片'),
-                        onPressed: () => Utils.fetchImage(context, data, false),
-                      ),
-                    ],
+                    ),
                   ),
                 ],
               ),
             ),
           ),
+          Column(
+            children: <Widget>[
+              Container(
+                alignment: Alignment.topRight,
+                padding: MediaQuery.of(context).padding,
+                child: CloseButton(),
+              ),
+            ],
+          ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildText(BuildContext context, String data) {
-    return Text(data, style: TextStyle(color: Theme.of(context).accentColor));
+class CloseButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Navigator.of(context).pop(),
+      child: Padding(
+        padding: EdgeInsets.all(8),
+        child: Icon(
+          CupertinoIcons.clear_circled_solid,
+          color: Color(0x61000000),
+        ),
+      ),
+    );
+  }
+}
+
+class SaveButton extends StatefulWidget {
+  final String url;
+
+  SaveButton({Key key, @required this.url}) : super(key: key);
+
+  @override
+  _SaveButtonState createState() => _SaveButtonState();
+}
+
+class _SaveButtonState extends State<SaveButton> {
+  bool started = false;
+  double progress;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        if (!started) {
+          setState(() => started = true);
+          Utils.download(widget.url, (int count, int total) {
+            if (mounted) {
+              setState(() => progress = count / total);
+            }
+          });
+        }
+      },
+      child: AnimatedCrossFade(
+        firstChild: Container(
+          alignment: Alignment.center,
+          padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+          decoration: BoxDecoration(
+            color: Color(0xfff2f2f7),
+            borderRadius: BorderRadius.circular(13),
+          ),
+          child: Text(
+            '获取',
+            style: TextStyle(
+              fontSize: 13,
+              color: CupertinoTheme.of(context).primaryColor,
+            ),
+          ),
+        ),
+        secondChild: Container(
+          width: 58,
+          height: 21,
+          alignment: Alignment.center,
+          padding: EdgeInsets.symmetric(vertical: 1, horizontal: 19),
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            value: progress,
+            backgroundColor: progress != null ? Color(0xffdadade) : null,
+            valueColor: progress == null
+                ? AlwaysStoppedAnimation(Color(0xffdadade))
+                : null,
+          ),
+        ),
+        crossFadeState: progress == null && !started
+            ? CrossFadeState.showFirst
+            : CrossFadeState.showSecond,
+        duration: Duration(milliseconds: 200),
+      ),
+    );
   }
 }

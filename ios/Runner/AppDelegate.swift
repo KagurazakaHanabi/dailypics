@@ -12,31 +12,29 @@ class AppDelegate: FlutterAppDelegate {
     let channel = FlutterMethodChannel(name: "ml.cerasus.pics", binaryMessenger: controller)
     channel.setMethodCallHandler({
         (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
-        guard call.method == "syncGallery" else {
+        guard call.method == "syncAlbum" else {
             result(FlutterMethodNotImplemented)
             return
         }
-        self.syncGallery(file: call.arguments as! String, result: result)
+        self.syncAlbum(file: call.arguments as! String, result: result)
     })
     GeneratedPluginRegistrant.register(with: self)
     
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
     
-    private func syncGallery(file: String, result: @escaping FlutterResult) {
+    private func syncAlbum(file: String, result: @escaping FlutterResult) {
         PHPhotoLibrary.requestAuthorization({status in
             if status == .authorized {
                 PHPhotoLibrary.shared().performChanges({
                     PHAssetChangeRequest.creationRequestForAssetFromImage(atFileURL: URL.init(string: file)!)
                 }, completionHandler: { (success: Bool, error: Error?) in
                     if success {
-                        result(nil) // 因为是 iOS 所以不需要返回相册中的路径
+                        result(nil)
                     } else {
-                        result(FlutterError(code: "Permission Denied", message: nil, details: nil))
-                        
+                        result(FlutterError(code: "Unexpected exception.", message: nil, details: nil))
                     }
                 })
-                result("")
             } else {
                 result(FlutterError(code: "Permission Denied", message: nil, details: nil))
             }
