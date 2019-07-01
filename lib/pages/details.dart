@@ -1,8 +1,15 @@
+import 'dart:io';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/utils.dart';
+import 'package:daily_pics/widget/image_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show CircularProgressIndicator;
+import 'package:flutter/rendering.dart';
+import 'package:path_provider/path_provider.dart';
 
 class DetailsPage extends StatefulWidget {
   final Picture data;
@@ -16,13 +23,17 @@ class DetailsPage extends StatefulWidget {
 }
 
 class _DetailsPageState extends State<DetailsPage> {
+  GlobalKey repaintKey = GlobalKey();
   bool popped = false;
+  bool offstage = true;
 
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       child: Stack(
         children: <Widget>[
+          ImageCard(widget.data, '#', showQrCode: true, repaintKey: repaintKey),
+          Container(color: Color(0xffffffff)),
           CupertinoScrollbar(
             child: NotificationListener<ScrollUpdateNotification>(
               onNotification: (ScrollUpdateNotification n) {
@@ -85,6 +96,7 @@ class _DetailsPageState extends State<DetailsPage> {
                       child: CupertinoButton(
                         pressedOpacity: 0.4,
                         padding: EdgeInsets.fromLTRB(24, 8, 24, 8),
+                        onPressed: share,
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
@@ -92,9 +104,6 @@ class _DetailsPageState extends State<DetailsPage> {
                             Text('分享'),
                           ],
                         ),
-                        onPressed: () {
-                          // TODO: 2019/6/29 Utils.share(imageFile);
-                        },
                       ),
                     ),
                   ),
@@ -102,18 +111,26 @@ class _DetailsPageState extends State<DetailsPage> {
               ),
             ),
           ),
-          Column(
-            children: <Widget>[
-              Container(
-                alignment: Alignment.topRight,
-                padding: MediaQuery.of(context).padding,
-                child: CloseButton(),
-              ),
-            ],
+          Container(
+            alignment: Alignment.topRight,
+            padding: MediaQuery.of(context).padding,
+            child: CloseButton(),
           ),
         ],
       ),
     );
+  }
+
+  void share() async {
+    double pixelRatio = ui.window.devicePixelRatio;
+    RenderRepaintBoundary render = repaintKey.currentContext.findRenderObject();
+    ui.Image image = await render.toImage(pixelRatio: pixelRatio);
+    ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    Uint8List bytes = byteData.buffer.asUint8List();
+    String temp = (await getTemporaryDirectory()).path;
+    File file = File('$temp/${DateTime.now().millisecondsSinceEpoch}.png');
+    file.writeAsBytesSync(bytes);
+    await Utils.share(file);
   }
 }
 
