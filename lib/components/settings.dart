@@ -8,8 +8,13 @@ class SettingsComponent extends StatefulWidget {
 class _SettingsComponentState extends State<SettingsComponent> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: CupertinoActivityIndicator(),
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: Text('更多'),
+      ),
+      child: ListView(
+        children: <Widget>[],
+      ),
     );
   }
 }

@@ -9,6 +9,7 @@ import 'package:daily_pics/widget/image_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show CircularProgressIndicator;
 import 'package:flutter/rendering.dart';
+import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:path_provider/path_provider.dart';
 
 class DetailsPage extends StatefulWidget {
@@ -37,7 +38,7 @@ class _DetailsPageState extends State<DetailsPage> {
           CupertinoScrollbar(
             child: NotificationListener<ScrollUpdateNotification>(
               onNotification: (ScrollUpdateNotification n) {
-                if (n.metrics.outOfRange && n.metrics.pixels < -90 && !popped) {
+                if (n.metrics.outOfRange && n.metrics.pixels < -75 && !popped) {
                   Navigator.of(context).pop();
                   popped = true;
                 }
@@ -51,7 +52,9 @@ class _DetailsPageState extends State<DetailsPage> {
                     child: Hero(
                       tag: widget.heroTag,
                       child: CachedNetworkImage(
-                        placeholder: (_, __) => Placeholder(),
+                        placeholder: (_, __) {
+                          return Image.asset('res/placeholder.jpg');
+                        },
                         imageUrl: Utils.getCompressed(widget.data),
                         fit: BoxFit.cover,
                       ),
@@ -61,24 +64,52 @@ class _DetailsPageState extends State<DetailsPage> {
                     padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.alphabetic,
                       children: <Widget>[
-                        Text(
-                          widget.data.title,
-                          style: TextStyle(fontSize: 22),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                widget.data.title,
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              Text(
+                                widget.data.content,
+                                style: TextStyle(
+                                  color: Color(0x8a000000),
+                                  fontSize: 14,
+                                  height: 1.2,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        SaveButton(url: widget.data.url),
+                        Padding(
+                          padding: EdgeInsets.only(left: 8),
+                          child: Column(
+                            children: <Widget>[
+                              SaveButton(url: widget.data.url),
+                              Padding(
+                                padding: EdgeInsets.only(top: 20),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    // TODO: 2019/7/5 收藏
+                                  },
+                                  child: Icon(
+                                    Ionicons.ios_star_outline,
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      widget.data.content,
-                      style: TextStyle(
-                        color: Color(0x8a000000),
-                        fontSize: 14,
-                        height: 1.2,
-                      ),
                     ),
                   ),
                   Container(

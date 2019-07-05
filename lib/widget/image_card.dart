@@ -63,8 +63,9 @@ class ImageCard extends StatelessWidget {
                     child: Hero(
                       tag: heroTag,
                       child: CachedNetworkImage(
-                        placeholder: (_, __) =>
-                            Image.asset('res/placeholder.jpg'),
+                        placeholder: (_, __) {
+                          return Image.asset('res/placeholder.jpg');
+                        },
                         imageUrl: Utils.getCompressed(data),
                         fit: BoxFit.cover,
                       ),
@@ -80,6 +81,7 @@ class ImageCard extends StatelessWidget {
                         data.title,
                         style: TextStyle(
                           color: dark ? Color(0xffffffff) : Color(0xff000000),
+                          fontWeight: FontWeight.w500,
                           fontSize: 28,
                         ),
                       ),
@@ -106,7 +108,9 @@ class ImageCard extends StatelessWidget {
                     child: Offstage(
                       offstage: !showQrCode,
                       child: QrCodeView(
-                        'https://www.dailypics.cn/member/id/${data.id}',
+                        data.url.contains('bing.com/')
+                            ? 'https://cn.bing.com/'
+                            : 'https://www.dailypics.cn/member/id/${data.id}',
                       ),
                     ),
                   ),

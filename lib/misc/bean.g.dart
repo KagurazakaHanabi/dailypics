@@ -21,20 +21,17 @@ Map<String, dynamic> _$ResponseToJson(Response instance) =>
 Picture _$PictureFromJson(Map<String, dynamic> json) {
   return Picture(
       id: json['PID'] as String,
+      user: json['username'] as String,
       title: json['p_title'] as String,
       content: json['p_content'] as String,
       width: json['width'] as int,
       height: json['height'] as int,
-      user: json['username'] as String,
       url: json['local_url'] as String,
+      color: Picture._colorFromHex(json['theme_color'] as String),
+      textColor: Picture._colorFromHex(json['text_color'] as String),
+      type: json['TNAME'] as String,
       date: json['p_date'] as String,
-      type: json['TNAME'] as String)
-    ..color = json['theme_color'] == null
-        ? null
-        : Picture._colorFromHex(json['theme_color'] as String)
-    ..textColor = json['text_color'] == null
-        ? null
-        : Picture._colorFromHex(json['text_color'] as String);
+      marked: json['marked'] as bool ?? false);
 }
 
 Map<String, dynamic> _$PictureToJson(Picture instance) => <String, dynamic>{
@@ -45,11 +42,9 @@ Map<String, dynamic> _$PictureToJson(Picture instance) => <String, dynamic>{
       'width': instance.width,
       'height': instance.height,
       'local_url': instance.url,
-      'theme_color':
-          instance.color == null ? null : Picture._colorToHex(instance.color),
-      'text_color': instance.textColor == null
-          ? null
-          : Picture._colorToHex(instance.textColor),
+      'theme_color': Picture._colorToHex(instance.color),
+      'text_color': Picture._colorToHex(instance.textColor),
       'TNAME': instance.type,
-      'p_date': instance.date
+      'p_date': instance.date,
+      'marked': instance.marked
     };

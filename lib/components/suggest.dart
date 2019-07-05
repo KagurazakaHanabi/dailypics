@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:daily_pics/misc/bean.dart';
+import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/widget/image_card.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -51,10 +51,7 @@ class _SuggestComponentState extends State<SuggestComponent>
 
   Future<void> _fetchData() async {
     String uri = 'https://v2.api.dailypics.cn/random?count=20';
-    HttpClient client = HttpClient();
-    HttpClientRequest request = await client.getUrl(Uri.parse(uri));
-    HttpClientResponse response = await request.close();
-    String source = await response.transform(utf8.decoder).join();
+    String source = await Utils.getRemote(uri);
     Response res = Response.fromJson({'data': jsonDecode(source)});
     setState(() => data = res.data);
   }

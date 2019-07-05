@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
 
@@ -89,5 +90,16 @@ class Utils {
       return false;
     }
     return abs(colorToHsv(c1)[2] - colorToHsv(c2)[2]) < 0.1;
+  }
+
+  static Future<String> getRemote(String url) async {
+    Uri uri = Uri.parse(url);
+    HttpClient client = HttpClient();
+    HttpClientRequest request = await client.getUrl(uri);
+    HttpClientResponse response = await request.close();
+    List<int> codeUnits = jsonDecode(await response.join()).map<int>((e) {
+      return e as int;
+    }).toList();
+    return utf8.decode(codeUnits);
   }
 }

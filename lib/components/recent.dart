@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_pics/main.dart';
@@ -7,7 +6,7 @@ import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/pages/details.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart' show PageView, PageController;
+import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class RecentComponent extends StatefulWidget {
@@ -17,7 +16,6 @@ class RecentComponent extends StatefulWidget {
 
 class _RecentComponentState extends State<RecentComponent>
     with AutomaticKeepAliveClientMixin {
-  PageController controller = PageController();
   int sharedValue = 0;
 
   @override
@@ -52,15 +50,13 @@ class _RecentComponentState extends State<RecentComponent>
               },
               onValueChanged: (int newValue) {
                 setState(() => sharedValue = newValue);
-                controller.jumpToPage(newValue);
               },
             ),
           ),
         ),
         Flexible(
-          child: PageView(
-            controller: controller,
-            physics: NeverScrollableScrollPhysics(),
+          child: IndexedStack(
+            index: sharedValue,
             children: <Widget>[_Page(0), _Page(1), _Page(2)],
           ),
         ),
@@ -136,10 +132,7 @@ class _PageState extends State<_Page> with AutomaticKeepAliveClientMixin {
     String uri =
         'https://v2.api.dailypics.cn/list?page=$cur&size=20&op=desc&sor'
         't=${types[widget.index]}';
-    HttpClient client = HttpClient();
-    HttpClientRequest request = await client.getUrl(Uri.parse(uri));
-    HttpClientResponse response = await request.close();
-    dynamic json = jsonDecode(await response.transform(utf8.decoder).join());
+    dynamic json = jsonDecode(await Utils.getRemote(uri));
     Response res = Response.fromJson({'data': json['result']});
     data.addAll(res.data);
     max = json['maxpage'];
@@ -217,7 +210,21 @@ class _Tile extends StatelessWidget {
               ),
               Padding(
                 padding: EdgeInsets.all(8),
-                child: Text(data.title, style: TextStyle(fontSize: 15)),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Expanded(
+                      child: Text(data.title, style: TextStyle(fontSize: 15)),
+                    ),
+                    Offstage(
+                      offstage: !data.marked,
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 8),
+                        child: Icon(Ionicons.ios_star, size: 18),
+                      ),
+                    ),
+                  ],
+                ),
               ),
               Padding(
                 padding: EdgeInsets.only(left: 8, bottom: 8),

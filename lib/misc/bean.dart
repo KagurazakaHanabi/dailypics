@@ -53,16 +53,22 @@ class Picture {
   @JsonKey(name: 'p_date')
   String date;
 
+  @JsonKey(defaultValue: false)
+  bool marked;
+
   Picture({
     this.id,
+    this.user,
     this.title,
     this.content,
     this.width,
     this.height,
-    this.user,
     this.url,
-    this.date,
+    this.color,
+    this.textColor,
     this.type,
+    this.date,
+    this.marked,
   });
 
   factory Picture.fromJson(Map<String, dynamic> json) {
