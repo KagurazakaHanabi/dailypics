@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -11,6 +12,7 @@ import 'package:flutter/material.dart' show CircularProgressIndicator;
 import 'package:flutter/rendering.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DetailsPage extends StatefulWidget {
   final Picture data;
@@ -26,7 +28,6 @@ class DetailsPage extends StatefulWidget {
 class _DetailsPageState extends State<DetailsPage> {
   GlobalKey repaintKey = GlobalKey();
   bool popped = false;
-  bool offstage = true;
 
   @override
   Widget build(BuildContext context) {
@@ -63,53 +64,41 @@ class _DetailsPageState extends State<DetailsPage> {
                   Padding(
                     padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                      textBaseline: TextBaseline.alphabetic,
                       children: <Widget>[
                         Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                widget.data.title,
-                                style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              Text(
-                                widget.data.content,
-                                style: TextStyle(
-                                  color: Color(0x8a000000),
-                                  fontSize: 14,
-                                  height: 1.2,
-                                ),
-                              ),
-                            ],
+                          child: Text(
+                            widget.data.title,
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: _mark,
+                          child: Icon(
+                            widget.data.marked
+                                ? Ionicons.ios_star
+                                : Ionicons.ios_star_outline,
+                            size: 20,
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(left: 8),
-                          child: Column(
-                            children: <Widget>[
-                              SaveButton(url: widget.data.url),
-                              Padding(
-                                padding: EdgeInsets.only(top: 20),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    // TODO: 2019/7/5 收藏
-                                  },
-                                  child: Icon(
-                                    Ionicons.ios_star_outline,
-                                    size: 20,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                          padding: EdgeInsets.only(left: 16),
+                          child: SaveButton(url: widget.data.url),
                         ),
                       ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      widget.data.content,
+                      style: TextStyle(
+                        color: Color(0x8a000000),
+                        fontSize: 14,
+                        height: 1.2,
+                      ),
                     ),
                   ),
                   Container(
@@ -127,7 +116,7 @@ class _DetailsPageState extends State<DetailsPage> {
                       child: CupertinoButton(
                         pressedOpacity: 0.4,
                         padding: EdgeInsets.fromLTRB(24, 8, 24, 8),
-                        onPressed: share,
+                        onPressed: _share,
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
@@ -152,7 +141,7 @@ class _DetailsPageState extends State<DetailsPage> {
     );
   }
 
-  void share() async {
+  void _share() async {
     double pixelRatio = ui.window.devicePixelRatio;
     RenderRepaintBoundary render = repaintKey.currentContext.findRenderObject();
     ui.Image image = await render.toImage(pixelRatio: pixelRatio);
@@ -162,6 +151,19 @@ class _DetailsPageState extends State<DetailsPage> {
     File file = File('$temp/${DateTime.now().millisecondsSinceEpoch}.png');
     file.writeAsBytesSync(bytes);
     await Utils.share(file);
+  }
+
+  void _mark() async {
+    widget.data.marked = !widget.data.marked;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    HashSet<String> list = HashSet.from(prefs.getStringList('marked') ?? []);
+    if (widget.data.marked) {
+      list.add(widget.data.id);
+    } else {
+      list.remove(widget.data.id);
+    }
+    await prefs.setStringList('marked', list.toList());
+    setState(() {});
   }
 }
 

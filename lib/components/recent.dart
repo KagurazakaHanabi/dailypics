@@ -8,6 +8,7 @@ import 'package:daily_pics/pages/details.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RecentComponent extends StatefulWidget {
   @override
@@ -134,10 +135,19 @@ class _PageState extends State<_Page> with AutomaticKeepAliveClientMixin {
         't=${types[widget.index]}';
     dynamic json = jsonDecode(await Utils.getRemote(uri));
     Response res = Response.fromJson({'data': json['result']});
-    data.addAll(res.data);
+    data.addAll(await _parseMark(res.data));
     max = json['maxpage'];
     doing = false;
     setState(() {});
+  }
+
+  Future<List<Picture>> _parseMark(List<Picture> pics) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> list = prefs.getStringList('marked') ?? [];
+    for (int i = 0; i < pics.length; i++) {
+      pics[i].marked = list.contains(pics[i].id);
+    }
+    return pics;
   }
 
   void _onScroll() {

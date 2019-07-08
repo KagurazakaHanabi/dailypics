@@ -97,9 +97,7 @@ class Utils {
     HttpClient client = HttpClient();
     HttpClientRequest request = await client.getUrl(uri);
     HttpClientResponse response = await request.close();
-    List<int> codeUnits = jsonDecode(await response.join()).map<int>((e) {
-      return e as int;
-    }).toList();
-    return utf8.decode(codeUnits);
+    Stream stream = response.cast<List<int>>();
+    return await stream.transform(utf8.decoder).join();
   }
 }

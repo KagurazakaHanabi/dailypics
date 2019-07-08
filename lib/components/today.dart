@@ -4,6 +4,7 @@ import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/widget/image_card.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TodayComponent extends StatefulWidget {
   @override
@@ -75,7 +76,9 @@ class _TodayComponentState extends State<TodayComponent>
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Icon(CupertinoIcons.profile_circled, size: 36),
+              Offstage(
+                child: Icon(CupertinoIcons.profile_circled, size: 36),
+              ),
             ],
           ),
           Text(
@@ -102,6 +105,7 @@ class _TodayComponentState extends State<TodayComponent>
     Response res = Response.fromJson({'data': jsonDecode(source)});
     data = res.data ?? [];
     await _fetchBing();
+    await _parseMark();
     setState(() {});
   }
 
@@ -141,6 +145,14 @@ class _TodayComponentState extends State<TodayComponent>
 
     split = copyright.replaceAll(RegExp('[【|】]'), '').split(' (');
     return [split[0], split[1].substring(0, split[1].length - 2)];
+  }
+
+  Future<void> _parseMark() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> list = prefs.getStringList('marked') ?? [];
+    for (int i = 0; i < data.length; i++) {
+      data[i].marked = list.contains(data[i].id);
+    }
   }
 
   @override
