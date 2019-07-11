@@ -6,11 +6,13 @@ import 'dart:ui' as ui;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/utils.dart';
+import 'package:daily_pics/widget/divider.dart';
 import 'package:daily_pics/widget/image_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show CircularProgressIndicator;
 import 'package:flutter/rendering.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
+import 'package:palette_generator/palette_generator.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -27,7 +29,15 @@ class DetailsPage extends StatefulWidget {
 
 class _DetailsPageState extends State<DetailsPage> {
   GlobalKey repaintKey = GlobalKey();
+  List<Color> colors = [Color(0x1f000000)];
   bool popped = false;
+
+
+  @override
+  void initState() {
+    super.initState();
+    // TODO: 2019/7/11 在此进行取色
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +90,7 @@ class _DetailsPageState extends State<DetailsPage> {
                             widget.data.marked
                                 ? Ionicons.ios_star
                                 : Ionicons.ios_star_outline,
-                            size: 20,
+                            size: 22,
                           ),
                         ),
                         Padding(
@@ -90,7 +100,8 @@ class _DetailsPageState extends State<DetailsPage> {
                       ],
                     ),
                   ),
-                  Padding(
+                  Container(
+                    margin: EdgeInsets.only(bottom: 48),
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
                       widget.data.content,
@@ -101,13 +112,10 @@ class _DetailsPageState extends State<DetailsPage> {
                       ),
                     ),
                   ),
+                  Divider(colors: colors),
                   Container(
                     alignment: Alignment.center,
-                    margin: EdgeInsets.only(top: 48),
                     padding: EdgeInsets.symmetric(vertical: 24),
-                    decoration: BoxDecoration(
-                      border: Border(top: BorderSide(color: Color(0x1f000000))),
-                    ),
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(4),
@@ -141,10 +149,14 @@ class _DetailsPageState extends State<DetailsPage> {
     );
   }
 
-  void _share() async {
+  Future<ui.Image> _screenshot() async {
     double pixelRatio = ui.window.devicePixelRatio;
     RenderRepaintBoundary render = repaintKey.currentContext.findRenderObject();
-    ui.Image image = await render.toImage(pixelRatio: pixelRatio);
+    return await render.toImage(pixelRatio: pixelRatio);
+  }
+
+  void _share() async {
+    ui.Image image = await _screenshot();
     ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     Uint8List bytes = byteData.buffer.asUint8List();
     String temp = (await getTemporaryDirectory()).path;
@@ -193,6 +205,7 @@ class SaveButton extends StatefulWidget {
 }
 
 class _SaveButtonState extends State<SaveButton> {
+  GlobalKey _key = GlobalKey();
   bool started = false;
   double progress;
 
@@ -200,6 +213,7 @@ class _SaveButtonState extends State<SaveButton> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        print(_key.currentContext.size);
         if (!started) {
           setState(() => started = true);
           Utils.download(widget.url, (int count, int total) {
@@ -211,25 +225,27 @@ class _SaveButtonState extends State<SaveButton> {
       },
       child: AnimatedCrossFade(
         firstChild: Container(
+          key: _key,
           alignment: Alignment.center,
-          padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+          padding: EdgeInsets.symmetric(vertical: 4, horizontal: 20),
           decoration: BoxDecoration(
             color: Color(0xfff2f2f7),
-            borderRadius: BorderRadius.circular(13),
+            borderRadius: BorderRadius.circular(18),
           ),
           child: Text(
-            '获取',
+            progress != 1 ? '获取' : '完成',
             style: TextStyle(
-              fontSize: 13,
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
               color: CupertinoTheme.of(context).primaryColor,
             ),
           ),
         ),
         secondChild: Container(
-          width: 58,
-          height: 21,
+          width: 70,
+          height: 28,
           alignment: Alignment.center,
-          padding: EdgeInsets.symmetric(vertical: 1, horizontal: 19),
+          padding: EdgeInsets.symmetric(vertical: 4, horizontal: 25),
           child: CircularProgressIndicator(
             strokeWidth: 2,
             value: progress,
@@ -239,7 +255,7 @@ class _SaveButtonState extends State<SaveButton> {
                 : null,
           ),
         ),
-        crossFadeState: progress == null && !started
+        crossFadeState: progress == null && !started || progress == 1
             ? CrossFadeState.showFirst
             : CrossFadeState.showSecond,
         duration: Duration(milliseconds: 200),

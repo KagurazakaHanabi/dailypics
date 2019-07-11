@@ -177,6 +177,10 @@ class _Tile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double aspectRatio = 4 / 5;
+    if (data.width / data.height < 4 / 5) {
+      aspectRatio = data.width / data.height;
+    }
     return GestureDetector(
       onTap: () {
         Navigator.of(context, rootNavigator: true).push(
@@ -208,13 +212,18 @@ class _Tile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               AspectRatio(
-                aspectRatio: 4 / 5,
+                aspectRatio: aspectRatio,
                 child: Hero(
                   tag: '$index-${data.id}',
                   child: CachedNetworkImage(
-                    placeholder: (_, __) => Image.asset('res/placeholder.jpg'),
                     imageUrl: Utils.getCompressed(data),
                     fit: BoxFit.cover,
+                    placeholder: (_, __) {
+                      return Container(
+                        color: Color(0xffe0e0e0),
+                        child: Image.asset('res/placeholder.jpg'),
+                      );
+                    },
                   ),
                 ),
               ),
