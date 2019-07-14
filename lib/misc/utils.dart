@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
+import 'dart:typed_data';
 
 import 'package:daily_pics/misc/bean.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,6 +13,7 @@ class Utils {
   static MethodChannel _channel = MethodChannel('ml.cerasus.pics');
 
   static Future<void> download(String url, void Function(int, int) cb) async {
+    Completer<void> completer = Completer();
     String dest = (await getTemporaryDirectory()).path;
     File file;
     String name;
@@ -33,12 +36,33 @@ class Utils {
       if (cb != null) {
         cb(count += data.length, response.contentLength);
       }
-    }).onDone(() async {
+    }, onDone: () async {
       await _channel.invokeMethod('syncAlbum', file.path);
       if (file.existsSync()) {
         file.deleteSync();
       }
+      completer.complete();
     });
+    return completer.future;
+  }
+
+  static Future<String> upload(
+    File file,
+    Map<String, String> data,
+    void Function(int, int) cb,
+  ) async {
+    dynamic json = jsonDecode(
+      await Http.upload('https://img.dpic.dev/upload', file, cb),
+    );
+    if (!json['ret']) {
+      return jsonEncode({
+        'code': 400,
+        'msg': json['error']['message'],
+      });
+    }
+    String url = 'https://img.dpic.dev/' + json['info']['md5'];
+    data['url'] = url;
+    return await Http.post('https://v2.api.dailypics.cn/tg', data);
   }
 
   static Future<void> share(File imageFile) async {
@@ -91,13 +115,52 @@ class Utils {
     }
     return abs(colorToHsv(c1)[2] - colorToHsv(c2)[2]) < 0.1;
   }
+}
 
-  static Future<String> getRemote(String url) async {
+class Http {
+  static Future<String> get(String url) async {
     Uri uri = Uri.parse(url);
     HttpClient client = HttpClient();
     HttpClientRequest request = await client.getUrl(uri);
     HttpClientResponse response = await request.close();
     Stream stream = response.cast<List<int>>();
     return await stream.transform(utf8.decoder).join();
+  }
+
+  static Future<String> post(String url, Map<String, dynamic> data) async {
+    HttpClient client = HttpClient();
+    HttpClientRequest request = await client.postUrl(Uri.parse(url));
+    request.headers.contentType = ContentType.json;
+    request.write(jsonEncode(data));
+    HttpClientResponse response = await request.close();
+    Stream stream = response.cast<List<int>>();
+    return await stream.transform(utf8.decoder).join();
+  }
+
+  static Future<String> upload(
+    String url,
+    File file,
+    void Function(int, int) cb,
+  ) async {
+    HttpClient client = HttpClient();
+    HttpClientRequest request = await client.postUrl(Uri.parse(url));
+    String subType = file.path.substring(file.path.lastIndexOf('.') + 1);
+    request.headers.set('content-type', 'image/$subType');
+    int contentLength = file.statSync().size;
+    int byteCount = 0;
+    Stream<Uint8List> stream = file.openRead();
+    await request.addStream(stream.transform(StreamTransformer.fromHandlers(
+      handleData: (data, sink) {
+        byteCount += data.length;
+        sink.add(data);
+        if (cb != null) {
+          cb(byteCount, contentLength);
+        }
+      },
+      handleError: (_, __, ___) {},
+      handleDone: (sink) => sink.close(),
+    )));
+    HttpClientResponse response = await request.close();
+    return await response.cast<List<int>>().transform(utf8.decoder).join();
   }
 }

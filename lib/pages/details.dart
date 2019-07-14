@@ -12,7 +12,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show CircularProgressIndicator;
 import 'package:flutter/rendering.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
-import 'package:palette_generator/palette_generator.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,15 +28,7 @@ class DetailsPage extends StatefulWidget {
 
 class _DetailsPageState extends State<DetailsPage> {
   GlobalKey repaintKey = GlobalKey();
-  List<Color> colors = [Color(0x1f000000)];
   bool popped = false;
-
-
-  @override
-  void initState() {
-    super.initState();
-    // TODO: 2019/7/11 在此进行取色
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,12 +98,12 @@ class _DetailsPageState extends State<DetailsPage> {
                       widget.data.content,
                       style: TextStyle(
                         color: Color(0x8a000000),
-                        fontSize: 14,
+                        fontSize: 15,
                         height: 1.2,
                       ),
                     ),
                   ),
-                  Divider(colors: colors),
+                  Divider(),
                   Container(
                     alignment: Alignment.center,
                     padding: EdgeInsets.symmetric(vertical: 24),

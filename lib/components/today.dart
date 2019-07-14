@@ -101,7 +101,7 @@ class _TodayComponentState extends State<TodayComponent>
 
   Future<void> _fetchData() async {
     _fetchText();
-    String source = await Utils.getRemote('https://v2.api.dailypics.cn/today');
+    String source = await Http.get('https://v2.api.dailypics.cn/today');
     Response res = Response.fromJson({'data': jsonDecode(source)});
     data = res.data ?? [];
     await _fetchBing();
@@ -111,7 +111,7 @@ class _TodayComponentState extends State<TodayComponent>
 
   Future<void> _fetchText() async {
     String url = 'http://yijuzhan.com/api/word.php?m=json';
-    String source = await Utils.getRemote(url);
+    String source = await Http.get(url);
     if (source.startsWith('{') && source.endsWith('}')) {
       setState(() => text = jsonDecode(source)['content']);
     } else {
@@ -121,7 +121,7 @@ class _TodayComponentState extends State<TodayComponent>
 
   Future<void> _fetchBing() async {
     String url = 'https://cn.bing.com/HPImageArchive.aspx?format=js&n=1&idx=0';
-    String source = await Utils.getRemote(url);
+    String source = await Http.get(url);
     Map<String, dynamic> json = jsonDecode(source)['images'][0];
     String copyright = json['copyright'];
     data.add(Picture(

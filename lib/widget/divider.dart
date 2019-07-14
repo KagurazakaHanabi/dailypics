@@ -9,7 +9,7 @@ class Divider extends StatelessWidget {
 
   Divider({
     Key key,
-    @required this.colors,
+    this.colors = const [Color(0x1f000000)],
     this.height = 0.5,
   }) : super(key: key);
 

@@ -133,7 +133,7 @@ class _PageState extends State<_Page> with AutomaticKeepAliveClientMixin {
     String uri =
         'https://v2.api.dailypics.cn/list?page=$cur&size=20&op=desc&sor'
         't=${types[widget.index]}';
-    dynamic json = jsonDecode(await Utils.getRemote(uri));
+    dynamic json = jsonDecode(await Http.get(uri));
     Response res = Response.fromJson({'data': json['result']});
     data.addAll(await _parseMark(res.data));
     max = json['maxpage'];

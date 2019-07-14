@@ -51,7 +51,7 @@ class _SuggestComponentState extends State<SuggestComponent>
 
   Future<void> _fetchData() async {
     String uri = 'https://v2.api.dailypics.cn/random?count=20';
-    String source = await Utils.getRemote(uri);
+    String source = await Http.get(uri);
     Response res = Response.fromJson({'data': jsonDecode(source)});
     setState(() => data = res.data);
   }
