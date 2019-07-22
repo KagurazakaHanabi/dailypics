@@ -10,7 +10,7 @@ class HomePage extends StatelessWidget {
     TodayComponent(),
     RecentComponent(),
     SuggestComponent(),
-    SettingsComponent(),
+    //SettingsComponent(),
   ];
 
   @override
@@ -21,7 +21,7 @@ class HomePage extends StatelessWidget {
           _buildNavigationItem(Ionicons.ios_today, 'Today'),
           _buildNavigationItem(Ionicons.ios_time, '以往'),
           _buildNavigationItem(Ionicons.ios_flame, '推荐 '),
-          _buildNavigationItem(Ionicons.ios_settings, '更多'),
+          //_buildNavigationItem(Ionicons.ios_settings, '更多'),
         ],
       ),
       tabBuilder: (_, i) {

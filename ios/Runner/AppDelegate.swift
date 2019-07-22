@@ -9,7 +9,7 @@ class AppDelegate: FlutterAppDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
         ) -> Bool {
         let controller: FlutterViewController = window.rootViewController as! FlutterViewController
-        let channel = FlutterMethodChannel(name: "ml.cerasus.pics", binaryMessenger: controller.engine.binaryMessenger)
+        let channel = FlutterMethodChannel(name: "ml.cerasus.pics", binaryMessenger: controller)
         channel.setMethodCallHandler({
             (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
             switch call.method {
@@ -69,7 +69,7 @@ class AppDelegate: FlutterAppDelegate {
     
     private func share(imageFile: String, result: FlutterResult) {
         do {
-            let data = try Data(contentsOf: URL.init(string: imageFile)!)
+            let data = try Data(contentsOf: URL.init(string: "file://" + imageFile)!)
             let controller = UIActivityViewController.init(activityItems: [UIImage(data: data) as Any], applicationActivities: nil)
             window.rootViewController!.present(controller, animated: true, completion: nil)
             result(nil)
