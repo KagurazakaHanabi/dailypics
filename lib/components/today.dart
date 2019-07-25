@@ -4,6 +4,7 @@ import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/widget/image_card.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TodayComponent extends StatefulWidget {
@@ -30,21 +31,33 @@ class _TodayComponentState extends State<TodayComponent>
         child: CupertinoActivityIndicator(),
       );
     } else {
+      int crossAxisCount = Device.isIPad() ? 2 : 1;
       return CustomScrollView(
         physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         slivers: <Widget>[
           CupertinoSliverRefreshControl(onRefresh: _fetchData),
           SliverSafeArea(
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (_, int i) {
+            sliver: SliverPadding(
+              padding: Device.isIPad()
+                  ? EdgeInsets.fromLTRB(12, 12, 12, 0)
+                  : EdgeInsets.zero,
+              sliver: SliverStaggeredGrid.countBuilder(
+                crossAxisCount: crossAxisCount,
+                itemCount: (data?.length ?? 0) + 1,
+                staggeredTileBuilder: (i) {
+                  if (i == 0) {
+                    return StaggeredTile.fit(crossAxisCount);
+                  } else {
+                    return StaggeredTile.fit(1);
+                  }
+                },
+                itemBuilder: (_, int i) {
                   if (i == 0) {
                     return _buildHeader();
                   } else {
                     return ImageCard(data[i - 1], '#$i');
                   }
                 },
-                childCount: (data?.length ?? 0) + 1,
               ),
             ),
           ),

@@ -25,7 +25,7 @@ class _QrCodeViewState extends State<QrCodeView> {
 
   @override
   Widget build(BuildContext context) {
-    double width = (code.moduleCount + 2).toDouble();
+    double width = (code.moduleCount * 1.5 + 3).toDouble();
     return CustomPaint(
       size: Size(width, width),
       painter: _QrCodePainter(code),
@@ -44,12 +44,12 @@ class _QrCodePainter extends CustomPainter {
       Rect.fromLTWH(0, 0, size.width, size.height),
       Paint()..color = Color(0xffffffff),
     );
-    canvas.translate(1, 1);
+    canvas.translate(1.5, 1.5);
     for (int x = 0; x < code.moduleCount; x++) {
       for (int y = 0; y < code.moduleCount; y++) {
         if (code.isDark(y, x)) {
           canvas.drawRect(
-            Rect.fromLTWH(x.toDouble(), y.toDouble(), 1, 1),
+            Rect.fromLTWH(x * 1.5, y *1.5, 1.5, 1.5),
             Paint()..color = Color(0xff000000),
           );
         }

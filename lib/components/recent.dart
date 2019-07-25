@@ -29,7 +29,8 @@ class _RecentComponentState extends State<RecentComponent>
           middle: Text('以往'),
         ),
         Container(
-          width: 500,
+          alignment: Alignment.center,
+          width: MediaQuery.of(context).size.width,
           padding: EdgeInsets.only(bottom: 8),
           decoration: BoxDecoration(
             color: CupertinoTheme.of(context).barBackgroundColor,
@@ -40,18 +41,21 @@ class _RecentComponentState extends State<RecentComponent>
               ),
             ),
           ),
-          child: DefaultTextStyle(
-            style: TextStyle(fontWeight: FontWeight.w500),
-            child: CupertinoSegmentedControl<int>(
-              groupValue: sharedValue,
-              children: {
-                0: Text('杂烩'),
-                1: Text('插画'),
-                2: Text('桌面'),
-              },
-              onValueChanged: (int newValue) {
-                setState(() => sharedValue = newValue);
-              },
+          child: SizedBox(
+            width: 500,
+            child: DefaultTextStyle(
+              style: TextStyle(fontWeight: FontWeight.w500),
+              child: CupertinoSegmentedControl<int>(
+                groupValue: sharedValue,
+                children: {
+                  0: Text('杂烩'),
+                  1: Text('插画'),
+                  2: Text('桌面'),
+                },
+                onValueChanged: (int newValue) {
+                  setState(() => sharedValue = newValue);
+                },
+              ),
             ),
           ),
         ),
@@ -113,7 +117,7 @@ class _PageState extends State<_Page> with AutomaticKeepAliveClientMixin {
             SliverPadding(
               padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
               sliver: SliverStaggeredGrid.countBuilder(
-                crossAxisCount: 2,
+                crossAxisCount: Device.isIPad() ? 3 : 2,
                 itemCount: data.length,
                 itemBuilder: (_, i) => _Tile(data[i], i),
                 staggeredTileBuilder: (_) => StaggeredTile.fit(1),
@@ -178,21 +182,12 @@ class _Tile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double aspectRatio = 4 / 5;
-    if (data.width / data.height < 4 / 5) {
+    if (data.width / data.height < 4 / 5 || Device.isIPad()) {
       aspectRatio = data.width / data.height;
     }
     return GestureDetector(
       onTap: () {
-        Navigator.of(context, rootNavigator: true).push(
-          PageRouteBuilder(
-            pageBuilder: (_, __, ___) {
-              return DetailsPage(data, '$index-${data.id}');
-            },
-            transitionsBuilder: (_, animation, __, child) {
-              return FadeTransition(opacity: animation, child: child);
-            },
-          ),
-        );
+        DetailsPage.push(context, data, '$index-${data.id}');
       },
       child: Container(
         decoration: BoxDecoration(

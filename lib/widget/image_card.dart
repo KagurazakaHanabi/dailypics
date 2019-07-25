@@ -3,6 +3,7 @@ import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/pages/details.dart';
 import 'package:daily_pics/widget/qrcode.dart';
+import 'package:daily_pics/widget/rounded_image.dart';
 import 'package:flutter/cupertino.dart';
 
 class ImageCard extends StatelessWidget {
@@ -43,14 +44,7 @@ class ImageCard extends StatelessWidget {
         ),
         child: GestureDetector(
           onTap: () {
-            Navigator.of(context, rootNavigator: true).push(
-              PageRouteBuilder(
-                pageBuilder: (_, __, ___) => DetailsPage(data, heroTag),
-                transitionsBuilder: (_, animation, __, child) {
-                  return FadeTransition(opacity: animation, child: child);
-                },
-              ),
-            );
+            DetailsPage.push(context, data, heroTag);
           },
           child: RepaintBoundary(
             key: repaintKey,
@@ -58,17 +52,15 @@ class ImageCard extends StatelessWidget {
               children: <Widget>[
                 AspectRatio(
                   aspectRatio: 4 / 5,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: Hero(
-                      tag: heroTag,
-                      child: CachedNetworkImage(
-                        placeholder: (_, __) {
-                          return Image.asset('res/placeholder.jpg');
-                        },
-                        imageUrl: Utils.getCompressed(data),
-                        fit: BoxFit.cover,
-                      ),
+                  child: Hero(
+                    tag: heroTag,
+                    child: RoundedImage(
+                      borderRadius: BorderRadius.circular(16),
+                      imageUrl: Utils.getCompressed(data),
+                      fit: BoxFit.cover,
+                      placeholder: (_, __) {
+                        return Image.asset('res/placeholder.jpg');
+                      },
                     ),
                   ),
                 ),

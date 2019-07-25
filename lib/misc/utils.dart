@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
 import 'dart:typed_data';
+import 'dart:ui';
 
 import 'package:daily_pics/misc/bean.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,7 +13,10 @@ import 'package:path_provider/path_provider.dart';
 class Utils {
   static MethodChannel _channel = MethodChannel('ml.cerasus.pics');
 
-  static Future<void> download(String url, void Function(int, int) cb) async {
+  static Future<void> download(
+    String url,
+    void Function(int count, int total) cb,
+  ) async {
     Completer<void> completer = Completer();
     String dest = (await getTemporaryDirectory()).path;
     File file;
@@ -49,7 +53,7 @@ class Utils {
   static Future<String> upload(
     File file,
     Map<String, String> data,
-    void Function(int, int) cb,
+    void Function(int count, int total) cb,
   ) async {
     dynamic json = jsonDecode(
       await Http.upload('https://img.dpic.dev/upload', file, cb),
@@ -113,7 +117,7 @@ class Utils {
     if (c1 == null || c2 == null) {
       return false;
     }
-    return abs(colorToHsv(c1)[2] - colorToHsv(c2)[2]) < 0.1;
+    return abs(colorToHsv(c1)[2] - colorToHsv(c2)[2]) < 0.2;
   }
 }
 
@@ -162,5 +166,16 @@ class Http {
     )));
     HttpClientResponse response = await request.close();
     return await response.cast<List<int>>().transform(utf8.decoder).join();
+  }
+}
+
+class Device {
+  static bool isIPad() {
+    Size size = window.physicalSize / window.devicePixelRatio;
+    return size.width >= 600;
+  }
+
+  static bool isPortrait() {
+    return window.physicalSize.width < window.physicalSize.height;
   }
 }
