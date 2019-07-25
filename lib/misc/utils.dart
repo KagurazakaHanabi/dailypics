@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
 import 'dart:typed_data';
-import 'dart:ui';
 
 import 'package:daily_pics/misc/bean.dart';
 import 'package:flutter/cupertino.dart';
@@ -170,12 +169,12 @@ class Http {
 }
 
 class Device {
-  static bool isIPad() {
-    Size size = window.physicalSize / window.devicePixelRatio;
-    return size.width >= 600;
+  static bool isIPad(BuildContext context) {
+    return MediaQuery.of(context).size.width >= 600;
   }
 
-  static bool isPortrait() {
-    return window.physicalSize.width < window.physicalSize.height;
+  static bool isPortrait(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    return size.width < size.height;
   }
 }

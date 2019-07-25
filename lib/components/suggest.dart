@@ -39,11 +39,11 @@ class _SuggestComponentState extends State<SuggestComponent>
           SliverSafeArea(
             top: false,
             sliver: SliverPadding(
-              padding: Device.isIPad()
+              padding: Device.isIPad(context)
                   ? EdgeInsets.fromLTRB(12, 12, 12, 0)
                   : EdgeInsets.zero,
               sliver: SliverStaggeredGrid.countBuilder(
-                crossAxisCount: Device.isIPad() ? 2 : 1,
+                crossAxisCount: Device.isIPad(context) ? 2 : 1,
                 itemCount: data?.length ?? 0,
                 staggeredTileBuilder: (i) => StaggeredTile.fit(1),
                 itemBuilder: (_, int i) => ImageCard(data[i], '###$i'),

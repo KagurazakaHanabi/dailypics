@@ -117,7 +117,7 @@ class _PageState extends State<_Page> with AutomaticKeepAliveClientMixin {
             SliverPadding(
               padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
               sliver: SliverStaggeredGrid.countBuilder(
-                crossAxisCount: Device.isIPad() ? 3 : 2,
+                crossAxisCount: Device.isIPad(context) ? 3 : 2,
                 itemCount: data.length,
                 itemBuilder: (_, i) => _Tile(data[i], i),
                 staggeredTileBuilder: (_) => StaggeredTile.fit(1),
@@ -182,7 +182,7 @@ class _Tile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double aspectRatio = 4 / 5;
-    if (data.width / data.height < 4 / 5 || Device.isIPad()) {
+    if (data.width / data.height < 4 / 5 || Device.isIPad(context)) {
       aspectRatio = data.width / data.height;
     }
     return GestureDetector(

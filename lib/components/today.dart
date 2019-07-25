@@ -31,14 +31,14 @@ class _TodayComponentState extends State<TodayComponent>
         child: CupertinoActivityIndicator(),
       );
     } else {
-      int crossAxisCount = Device.isIPad() ? 2 : 1;
+      int crossAxisCount = Device.isIPad(context) ? 2 : 1;
       return CustomScrollView(
         physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         slivers: <Widget>[
           CupertinoSliverRefreshControl(onRefresh: _fetchData),
           SliverSafeArea(
             sliver: SliverPadding(
-              padding: Device.isIPad()
+              padding: Device.isIPad(context)
                   ? EdgeInsets.fromLTRB(12, 12, 12, 0)
                   : EdgeInsets.zero,
               sliver: SliverStaggeredGrid.countBuilder(
