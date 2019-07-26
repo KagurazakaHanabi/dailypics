@@ -1,16 +1,20 @@
+import 'dart:async';
+
 import 'package:daily_pics/components/recent.dart';
 import 'package:daily_pics/components/settings.dart';
 import 'package:daily_pics/components/suggest.dart';
 import 'package:daily_pics/components/today.dart';
+import 'package:daily_pics/pages/details.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
+import 'package:uni_links/uni_links.dart';
 
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
+class _HomePageState extends State<HomePage> {
   final List<Widget> _tabs = [
     TodayComponent(),
     RecentComponent(),
@@ -18,10 +22,25 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     //SettingsComponent(),
   ];
 
+  StreamSubscription _subscription;
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    _subscription = getUriLinksStream().listen((Uri uri) {
+      String uuid = uri.path.substring(1);
+      switch(uri.host) {
+        case 'p': {
+          DetailsPage.push(context, pid: uuid);
+          break;
+        }
+
+        case 't': {
+          // TODO: 2019-07-26 Yaerin: Support tujian://t/$tid
+          break;
+        }
+      }
+    });
   }
 
   @override
@@ -43,14 +62,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    _subscription.cancel();
     super.dispose();
   }
 
   BottomNavigationBarItem _buildNavigationItem(IconData icon, String title) {
     return BottomNavigationBarItem(icon: Icon(icon), title: Text(title));
   }
-
-  @override
-  void didChangeMetrics() => setState(() {});
 }

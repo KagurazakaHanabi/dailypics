@@ -56,7 +56,7 @@ packages:
       name: build_runner
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.6.2"
+    version: "1.6.4"
   build_runner_core:
     dependency: transitive
     description:
@@ -84,7 +84,7 @@ packages:
       name: cached_network_image
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   charcode:
     dependency: transitive
     description:
@@ -159,7 +159,7 @@ packages:
       name: flutter_cache_manager
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   flutter_ionicons:
     dependency: "direct main"
     description:
@@ -299,7 +299,7 @@ packages:
       name: meta
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.1.7"
+    version: "1.1.6"
   mime:
     dependency: transitive
     description:
@@ -341,7 +341,7 @@ packages:
       name: path_provider
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.1.2"
+    version: "1.2.0"
   pedantic:
     dependency: transitive
     description:
@@ -487,6 +487,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.1.6"
+  uni_links:
+    dependency: "direct main"
+    description:
+      name: uni_links
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.2.0"
   uuid:
     dependency: transitive
     description:

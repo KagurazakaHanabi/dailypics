@@ -187,7 +187,7 @@ class _Tile extends StatelessWidget {
     }
     return GestureDetector(
       onTap: () {
-        DetailsPage.push(context, data, '$index-${data.id}');
+        DetailsPage.push(context, data: data, heroTag: '$index-${data.id}');
       },
       child: Container(
         decoration: BoxDecoration(

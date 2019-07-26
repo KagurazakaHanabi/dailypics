@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -18,19 +19,26 @@ import 'package:shared_preferences/shared_preferences.dart';
 class DetailsPage extends StatefulWidget {
   final Picture data;
 
+  final String pid;
+
   final String heroTag;
 
-  DetailsPage(this.data, [this.heroTag = '##']);
+  DetailsPage({this.data, this.pid, this.heroTag = '##'});
 
   @override
   State<StatefulWidget> createState() => _DetailsPageState();
 
-  static void push(BuildContext context, Picture data, String heroTag) {
+  static void push(
+    BuildContext context, {
+    Picture data,
+    String pid,
+    String heroTag,
+  }) {
     Navigator.of(context, rootNavigator: true).push(
       PageRouteBuilder(
         opaque: false,
         pageBuilder: (_, __, ___) {
-          return DetailsPage(data, heroTag);
+          return DetailsPage(data: data, pid: pid, heroTag: heroTag);
         },
         transitionsBuilder: (_, animation, __, child) {
           return FadeTransition(opacity: animation, child: child);
@@ -43,16 +51,49 @@ class DetailsPage extends StatefulWidget {
 class _DetailsPageState extends State<DetailsPage> {
   GlobalKey repaintKey = GlobalKey();
   bool popped = false;
+  Picture data;
+  String error;
 
   @override
   Widget build(BuildContext context) {
-    Widget result = Stack(
+    Widget result;
+    if (widget.data == null && data == null) {
+      _fetchData();
+      result = Center(
+        child: CupertinoActivityIndicator(),
+      );
+    } else if (error != null) {
+      result = Center(
+        child: Text(
+          error,
+          style: TextStyle(color: Color(0x8a000000), fontSize: 14),
+        ),
+      );
+    } else if (widget.data != null) {
+      data = widget.data;
+    }
+    if (result != null) {
+      return Container(
+        color: Color(0xFFFFFFFF),
+        child: Stack(
+          children: <Widget>[
+            result,
+            Container(
+              alignment: Alignment.topRight,
+              padding: MediaQuery.of(context).padding,
+              child: CloseButton(),
+            ),
+          ],
+        ),
+      );
+    }
+    result = Stack(
       children: <Widget>[
         Container(
           alignment: Alignment.center,
           padding: EdgeInsets.only(top: 64),
           child: ImageCard(
-            widget.data,
+            data,
             '#',
             showQrCode: true,
             repaintKey: repaintKey,
@@ -70,11 +111,11 @@ class _DetailsPageState extends State<DetailsPage> {
             padding: EdgeInsets.zero,
             children: <Widget>[
               AspectRatio(
-                aspectRatio: widget.data.width / widget.data.height,
+                aspectRatio: data.width / data.height,
                 child: Hero(
-                  tag: widget.heroTag,
+                  tag: widget.heroTag ?? '-${data.id}',
                   child: RoundedImage(
-                    imageUrl: Utils.getCompressed(widget.data),
+                    imageUrl: Utils.getCompressed(data),
                     fit: BoxFit.cover,
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(Device.isIPad(context) ? 16 : 0),
@@ -89,10 +130,11 @@ class _DetailsPageState extends State<DetailsPage> {
                 decoration: BoxDecoration(
                   color: Color(0xffffffff),
                   borderRadius: BorderRadius.vertical(
-                    bottom: Radius.circular(16),
+                    bottom: Radius.circular(Device.isIPad(context) ? 16 : 0),
                   ),
                 ),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Padding(
                       padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
@@ -100,7 +142,7 @@ class _DetailsPageState extends State<DetailsPage> {
                         children: <Widget>[
                           Expanded(
                             child: Text(
-                              widget.data.title,
+                              data.title,
                               style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.w500,
@@ -110,7 +152,7 @@ class _DetailsPageState extends State<DetailsPage> {
                           GestureDetector(
                             onTap: _mark,
                             child: Icon(
-                              widget.data.marked
+                              data.marked
                                   ? Ionicons.ios_star
                                   : Ionicons.ios_star_outline,
                               size: 22,
@@ -118,7 +160,7 @@ class _DetailsPageState extends State<DetailsPage> {
                           ),
                           Padding(
                             padding: EdgeInsets.only(left: 16),
-                            child: SaveButton(url: widget.data.url),
+                            child: SaveButton(url: data.url),
                           ),
                         ],
                       ),
@@ -127,7 +169,7 @@ class _DetailsPageState extends State<DetailsPage> {
                       margin: EdgeInsets.only(bottom: 48),
                       padding: EdgeInsets.symmetric(horizontal: 16),
                       child: Text(
-                        widget.data.content,
+                        data.content,
                         style: TextStyle(
                           color: Color(0x8a000000),
                           fontSize: 15,
@@ -203,6 +245,16 @@ class _DetailsPageState extends State<DetailsPage> {
     return result;
   }
 
+  Future<void> _fetchData() async {
+    String url = 'https://v2.api.dailypics.cn/member?id=${widget.pid}';
+    Map<String, dynamic> json = jsonDecode(await Http.get(url));
+    if (json['error_code'] != null) {
+      setState(() => error = json['msg']);
+    } else {
+      setState(() => data = Picture.fromJson(json));
+    }
+  }
+
   Future<ui.Image> _screenshot() async {
     double pixelRatio = ui.window.devicePixelRatio;
     RenderRepaintBoundary render = repaintKey.currentContext.findRenderObject();
@@ -220,13 +272,13 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 
   void _mark() async {
-    widget.data.marked = !widget.data.marked;
+    data.marked = !data.marked;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     HashSet<String> list = HashSet.from(prefs.getStringList('marked') ?? []);
-    if (widget.data.marked) {
-      list.add(widget.data.id);
+    if (data.marked) {
+      list.add(data.id);
     } else {
-      list.remove(widget.data.id);
+      list.remove(data.id);
     }
     await prefs.setStringList('marked', list.toList());
     setState(() {});

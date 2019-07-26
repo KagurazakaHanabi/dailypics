@@ -44,7 +44,7 @@ class ImageCard extends StatelessWidget {
         ),
         child: GestureDetector(
           onTap: () {
-            DetailsPage.push(context, data, heroTag);
+            DetailsPage.push(context, data: data, heroTag: heroTag);
           },
           child: RepaintBoundary(
             key: repaintKey,
