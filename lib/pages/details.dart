@@ -220,7 +220,7 @@ class _DetailsPageState extends State<DetailsPage> {
       Size size = MediaQuery.of(context).size;
       double padding = 80;
       if (!Device.isPortrait(context)) {
-        padding = (size.width - size.height) / 2;
+        padding = (size.width - size.height) / 2 + 40;
       }
       result = BackdropFilter(
         filter: ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
