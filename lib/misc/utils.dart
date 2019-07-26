@@ -169,8 +169,12 @@ class Http {
 }
 
 class Device {
-  static bool isIPad(BuildContext context) {
-    return MediaQuery.of(context).size.width >= 600;
+  static bool isIPad(BuildContext context, [bool strict = false]) {
+    Size size = MediaQuery.of(context).size;
+    if (strict) {
+      return size.width >= 600 && size.height >= 600;
+    }
+    return size.width >= 600;
   }
 
   static bool isPortrait(BuildContext context) {

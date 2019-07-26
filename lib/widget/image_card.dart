@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/pages/details.dart';
@@ -11,6 +10,8 @@ class ImageCard extends StatelessWidget {
 
   final String heroTag;
 
+  final double aspectRatio;
+
   final bool showQrCode;
 
   final GlobalKey repaintKey;
@@ -18,9 +19,10 @@ class ImageCard extends StatelessWidget {
   ImageCard(
     this.data,
     this.heroTag, {
+    this.aspectRatio = 4 / 5,
     this.showQrCode = false,
     this.repaintKey,
-  });
+  }) : assert(aspectRatio != null);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class ImageCard extends StatelessWidget {
       dark = false;
     }
     return AspectRatio(
-      aspectRatio: 4 / 5,
+      aspectRatio: aspectRatio,
       child: Container(
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -51,7 +53,7 @@ class ImageCard extends StatelessWidget {
             child: Stack(
               children: <Widget>[
                 AspectRatio(
-                  aspectRatio: 4 / 5,
+                  aspectRatio: aspectRatio,
                   child: Hero(
                     tag: heroTag,
                     child: RoundedImage(
@@ -59,7 +61,10 @@ class ImageCard extends StatelessWidget {
                       imageUrl: Utils.getCompressed(data),
                       fit: BoxFit.cover,
                       placeholder: (_, __) {
-                        return Image.asset('res/placeholder.jpg');
+                        return Image.asset(
+                          'res/placeholder.jpg',
+                          fit: BoxFit.cover,
+                        );
                       },
                     ),
                   ),
@@ -92,13 +97,13 @@ class ImageCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                AspectRatio(
-                  aspectRatio: 4 / 5,
-                  child: Container(
-                    alignment: Alignment.bottomRight,
-                    padding: EdgeInsets.only(right: 8, bottom: 8),
-                    child: Offstage(
-                      offstage: !showQrCode,
+                Offstage(
+                  offstage: !showQrCode,
+                  child: AspectRatio(
+                    aspectRatio: aspectRatio,
+                    child: Container(
+                      alignment: Alignment.bottomRight,
+                      padding: EdgeInsets.only(right: 8, bottom: 8),
                       child: QrCodeView(
                         data.url.contains('bing.com/')
                             ? 'https://cn.bing.com/'
