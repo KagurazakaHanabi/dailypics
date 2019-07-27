@@ -61,9 +61,9 @@ class ImageCard extends StatelessWidget {
                       imageUrl: Utils.getCompressed(data),
                       fit: BoxFit.cover,
                       placeholder: (_, __) {
-                        return Image.asset(
-                          'res/placeholder.jpg',
-                          fit: BoxFit.cover,
+                        return Container(
+                          color: Color(0xffe0e0e0),
+                          child: Image.asset('res/placeholder.jpg'),
                         );
                       },
                     ),
