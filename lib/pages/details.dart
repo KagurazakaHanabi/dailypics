@@ -6,6 +6,7 @@ import 'dart:ui' as ui;
 
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/utils.dart';
+import 'package:daily_pics/widget/adaptive_scaffold.dart';
 import 'package:daily_pics/widget/divider.dart';
 import 'package:daily_pics/widget/image_card.dart';
 import 'package:daily_pics/widget/rounded_image.dart';
@@ -57,7 +58,7 @@ class _DetailsPageState extends State<DetailsPage> {
   @override
   Widget build(BuildContext context) {
     Widget result;
-    if (widget.data == null && data == null) {
+    if (widget.data == null && data == null && error == null) {
       _fetchData();
       result = Center(
         child: CupertinoActivityIndicator(),
@@ -73,8 +74,7 @@ class _DetailsPageState extends State<DetailsPage> {
       data = widget.data;
     }
     if (result != null) {
-      return Container(
-        color: Color(0xFFFFFFFF),
+      return AdaptiveScaffold(
         child: Stack(
           children: <Widget>[
             result,
@@ -88,105 +88,80 @@ class _DetailsPageState extends State<DetailsPage> {
       );
     }
     Radius radius = Radius.circular(Device.isIPad(context) ? 16 : 0);
-    result = Stack(
-      children: <Widget>[
-        Container(
-          alignment: Alignment.center,
-          padding: EdgeInsets.only(top: 64),
-          child: ImageCard(
-            data,
-            '#',
-            showQrCode: true,
-            repaintKey: repaintKey,
+    return AdaptiveScaffold(
+      child: Stack(
+        children: <Widget>[
+          Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.only(top: 64),
+            child: ImageCard(
+              data,
+              '#',
+              showQrCode: true,
+              repaintKey: repaintKey,
+            ),
           ),
-        ),
-        Container(
-          margin: EdgeInsets.only(top: 64),
-          decoration: BoxDecoration(
-            color: Color(0xffffffff),
-            borderRadius: BorderRadius.vertical(top: radius),
+          Container(
+            margin: EdgeInsets.only(top: 64),
+            decoration: BoxDecoration(
+              color: Color(0xffffffff),
+              borderRadius: BorderRadius.vertical(top: radius),
+            ),
           ),
-        ),
-        NotificationListener<ScrollUpdateNotification>(
-          onNotification: (ScrollUpdateNotification n) {
-            if (n.metrics.outOfRange && n.metrics.pixels < -64 && !popped) {
-              Navigator.of(context).pop();
-              popped = true;
-            }
-            return false;
-          },
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              AspectRatio(
-                aspectRatio: data.width / data.height,
-                child: Hero(
-                  tag: widget.heroTag ?? '-${data.id}',
-                  child: RoundedImage(
-                    imageUrl: Utils.getCompressed(data),
-                    fit: BoxFit.cover,
-                    borderRadius: BorderRadius.vertical(top: radius),
-                    placeholder: (_, __) {
-                      return Container(
-                        color: Color(0xffe0e0e0),
-                        child: Image.asset('res/placeholder.jpg'),
-                      );
-                    },
+          NotificationListener<ScrollUpdateNotification>(
+            onNotification: (ScrollUpdateNotification n) {
+              if (n.metrics.outOfRange && n.metrics.pixels < -64 && !popped) {
+                Navigator.of(context).pop();
+                popped = true;
+              }
+              return false;
+            },
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: <Widget>[
+                AspectRatio(
+                  aspectRatio: data.width / data.height,
+                  child: Hero(
+                    tag: widget.heroTag ?? DateTime.now(),
+                    child: RoundedImage(
+                      imageUrl: Utils.getCompressed(data),
+                      fit: BoxFit.cover,
+                      borderRadius: BorderRadius.vertical(top: radius),
+                      placeholder: (_, __) {
+                        return Container(
+                          color: Color(0xffe0e0e0),
+                          child: Image.asset('res/placeholder.jpg'),
+                        );
+                      },
+                    ),
                   ),
                 ),
-              ),
-              Container(
-                color: Color(0xffffffff),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    _buildTitle(),
-                    _buildContent(),
-                    Divider(),
-                    _buildShareButton(),
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
-        Offstage(
-          offstage: Device.isIPad(context),
-          child: Container(
-            alignment: Alignment.topRight,
-            padding: MediaQuery.of(context).padding,
-            child: CloseButton(),
-          ),
-        ),
-      ],
-    );
-    if (Device.isIPad(context)) {
-      Size size = MediaQuery.of(context).size;
-      double padding = 80;
-      if (!Device.isPortrait(context)) {
-        padding = (size.width - size.height) / 2 + 40;
-      }
-      result = BackdropFilter(
-        filter: ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Stack(
-          children: <Widget>[
-            GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () => Navigator.of(context).pop(),
-              child: Container(),
+                Container(
+                  color: Color(0xffffffff),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      _buildTitle(),
+                      _buildContent(),
+                      Divider(),
+                      _buildShareButton(),
+                    ],
+                  ),
+                )
+              ],
             ),
-            Padding(
-              padding: EdgeInsets.only(left: padding, top: 48, right: padding),
-              child: ClipRRect(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                child: result,
-              ),
-            )
-          ],
-        ),
-      );
-    }
-    return result;
+          ),
+          Offstage(
+            offstage: Device.isIPad(context),
+            child: Container(
+              alignment: Alignment.topRight,
+              padding: MediaQuery.of(context).padding,
+              child: CloseButton(),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildTitle() {
@@ -263,7 +238,7 @@ class _DetailsPageState extends State<DetailsPage> {
     String url = 'https://v2.api.dailypics.cn/member?id=${widget.pid}';
     Map<String, dynamic> json = jsonDecode(await Http.get(url));
     if (json['error_code'] != null) {
-      setState(() => error = json['msg']);
+      setState(() => error = json['msg'].toString());
     } else {
       setState(() => data = Picture.fromJson(json));
     }
