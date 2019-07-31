@@ -172,7 +172,7 @@ class _PageState extends State<_Page> with AutomaticKeepAliveClientMixin {
   bool get wantKeepAlive => data != null;
 }
 
-class _Tile extends StatelessWidget {
+class _Tile extends StatefulWidget {
   final Picture data;
 
   final int index;
@@ -180,14 +180,24 @@ class _Tile extends StatelessWidget {
   _Tile(this.data, this.index);
 
   @override
+  State<StatefulWidget> createState() => _TileState();
+}
+
+class _TileState extends State<_Tile> {
+  @override
   Widget build(BuildContext context) {
-    double aspectRatio = 4 / 5;
-    if (data.width / data.height < 4 / 5 || Device.isIPad(context)) {
-      aspectRatio = data.width / data.height;
+    double aspectRatio = widget.data.width / widget.data.height;
+    if (aspectRatio > 4 / 5 || !Device.isIPad(context)) {
+      aspectRatio = 4 / 5;
     }
     return GestureDetector(
-      onTap: () {
-        DetailsPage.push(context, data: data, heroTag: '$index-${data.id}');
+      onTap: () async {
+        await DetailsPage.push(
+          context,
+          data: widget.data,
+          heroTag: '${widget.index}-${widget.data.id}',
+        );
+        setState(() {});
       },
       child: Container(
         decoration: BoxDecoration(
@@ -209,9 +219,9 @@ class _Tile extends StatelessWidget {
               AspectRatio(
                 aspectRatio: aspectRatio,
                 child: Hero(
-                  tag: '$index-${data.id}',
+                  tag: '${widget.index}-${widget.data.id}',
                   child: CachedNetworkImage(
-                    imageUrl: Utils.getCompressed(data),
+                    imageUrl: Utils.getCompressed(widget.data),
                     fit: BoxFit.cover,
                     placeholder: (_, __) {
                       return Container(
@@ -228,10 +238,13 @@ class _Tile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Expanded(
-                      child: Text(data.title, style: TextStyle(fontSize: 15)),
+                      child: Text(
+                        widget.data.title,
+                        style: TextStyle(fontSize: 15),
+                      ),
                     ),
                     Offstage(
-                      offstage: !data.marked,
+                      offstage: !widget.data.marked,
                       child: Padding(
                         padding: EdgeInsets.only(left: 8),
                         child: Icon(Ionicons.ios_star, size: 18),
@@ -242,7 +255,7 @@ class _Tile extends StatelessWidget {
               ),
               Padding(
                 padding: EdgeInsets.only(left: 8, bottom: 8),
-                child: Text(data.date, style: TextStyle(fontSize: 12)),
+                child: Text(widget.data.date, style: TextStyle(fontSize: 12)),
               ),
             ],
           ),

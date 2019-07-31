@@ -11,7 +11,7 @@ import 'package:daily_pics/widget/divider.dart';
 import 'package:daily_pics/widget/image_card.dart';
 import 'package:daily_pics/widget/rounded_image.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart' show CircularProgressIndicator;
+import 'package:flutter/material.dart' show CircularProgressIndicator, SelectableText;
 import 'package:flutter/rendering.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:path_provider/path_provider.dart';
@@ -29,13 +29,13 @@ class DetailsPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _DetailsPageState();
 
-  static void push(
+  static Future<void> push(
     BuildContext context, {
     Picture data,
     String pid,
     String heroTag,
   }) {
-    Navigator.of(context, rootNavigator: true).push(
+    return Navigator.of(context, rootNavigator: true).push(
       PageRouteBuilder(
         opaque: false,
         pageBuilder: (_, __, ___) {
@@ -89,6 +89,7 @@ class _DetailsPageState extends State<DetailsPage> {
     }
     Radius radius = Radius.circular(Device.isIPad(context) ? 16 : 0);
     return AdaptiveScaffold(
+      backgroundColor: Color(0x00000000),
       child: Stack(
         children: <Widget>[
           Container(
@@ -102,7 +103,7 @@ class _DetailsPageState extends State<DetailsPage> {
             ),
           ),
           Container(
-            margin: EdgeInsets.only(top: 64),
+            margin: EdgeInsets.only(top: 80),
             decoration: BoxDecoration(
               color: Color(0xffffffff),
               borderRadius: BorderRadius.vertical(top: radius),
@@ -141,10 +142,69 @@ class _DetailsPageState extends State<DetailsPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      _buildTitle(),
-                      _buildContent(),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: SelectableText(
+                                data.title,
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: _mark,
+                              child: Icon(
+                                data.marked
+                                    ? Ionicons.ios_star
+                                    : Ionicons.ios_star_outline,
+                                size: 22,
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 16),
+                              child: SaveButton(url: data.url),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(16, 0, 16, 48),
+                        child: SelectableText(
+                          data.content,
+                          style: TextStyle(
+                            color: Color(0x8a000000),
+                            fontSize: 15,
+                            height: 1.2,
+                          ),
+                        ),
+                      ),
                       Divider(),
-                      _buildShareButton(),
+                      Container(
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.symmetric(vertical: 24),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            color: Color(0xfff2f2f7),
+                          ),
+                          child: CupertinoButton(
+                            pressedOpacity: 0.4,
+                            padding: EdgeInsets.fromLTRB(24, 8, 24, 8),
+                            onPressed: _share,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Icon(CupertinoIcons.share),
+                                Text('分享'),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 )
@@ -160,76 +220,6 @@ class _DetailsPageState extends State<DetailsPage> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildTitle() {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: Text(
-              data.title,
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: _mark,
-            child: Icon(
-              data.marked ? Ionicons.ios_star : Ionicons.ios_star_outline,
-              size: 22,
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: 16),
-            child: SaveButton(url: data.url),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildContent() {
-    return Container(
-      margin: EdgeInsets.only(bottom: 48),
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      child: Text(
-        data.content,
-        style: TextStyle(
-          color: Color(0x8a000000),
-          fontSize: 15,
-          height: 1.2,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildShareButton() {
-    return Container(
-      alignment: Alignment.center,
-      padding: EdgeInsets.symmetric(vertical: 24),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
-          color: Color(0xfff2f2f7),
-        ),
-        child: CupertinoButton(
-          pressedOpacity: 0.4,
-          padding: EdgeInsets.fromLTRB(24, 8, 24, 8),
-          onPressed: _share,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Icon(CupertinoIcons.share),
-              Text('分享'),
-            ],
-          ),
-        ),
       ),
     );
   }
