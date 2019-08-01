@@ -107,6 +107,7 @@ class _PageState extends State<_Page> with AutomaticKeepAliveClientMixin {
     return SafeArea(
       top: false,
       child: CupertinoScrollbar(
+        controller: controller,
         child: CustomScrollView(
           controller: controller,
           physics: BouncingScrollPhysics(
