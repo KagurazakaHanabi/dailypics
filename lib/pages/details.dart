@@ -78,9 +78,8 @@ class _DetailsPageState extends State<DetailsPage> {
         child: Stack(
           children: <Widget>[
             result,
-            Container(
+            Align(
               alignment: Alignment.topRight,
-              padding: MediaQuery.of(context).padding,
               child: CloseButton(),
             ),
           ],
@@ -143,7 +142,7 @@ class _DetailsPageState extends State<DetailsPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Padding(
-                        padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
+                        padding: EdgeInsets.fromLTRB(18, 16, 18, 8),
                         child: Row(
                           children: <Widget>[
                             Expanded(
@@ -172,7 +171,7 @@ class _DetailsPageState extends State<DetailsPage> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.fromLTRB(16, 0, 16, 48),
+                        padding: EdgeInsets.fromLTRB(18, 0, 18, 48),
                         child: SelectableText(
                           data.content,
                           style: TextStyle(
@@ -185,15 +184,15 @@ class _DetailsPageState extends State<DetailsPage> {
                       Divider(),
                       Container(
                         alignment: Alignment.center,
-                        padding: EdgeInsets.symmetric(vertical: 24),
+                        padding: EdgeInsets.symmetric(vertical: 29),
                         child: Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
+                            borderRadius: BorderRadius.circular(8),
                             color: Color(0xfff2f2f7),
                           ),
                           child: CupertinoButton(
                             pressedOpacity: 0.4,
-                            padding: EdgeInsets.fromLTRB(24, 8, 24, 8),
+                            padding: EdgeInsets.fromLTRB(30, 12, 30, 12),
                             onPressed: _share,
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -213,9 +212,8 @@ class _DetailsPageState extends State<DetailsPage> {
           ),
           Offstage(
             offstage: Device.isIPad(context),
-            child: Container(
+            child: Align(
               alignment: Alignment.topRight,
-              padding: MediaQuery.of(context).padding,
               child: CloseButton(),
             ),
           ),
@@ -270,10 +268,11 @@ class CloseButton extends StatelessWidget {
     return GestureDetector(
       onTap: () => Navigator.of(context).pop(),
       child: Padding(
-        padding: EdgeInsets.all(8),
+        padding: EdgeInsets.all(16),
         child: Icon(
-          Ionicons.ios_close_circle,
+          CupertinoIcons.clear_circled_solid,
           color: Color(0x61000000),
+          size: 32,
         ),
       ),
     );
@@ -312,7 +311,7 @@ class _SaveButtonState extends State<SaveButton> {
         firstChild: Container(
           key: _key,
           alignment: Alignment.center,
-          padding: EdgeInsets.symmetric(vertical: 4, horizontal: 20),
+          padding: EdgeInsets.symmetric(vertical: 3, horizontal: 20),
           decoration: BoxDecoration(
             color: Color(0xfff2f2f7),
             borderRadius: BorderRadius.circular(18),
@@ -328,7 +327,7 @@ class _SaveButtonState extends State<SaveButton> {
         ),
         secondChild: Container(
           width: 70,
-          height: 28,
+          height: 26,
           alignment: Alignment.center,
           padding: EdgeInsets.symmetric(vertical: 4, horizontal: 25),
           child: CircularProgressIndicator(

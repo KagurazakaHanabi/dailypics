@@ -14,6 +14,8 @@ class TodayComponent extends StatefulWidget {
 
 class _TodayComponentState extends State<TodayComponent>
     with AutomaticKeepAliveClientMixin {
+  ScrollController controller = ScrollController();
+
   String text;
   List<Picture> data;
 
@@ -34,48 +36,54 @@ class _TodayComponentState extends State<TodayComponent>
     bool iPad = Device.isIPad(context, true);
     bool portrait = Device.isPortrait(context);
     int cnt = Device.isIPad(context) ? iPad && !portrait ? 6 : 2 : 1;
-    return CustomScrollView(
-      physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-      slivers: <Widget>[
-        CupertinoSliverRefreshControl(onRefresh: _fetchData),
-        SliverSafeArea(
-          sliver: SliverPadding(
-            padding: Device.isIPad(context)
-                ? EdgeInsets.fromLTRB(12, 12, 12, 0)
-                : EdgeInsets.zero,
-            sliver: SliverStaggeredGrid.countBuilder(
-              crossAxisCount: cnt,
-              itemCount: (data?.length ?? 0) + 1,
-              staggeredTileBuilder: (i) {
-                if (i == 0) {
-                  return StaggeredTile.fit(cnt);
-                } else if (iPad && !portrait) {
-                  if (_needWiden(i)) {
-                    return StaggeredTile.count(4, 3);
+    return CupertinoScrollbar(
+      controller: controller,
+      child: CustomScrollView(
+        controller: controller,
+        physics: BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
+        ),
+        slivers: <Widget>[
+          CupertinoSliverRefreshControl(onRefresh: _fetchData),
+          SliverSafeArea(
+            sliver: SliverPadding(
+              padding: Device.isIPad(context)
+                  ? EdgeInsets.fromLTRB(12, 12, 12, 0)
+                  : EdgeInsets.only(left: 4, top: 15, right: 4),
+              sliver: SliverStaggeredGrid.countBuilder(
+                crossAxisCount: cnt,
+                itemCount: (data?.length ?? 0) + 1,
+                staggeredTileBuilder: (i) {
+                  if (i == 0) {
+                    return StaggeredTile.fit(cnt);
+                  } else if (iPad && !portrait) {
+                    if (_needWiden(i)) {
+                      return StaggeredTile.count(4, 3);
+                    } else {
+                      return StaggeredTile.count(2, 3);
+                    }
                   } else {
-                    return StaggeredTile.count(2, 3);
+                    return StaggeredTile.fit(1);
                   }
-                } else {
-                  return StaggeredTile.fit(1);
-                }
-              },
-              itemBuilder: (_, int i) {
-                if (i == 0) {
-                  return _buildHeader();
-                } else if (iPad && !portrait) {
-                  return ImageCard(
-                    data[i - 1],
-                    '#$i',
-                    aspectRatio: _needWiden(i) ? 4 / 3 : 2 / 3,
-                  );
-                } else {
-                  return ImageCard(data[i - 1], '#$i');
-                }
-              },
+                },
+                itemBuilder: (_, int i) {
+                  if (i == 0) {
+                    return _buildHeader();
+                  } else if (iPad && !portrait) {
+                    return ImageCard(
+                      data[i - 1],
+                      '#$i',
+                      aspectRatio: _needWiden(i) ? 4 / 3 : 2 / 3,
+                    );
+                  } else {
+                    return ImageCard(data[i - 1], '#$i');
+                  }
+                },
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -92,20 +100,24 @@ class _TodayComponentState extends State<TodayComponent>
               fontSize: 12,
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                'Today',
-                style: TextStyle(
-                  fontSize: 34,
-                  fontWeight: FontWeight.bold,
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  'Today',
+                  style: TextStyle(
+                    fontSize: 34,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              Offstage(
-                child: Icon(CupertinoIcons.profile_circled, size: 36),
-              ),
-            ],
+                Offstage(
+                  offstage: true,
+                  child: Icon(CupertinoIcons.profile_circled, size: 42),
+                ),
+              ],
+            ),
           ),
           Text(
             text ?? '',
@@ -183,6 +195,12 @@ class _TodayComponentState extends State<TodayComponent>
     for (int i = 0; i < data.length; i++) {
       data[i].marked = list.contains(data[i].id);
     }
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   @override

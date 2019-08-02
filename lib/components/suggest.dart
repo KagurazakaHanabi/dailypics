@@ -13,6 +13,8 @@ class SuggestComponent extends StatefulWidget {
 
 class _SuggestComponentState extends State<SuggestComponent>
     with AutomaticKeepAliveClientMixin {
+  ScrollController controller = ScrollController();
+
   List<Picture> data;
 
   @override
@@ -29,28 +31,34 @@ class _SuggestComponentState extends State<SuggestComponent>
         child: CupertinoActivityIndicator(),
       );
     } else {
-      return CustomScrollView(
-        physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-        slivers: <Widget>[
-          CupertinoSliverNavigationBar(
-            largeTitle: Text('推荐'),
+      return CupertinoScrollbar(
+        controller: controller,
+        child: CustomScrollView(
+          controller: controller,
+          physics: BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
           ),
-          CupertinoSliverRefreshControl(onRefresh: _fetchData),
-          SliverSafeArea(
-            top: false,
-            sliver: SliverPadding(
-              padding: Device.isIPad(context)
-                  ? EdgeInsets.fromLTRB(12, 12, 12, 0)
-                  : EdgeInsets.zero,
-              sliver: SliverStaggeredGrid.countBuilder(
-                crossAxisCount: Device.isIPad(context) ? 2 : 1,
-                itemCount: data?.length ?? 0,
-                staggeredTileBuilder: (i) => StaggeredTile.fit(1),
-                itemBuilder: (_, int i) => ImageCard(data[i], '###$i'),
+          slivers: <Widget>[
+            CupertinoSliverNavigationBar(
+              largeTitle: Text('推荐'),
+            ),
+            CupertinoSliverRefreshControl(onRefresh: _fetchData),
+            SliverSafeArea(
+              top: false,
+              sliver: SliverPadding(
+                padding: Device.isIPad(context)
+                    ? EdgeInsets.fromLTRB(12, 12, 12, 0)
+                    : EdgeInsets.zero,
+                sliver: SliverStaggeredGrid.countBuilder(
+                  crossAxisCount: Device.isIPad(context) ? 2 : 1,
+                  itemCount: data?.length ?? 0,
+                  staggeredTileBuilder: (i) => StaggeredTile.fit(1),
+                  itemBuilder: (_, int i) => ImageCard(data[i], '###$i'),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       );
     }
   }
@@ -60,6 +68,12 @@ class _SuggestComponentState extends State<SuggestComponent>
     String source = await Http.get(uri);
     Response res = Response.fromJson({'data': jsonDecode(source)});
     setState(() => data = res.data);
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   @override
