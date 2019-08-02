@@ -41,8 +41,8 @@ class AdaptiveScaffold extends StatelessWidget {
         right = (size.width - size.height) / 2;
       }
       if (Device.isIPad(context, true)) {
-        left += left / 2;
-        right += right / 2;
+        left += left / 3;
+        right += right / 3;
       }
       result = BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
@@ -54,7 +54,12 @@ class AdaptiveScaffold extends StatelessWidget {
               child: Container(),
             ),
             Padding(
-              padding: EdgeInsets.only(left: left, top: 48, right: right),
+              padding: EdgeInsets.only(
+                left: left,
+                top: padding.top,
+                right: right,
+                bottom: padding.bottom,
+              ),
               child: ClipRRect(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                 child: result,

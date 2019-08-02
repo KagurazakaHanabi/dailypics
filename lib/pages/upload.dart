@@ -21,13 +21,12 @@ class _UploadPageState extends State<UploadPage> {
   TextEditingController email = TextEditingController();
 
   File imageFile;
-  int sharedValue;
+  String type;
   double progress;
 
   @override
   Widget build(BuildContext context) {
     EdgeInsets windowPadding = MediaQuery.of(context).padding;
-    List<String> types = [C.type_photo, C.type_illus, C.type_deskt];
     return CupertinoPageScaffold(
       child: ListView(
         padding: windowPadding + EdgeInsets.fromLTRB(16, 0, 16, 0),
@@ -46,19 +45,19 @@ class _UploadPageState extends State<UploadPage> {
             textInputAction: TextInputAction.newline,
             onSubmitted: _handleSubmitted,
           ),
-          CupertinoSegmentedControl<int>(
+          CupertinoSegmentedControl<String>(
             selectedColor: Color(0xff9c9c9c),
             borderColor: Color(0xff9c9c9c),
             pressedColor: Color(0xff9c9c9c).withOpacity(0.2),
             padding: EdgeInsets.symmetric(vertical: 8),
-            groupValue: sharedValue,
+            groupValue: type,
             children: {
-              0: Text('杂烩'),
-              1: Text('插画'),
-              2: Text('桌面'),
+              C.type_photo: Text('杂烩'),
+              C.type_illus: Text('插画'),
+              C.type_deskt: Text('桌面'),
             },
-            onValueChanged: (newValue) {
-              setState(() => sharedValue = newValue);
+            onValueChanged: (String newValue) {
+              setState(() => type = newValue);
             },
           ),
           TextField(
@@ -96,7 +95,7 @@ class _UploadPageState extends State<UploadPage> {
                 if (username.text.isEmpty) {
                   errors.add('用户名');
                 }
-                if (sharedValue == null) {
+                if (type == null) {
                   errors.add('分类');
                 }
                 if (errors.length > 0) {
@@ -134,7 +133,7 @@ class _UploadPageState extends State<UploadPage> {
                     'content': content.text,
                     'url': null,
                     'user': username.text,
-                    'sort': types[sharedValue],
+                    'sort': type,
                     'hz': email.text,
                   },
                   (int count, int total) {
