@@ -188,7 +188,7 @@ class _TileState extends State<_Tile> {
   @override
   Widget build(BuildContext context) {
     double aspectRatio = widget.data.width / widget.data.height;
-    if (aspectRatio > 4 / 5 || !Device.isIPad(context)) {
+    if (aspectRatio > 4 / 5 && !Device.isIPad(context)) {
       aspectRatio = 4 / 5;
     }
     return GestureDetector(

@@ -11,7 +11,8 @@ import 'package:daily_pics/widget/divider.dart';
 import 'package:daily_pics/widget/image_card.dart';
 import 'package:daily_pics/widget/rounded_image.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart' show CircularProgressIndicator, SelectableText;
+import 'package:flutter/material.dart'
+    show CircularProgressIndicator, SelectableText;
 import 'package:flutter/rendering.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:path_provider/path_provider.dart';
@@ -38,11 +39,15 @@ class DetailsPage extends StatefulWidget {
     return Navigator.of(context, rootNavigator: true).push(
       PageRouteBuilder(
         opaque: false,
-        pageBuilder: (_, __, ___) {
-          return DetailsPage(data: data, pid: pid, heroTag: heroTag);
-        },
-        transitionsBuilder: (_, animation, __, child) {
-          return FadeTransition(opacity: animation, child: child);
+        pageBuilder: (_, animation, __) {
+          return FadeTransition(
+            opacity: animation,
+            child: DetailsPage(
+              data: data,
+              pid: pid,
+              heroTag: heroTag,
+            ),
+          );
         },
       ),
     );
@@ -121,19 +126,17 @@ class _DetailsPageState extends State<DetailsPage> {
               children: <Widget>[
                 AspectRatio(
                   aspectRatio: data.width / data.height,
-                  child: Hero(
-                    tag: widget.heroTag ?? DateTime.now(),
-                    child: RoundedImage(
-                      imageUrl: Utils.getCompressed(data),
-                      fit: BoxFit.cover,
-                      borderRadius: BorderRadius.vertical(top: radius),
-                      placeholder: (_, __) {
-                        return Container(
-                          color: Color(0xffe0e0e0),
-                          child: Image.asset('res/placeholder.jpg'),
-                        );
-                      },
-                    ),
+                  child: RoundedImage(
+                    fit: BoxFit.cover,
+                    imageUrl: Utils.getCompressed(data),
+                    heroTag: widget.heroTag ?? DateTime.now(),
+                    borderRadius: BorderRadius.vertical(top: radius),
+                    placeholder: (_, __) {
+                      return Container(
+                        color: Color(0xffe0e0e0),
+                        child: Image.asset('res/placeholder.jpg'),
+                      );
+                    },
                   ),
                 ),
                 Container(
@@ -144,6 +147,7 @@ class _DetailsPageState extends State<DetailsPage> {
                       Padding(
                         padding: EdgeInsets.fromLTRB(18, 16, 18, 8),
                         child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Expanded(
                               child: SelectableText(

@@ -27,20 +27,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _subscription = getUriLinksStream().listen((Uri uri) {
-      String uuid = uri.path.substring(1);
-      switch(uri.host) {
-        case 'p': {
-          DetailsPage.push(context, pid: uuid);
-          break;
-        }
-
-        case 't': {
-          // TODO: 2019-07-26 Yaerin: Support tujian://t/$tid
-          break;
-        }
-      }
-    });
+    getInitialUri().then(_handleUniLink);
+    _subscription = getUriLinksStream().listen(_handleUniLink);
   }
 
   @override
@@ -68,5 +56,20 @@ class _HomePageState extends State<HomePage> {
 
   BottomNavigationBarItem _buildNavigationItem(IconData icon, String title) {
     return BottomNavigationBarItem(icon: Icon(icon), title: Text(title));
+  }
+
+  void _handleUniLink(Uri uri) {
+    String uuid = uri.path.substring(1);
+    switch(uri.host) {
+      case 'p': {
+        DetailsPage.push(context, pid: uuid);
+        break;
+      }
+
+      case 't': {
+        // TODO: 2019-07-26 Yaerin: Support tujian://t/$tid
+        break;
+      }
+    }
   }
 }
