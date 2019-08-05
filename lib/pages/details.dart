@@ -255,8 +255,9 @@ class _DetailsPageState extends State<DetailsPage> {
   void _mark() async {
     if (widget.data != null) {
       widget.data.marked = !widget.data.marked;
+    } else {
+      data.marked = !data.marked;
     }
-    data.marked = !data.marked;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     HashSet<String> list = HashSet.from(prefs.getStringList('marked') ?? []);
     if (data.marked) {
