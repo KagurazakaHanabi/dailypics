@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
-      title: 'Tujian R',
+      title: '图鉴日图',
       home: HomePage(),
       supportedLocales: [
         Locale('zh'),
