@@ -33,6 +33,7 @@ class _ImageCardState extends State<ImageCard> {
   final Duration duration = Duration(milliseconds: 150);
 
   double scale = 1;
+  DateTime tapDown;
 
   @override
   Widget build(BuildContext context) {
@@ -60,10 +61,15 @@ class _ImageCardState extends State<ImageCard> {
             ],
           ),
           child: GestureDetector(
-            onTapDown: (_) => setState(() => scale = 0.97),
+            onTapDown: (_) {
+              tapDown = DateTime.now();
+              setState(() => scale = 0.97);
+            },
             onTapCancel: () => setState(() => scale = 1.0),
             onTapUp: (_) async {
-              await Future.delayed(duration);
+              if (DateTime.now().difference(tapDown) < duration) {
+                await Future.delayed(duration);
+              }
               setState(() => scale = 1.0);
               DetailsPage.push(
                 context,

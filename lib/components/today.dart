@@ -152,7 +152,7 @@ class _TodayComponentState extends State<TodayComponent>
   }
 
   Future<void> _fetchText() async {
-    String url = 'http://yijuzhan.com/api/word.php?m=json';
+    String url = 'https://api.lwl12.com/hitokoto/v1';
     String source = await Http.get(url);
     if (source.startsWith('{') && source.endsWith('}')) {
       setState(() => text = jsonDecode(source)['content']);

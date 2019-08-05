@@ -59,6 +59,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _handleUniLink(Uri uri) {
+    if (uri == null) return;
     String uuid = uri.path.substring(1);
     switch(uri.host) {
       case 'p': {
