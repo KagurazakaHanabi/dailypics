@@ -10,5 +10,6 @@ public class MainActivity extends FlutterActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         GeneratedPluginRegistrant.registerWith(this);
+        PlatformPlugin.registerWith(registrarFor("ml.cerasus.pics"));
     }
 }

@@ -293,39 +293,45 @@ class SaveButton extends StatefulWidget {
 }
 
 class _SaveButtonState extends State<SaveButton> {
-  GlobalKey _key = GlobalKey();
   bool started = false;
   double progress;
+  File file;
 
   @override
   Widget build(BuildContext context) {
+    Color primaryColor = CupertinoTheme.of(context).primaryColor;
     return GestureDetector(
-      onTap: () {
-        print(_key.currentContext.size);
+      onTap: () async {
         if (!started) {
           setState(() => started = true);
-          Utils.download(widget.url, (int count, int total) {
+          file = await Utils.download(widget.url, (int count, int total) {
             if (mounted) {
               setState(() => progress = count / total);
             }
           });
         }
+        if (progress == 1 && Platform.isAndroid) {
+          Utils.useAsWallpaper(file);
+        }
       },
       child: AnimatedCrossFade(
         firstChild: Container(
-          key: _key,
           alignment: Alignment.center,
           padding: EdgeInsets.symmetric(vertical: 3, horizontal: 20),
           decoration: BoxDecoration(
-            color: Color(0xfff2f2f7),
+            color: progress == 1 && Platform.isAndroid
+                ? primaryColor
+                : Color(0xfff2f2f7),
             borderRadius: BorderRadius.circular(18),
           ),
           child: Text(
-            progress != 1 ? '获取' : '完成',
+            progress != 1 ? '获取' : Platform.isAndroid ? '设定' : '完成',
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w500,
-              color: CupertinoTheme.of(context).primaryColor,
+              color: progress == 1 && Platform.isAndroid
+                  ? Color(0xfff2f2f7)
+                  : primaryColor,
             ),
           ),
         ),
@@ -333,7 +339,7 @@ class _SaveButtonState extends State<SaveButton> {
           width: 70,
           height: 26,
           alignment: Alignment.center,
-          padding: EdgeInsets.symmetric(vertical: 4, horizontal: 25),
+          padding: EdgeInsets.symmetric(vertical: 4, horizontal: 26),
           child: CircularProgressIndicator(
             strokeWidth: 2,
             value: progress,

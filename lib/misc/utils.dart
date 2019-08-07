@@ -12,11 +12,11 @@ import 'package:path_provider/path_provider.dart';
 class Utils {
   static MethodChannel _channel = MethodChannel('ml.cerasus.pics');
 
-  static Future<void> download(
+  static Future<File> download(
     String url,
     void Function(int count, int total) cb,
   ) async {
-    Completer<void> completer = Completer();
+    Completer<File> completer = Completer();
     String dest = (await getTemporaryDirectory()).path;
     File file;
     String name;
@@ -41,10 +41,7 @@ class Utils {
       }
     }, onDone: () async {
       await _channel.invokeMethod('syncAlbum', file.path);
-      if (file.existsSync()) {
-        file.deleteSync();
-      }
-      completer.complete();
+      completer.complete(file);
     });
     return completer.future;
   }
@@ -70,6 +67,10 @@ class Utils {
 
   static Future<void> share(File imageFile) async {
     await _channel.invokeMethod('share', imageFile.path);
+  }
+
+  static Future<void> useAsWallpaper(File imageFile) async {
+    await _channel.invokeMethod('useAsWallpaper', imageFile.path);
   }
 
   static String getCompressed(Picture data) {
