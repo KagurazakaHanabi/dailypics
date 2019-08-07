@@ -9,7 +9,7 @@ class AppDelegate: FlutterAppDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
         ) -> Bool {
         let controller: FlutterViewController = window.rootViewController as! FlutterViewController
-        let channel = FlutterMethodChannel(name: "ml.cerasus.pics", binaryMessenger: controller)
+        let channel = FlutterMethodChannel(name: "ml.cerasus.pics", binaryMessenger: controller.binaryMessenger)
         channel.setMethodCallHandler({
             (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
             switch call.method {
