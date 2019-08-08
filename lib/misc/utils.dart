@@ -74,16 +74,16 @@ class Utils {
   }
 
   static String getCompressed(Picture data) {
-    int w;
+    int width;
     if (data.width > data.height) {
-      w = data.width > 1280 ? 1280 : data.width;
+      width = data.width > 800 ? 800 : data.width;
     } else {
-      w = data.width > 720 ? 720 : data.width;
+      width = data.width > 480 ? 480 : data.width;
     }
-    if (data.url.contains('bing.com/')) {
+    if (!data.url.contains('img.dpic.dev/')) {
       return data.url;
     }
-    return data.url + '?f=jpg&q=70&w=$w';
+    return data.url + '?f=jpg&q=70&w=$width';
   }
 
   static T abs<T extends num>(T a) {

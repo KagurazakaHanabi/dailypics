@@ -97,7 +97,7 @@ class _ImageCardState extends State<ImageCard> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(left: 16, top: 32),
+                    padding: EdgeInsets.only(left: 16, top: 32, right: 16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -110,7 +110,7 @@ class _ImageCardState extends State<ImageCard> {
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(top: 4, right: 32),
+                          padding: EdgeInsets.only(top: 4),
                           child: Text(
                             widget.data.content,
                             maxLines: 1,

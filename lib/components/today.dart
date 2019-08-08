@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/utils.dart';
@@ -33,57 +34,74 @@ class _TodayComponentState extends State<TodayComponent>
         child: CupertinoActivityIndicator(),
       );
     }
+    return Stack(
+      children: <Widget>[
+        CupertinoScrollbar(
+          controller: controller,
+          child: _buildScrollView(),
+        ),
+        ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+              height: MediaQuery.of(context).padding.top,
+              color: Color(0x00000000),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildScrollView() {
     bool iPad = Device.isIPad(context, true);
     bool portrait = Device.isPortrait(context);
     int cnt = Device.isIPad(context) ? iPad && !portrait ? 6 : 2 : 1;
-    return CupertinoScrollbar(
+    return CustomScrollView(
       controller: controller,
-      child: CustomScrollView(
-        controller: controller,
-        physics: BouncingScrollPhysics(
-          parent: AlwaysScrollableScrollPhysics(),
-        ),
-        slivers: <Widget>[
-          CupertinoSliverRefreshControl(onRefresh: _fetchData),
-          SliverSafeArea(
-            sliver: SliverPadding(
-              padding: Device.isIPad(context)
-                  ? EdgeInsets.fromLTRB(12, 12, 12, 0)
-                  : EdgeInsets.only(left: 4, top: 15, right: 4),
-              sliver: SliverStaggeredGrid.countBuilder(
-                crossAxisCount: cnt,
-                itemCount: (data?.length ?? 0) + 1,
-                staggeredTileBuilder: (i) {
-                  if (i == 0) {
-                    return StaggeredTile.fit(cnt);
-                  } else if (iPad && !portrait) {
-                    if (_needWiden(i)) {
-                      return StaggeredTile.count(4, 3);
-                    } else {
-                      return StaggeredTile.count(2, 3);
-                    }
+      physics: BouncingScrollPhysics(
+        parent: AlwaysScrollableScrollPhysics(),
+      ),
+      slivers: <Widget>[
+        CupertinoSliverRefreshControl(onRefresh: _fetchData),
+        SliverSafeArea(
+          sliver: SliverPadding(
+            padding: Device.isIPad(context)
+                ? EdgeInsets.fromLTRB(12, 12, 12, 0)
+                : EdgeInsets.only(left: 4, top: 15, right: 4),
+            sliver: SliverStaggeredGrid.countBuilder(
+              crossAxisCount: cnt,
+              itemCount: (data?.length ?? 0) + 1,
+              staggeredTileBuilder: (i) {
+                if (i == 0) {
+                  return StaggeredTile.fit(cnt);
+                } else if (iPad && !portrait) {
+                  if (_needWiden(i)) {
+                    return StaggeredTile.count(4, 3);
                   } else {
-                    return StaggeredTile.fit(1);
+                    return StaggeredTile.count(2, 3);
                   }
-                },
-                itemBuilder: (_, int i) {
-                  if (i == 0) {
-                    return _buildHeader();
-                  } else if (iPad && !portrait) {
-                    return ImageCard(
-                      data[i - 1],
-                      '#$i',
-                      aspectRatio: _needWiden(i) ? 4 / 3 : 2 / 3,
-                    );
-                  } else {
-                    return ImageCard(data[i - 1], '#$i');
-                  }
-                },
-              ),
+                } else {
+                  return StaggeredTile.fit(1);
+                }
+              },
+              itemBuilder: (_, int i) {
+                if (i == 0) {
+                  return _buildHeader();
+                } else if (iPad && !portrait) {
+                  return ImageCard(
+                    data[i - 1],
+                    '#$i',
+                    aspectRatio: _needWiden(i) ? 4 / 3 : 2 / 3,
+                  );
+                } else {
+                  return ImageCard(data[i - 1], '#$i');
+                }
+              },
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

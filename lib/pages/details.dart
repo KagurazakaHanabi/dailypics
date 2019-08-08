@@ -313,8 +313,7 @@ class _SaveButtonState extends State<SaveButton> {
               setState(() => progress = count / total);
             }
           });
-        }
-        if (progress == 1 && Platform.isAndroid) {
+        } else if (progress == 1 && Platform.isAndroid) {
           Utils.useAsWallpaper(file);
         }
       },
