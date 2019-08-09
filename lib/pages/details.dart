@@ -14,6 +14,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart'
     show CircularProgressIndicator, SelectableText;
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -91,137 +92,141 @@ class _DetailsPageState extends State<DetailsPage> {
         ),
       );
     }
+    bool dark = Utils.isColorSimilar(data.color, Color(0xff000000));
     Radius radius = Radius.circular(Device.isIPad(context) ? 16 : 0);
-    return AdaptiveScaffold(
-      backgroundColor: Color(0x00000000),
-      child: Stack(
-        children: <Widget>[
-          Container(
-            alignment: Alignment.center,
-            padding: EdgeInsets.only(top: 64),
-            child: ImageCard(
-              data,
-              '#',
-              showQrCode: true,
-              repaintKey: repaintKey,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+      child: AdaptiveScaffold(
+        backgroundColor: Color(0x00000000),
+        child: Stack(
+          children: <Widget>[
+            Container(
+              alignment: Alignment.center,
+              padding: EdgeInsets.only(top: 64),
+              child: ImageCard(
+                data,
+                '#',
+                showQrCode: true,
+                repaintKey: repaintKey,
+              ),
             ),
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 80),
-            decoration: BoxDecoration(
-              color: Color(0xffffffff),
-              borderRadius: BorderRadius.vertical(top: radius),
+            Container(
+              margin: EdgeInsets.only(top: 80),
+              decoration: BoxDecoration(
+                color: Color(0xffffffff),
+                borderRadius: BorderRadius.vertical(top: radius),
+              ),
             ),
-          ),
-          NotificationListener<ScrollUpdateNotification>(
-            onNotification: (ScrollUpdateNotification n) {
-              if (n.metrics.outOfRange && n.metrics.pixels < -64 && !popped) {
-                Navigator.of(context).pop();
-                popped = true;
-              }
-              return false;
-            },
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: <Widget>[
-                AspectRatio(
-                  aspectRatio: data.width / data.height,
-                  child: RoundedImage(
-                    fit: BoxFit.cover,
-                    imageUrl: Utils.getCompressed(data),
-                    heroTag: widget.heroTag ?? DateTime.now(),
-                    borderRadius: BorderRadius.vertical(top: radius),
-                    placeholder: (_, __) {
-                      return Container(
-                        color: Color(0xffe0e0e0),
-                        child: Image.asset('res/placeholder.jpg'),
-                      );
-                    },
+            NotificationListener<ScrollUpdateNotification>(
+              onNotification: (ScrollUpdateNotification n) {
+                if (n.metrics.outOfRange && n.metrics.pixels < -64 && !popped) {
+                  Navigator.of(context).pop();
+                  popped = true;
+                }
+                return false;
+              },
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: <Widget>[
+                  AspectRatio(
+                    aspectRatio: data.width / data.height,
+                    child: RoundedImage(
+                      fit: BoxFit.cover,
+                      imageUrl: Utils.getCompressed(data),
+                      heroTag: widget.heroTag ?? DateTime.now(),
+                      borderRadius: BorderRadius.vertical(top: radius),
+                      placeholder: (_, __) {
+                        return Container(
+                          color: Color(0xffe0e0e0),
+                          child: Image.asset('res/placeholder.jpg'),
+                        );
+                      },
+                    ),
                   ),
-                ),
-                Container(
-                  color: Color(0xffffffff),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(18, 16, 18, 8),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Expanded(
-                              child: SelectableText(
-                                data.title,
-                                style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w500,
+                  Container(
+                    color: Color(0xffffffff),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(18, 16, 18, 8),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Expanded(
+                                child: SelectableText(
+                                  data.title,
+                                  style: TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                               ),
+                              GestureDetector(
+                                onTap: _mark,
+                                child: Icon(
+                                  data.marked
+                                      ? Ionicons.ios_star
+                                      : Ionicons.ios_star_outline,
+                                  size: 22,
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 16),
+                                child: SaveButton(url: data.url),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(18, 0, 18, 48),
+                          child: SelectableText(
+                            data.content,
+                            style: TextStyle(
+                              color: Color(0x8a000000),
+                              fontSize: 15,
+                              height: 1.2,
                             ),
-                            GestureDetector(
-                              onTap: _mark,
-                              child: Icon(
-                                data.marked
-                                    ? Ionicons.ios_star
-                                    : Ionicons.ios_star_outline,
-                                size: 22,
+                          ),
+                        ),
+                        Divider(),
+                        Container(
+                          alignment: Alignment.center,
+                          padding: EdgeInsets.symmetric(vertical: 29),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Color(0xfff2f2f7),
+                            ),
+                            child: CupertinoButton(
+                              pressedOpacity: 0.4,
+                              padding: EdgeInsets.fromLTRB(30, 12, 30, 12),
+                              onPressed: _share,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Icon(CupertinoIcons.share),
+                                  Text('分享'),
+                                ],
                               ),
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 16),
-                              child: SaveButton(url: data.url),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(18, 0, 18, 48),
-                        child: SelectableText(
-                          data.content,
-                          style: TextStyle(
-                            color: Color(0x8a000000),
-                            fontSize: 15,
-                            height: 1.2,
                           ),
                         ),
-                      ),
-                      Divider(),
-                      Container(
-                        alignment: Alignment.center,
-                        padding: EdgeInsets.symmetric(vertical: 29),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: Color(0xfff2f2f7),
-                          ),
-                          child: CupertinoButton(
-                            pressedOpacity: 0.4,
-                            padding: EdgeInsets.fromLTRB(30, 12, 30, 12),
-                            onPressed: _share,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Icon(CupertinoIcons.share),
-                                Text('分享'),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
-          Offstage(
-            offstage: Device.isIPad(context),
-            child: Align(
-              alignment: Alignment.topRight,
-              child: CloseButton(),
+            Offstage(
+              offstage: Device.isIPad(context),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: CloseButton(),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

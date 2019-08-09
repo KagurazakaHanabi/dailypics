@@ -2,9 +2,8 @@ import 'dart:convert';
 
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/utils.dart';
-import 'package:daily_pics/widget/image_card.dart';
+import 'package:daily_pics/widget/slivers.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class SuggestComponent extends StatefulWidget {
   @override
@@ -45,16 +44,9 @@ class _SuggestComponentState extends State<SuggestComponent>
             CupertinoSliverRefreshControl(onRefresh: _fetchData),
             SliverSafeArea(
               top: false,
-              sliver: SliverPadding(
-                padding: Device.isIPad(context)
-                    ? EdgeInsets.fromLTRB(12, 12, 12, 0)
-                    : EdgeInsets.zero,
-                sliver: SliverStaggeredGrid.countBuilder(
-                  crossAxisCount: Device.isIPad(context) ? 2 : 1,
-                  itemCount: data?.length ?? 0,
-                  staggeredTileBuilder: (i) => StaggeredTile.fit(1),
-                  itemBuilder: (_, int i) => ImageCard(data[i], '###$i'),
-                ),
+              sliver: SliverImageCardList(
+                tagBuilder: (i) => '$i-${data[i].id}',
+                data: data,
               ),
             ),
           ],

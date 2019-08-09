@@ -37,17 +37,14 @@ class _ImageCardState extends State<ImageCard> {
 
   @override
   Widget build(BuildContext context) {
-    bool dark = true;
-    if (Utils.isColorSimilar(widget.data.color, Color(0xffffffff))) {
-      dark = false;
-    }
+    bool dark = Utils.isColorSimilar(widget.data.color, Color(0xff000000));
     return AnimatedTransform.scale(
       scale: scale,
       duration: duration,
       curve: Curves.easeInOut,
       alignment: Alignment.center,
       child: AspectRatio(
-        aspectRatio: widget.aspectRatio,
+        aspectRatio: widget.aspectRatio ?? 4 / 5,
         child: Container(
           padding: EdgeInsets.all(16),
           decoration: BoxDecoration(

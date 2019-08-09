@@ -3,9 +3,8 @@ import 'dart:ui';
 
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/utils.dart';
-import 'package:daily_pics/widget/image_card.dart';
+import 'package:daily_pics/widget/slivers.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TodayComponent extends StatefulWidget {
@@ -54,9 +53,6 @@ class _TodayComponentState extends State<TodayComponent>
   }
 
   Widget _buildScrollView() {
-    bool iPad = Device.isIPad(context, true);
-    bool portrait = Device.isPortrait(context);
-    int cnt = Device.isIPad(context) ? iPad && !portrait ? 6 : 2 : 1;
     return CustomScrollView(
       controller: controller,
       physics: BouncingScrollPhysics(
@@ -65,40 +61,10 @@ class _TodayComponentState extends State<TodayComponent>
       slivers: <Widget>[
         CupertinoSliverRefreshControl(onRefresh: _fetchData),
         SliverSafeArea(
-          sliver: SliverPadding(
-            padding: Device.isIPad(context)
-                ? EdgeInsets.fromLTRB(12, 12, 12, 0)
-                : EdgeInsets.only(left: 4, top: 15, right: 4),
-            sliver: SliverStaggeredGrid.countBuilder(
-              crossAxisCount: cnt,
-              itemCount: (data?.length ?? 0) + 1,
-              staggeredTileBuilder: (i) {
-                if (i == 0) {
-                  return StaggeredTile.fit(cnt);
-                } else if (iPad && !portrait) {
-                  if (_needWiden(i)) {
-                    return StaggeredTile.count(4, 3);
-                  } else {
-                    return StaggeredTile.count(2, 3);
-                  }
-                } else {
-                  return StaggeredTile.fit(1);
-                }
-              },
-              itemBuilder: (_, int i) {
-                if (i == 0) {
-                  return _buildHeader();
-                } else if (iPad && !portrait) {
-                  return ImageCard(
-                    data[i - 1],
-                    '#$i',
-                    aspectRatio: _needWiden(i) ? 4 / 3 : 2 / 3,
-                  );
-                } else {
-                  return ImageCard(data[i - 1], '#$i');
-                }
-              },
-            ),
+          sliver: SliverImageCardList(
+            header: _buildHeader(),
+            adaptiveTablet: true,
+            data: data,
           ),
         ),
       ],
@@ -153,10 +119,6 @@ class _TodayComponentState extends State<TodayComponent>
     DateTime date = DateTime.now();
     List<String> weekdays = ['一', '二', '三', '四', '五', '六', '日'];
     return '${date.month} 月 ${date.day} 日 星期${weekdays[date.weekday - 1]}';
-  }
-
-  bool _needWiden(int index) {
-    return index % 4 == 1 || index % 4 == 0;
   }
 
   Future<void> _fetchData() async {
