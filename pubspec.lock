@@ -35,7 +35,7 @@ packages:
       name: build_config
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.4.1"
+    version: "0.4.1+1"
   build_daemon:
     dependency: transitive
     description:
@@ -63,7 +63,7 @@ packages:
       name: build_runner_core
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.0.7"
+    version: "3.0.9"
   built_collection:
     dependency: transitive
     description:
@@ -98,7 +98,7 @@ packages:
       name: checked_yaml
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.1"
+    version: "1.0.2"
   code_builder:
     dependency: transitive
     description:
@@ -243,7 +243,7 @@ packages:
       name: image_picker
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.6.1"
+    version: "0.6.1+2"
   intl:
     dependency: transitive
     description:
@@ -376,7 +376,7 @@ packages:
       name: pubspec_parse
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.1.4"
+    version: "0.1.5"
   qr:
     dependency: "direct main"
     description:
@@ -390,7 +390,7 @@ packages:
       name: quiver
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.4"
+    version: "2.0.5"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -486,7 +486,7 @@ packages:
       name: timing
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.1.1+1"
+    version: "0.1.1+2"
   typed_data:
     dependency: transitive
     description:
@@ -528,7 +528,7 @@ packages:
       name: web_socket_channel
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.14"
+    version: "1.0.15"
   yaml:
     dependency: transitive
     description:

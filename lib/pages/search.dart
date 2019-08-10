@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ui' show ImageFilter;
+import 'dart:ui' show ImageFilter, window;
 
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/utils.dart';
@@ -72,7 +72,7 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
           SizedBox(
-            height: doing ? 1 : 0.2,
+            height: doing ? 2 : 1 / window.devicePixelRatio,
             child: LinearProgressIndicator(
               backgroundColor: barBackgroundColor,
               valueColor: AlwaysStoppedAnimation(Color(0x4C000000)),

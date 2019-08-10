@@ -158,6 +158,7 @@ class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
     return OverflowBox(
       minHeight: 0,
       maxHeight: double.infinity,
+      alignment: Alignment.topCenter,
       child: ClipRect(
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
