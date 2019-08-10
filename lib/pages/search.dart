@@ -8,8 +8,9 @@ import 'package:daily_pics/widget/image_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show LinearProgressIndicator;
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:http/http.dart' as http;
 
-const String kSearchHeroTag = 'SearchPage';
+const double kSearchBarHeight = 49;
 
 class SearchPage extends StatefulWidget {
   @override
@@ -39,6 +40,7 @@ class _SearchPageState extends State<SearchPage> {
     EdgeInsets windowPadding = MediaQuery.of(context).padding;
     Color barBackgroundColor = CupertinoTheme.of(context).barBackgroundColor;
     return CupertinoPageScaffold(
+      resizeToAvoidBottomInset: false,
       child: Column(
         children: <Widget>[
           ClipRect(
@@ -55,8 +57,10 @@ class _SearchPageState extends State<SearchPage> {
                         child: SearchBar(
                           autofocus: true,
                           onSubmitted: (value) {
-                            query = value;
-                            _fetchData();
+                            if (value.isNotEmpty) {
+                              query = value;
+                              _fetchData();
+                            }
                           },
                         ),
                       ),
@@ -130,7 +134,7 @@ class _SearchPageState extends State<SearchPage> {
     String encodedQuery = Uri.encodeQueryComponent(query);
     String url = 'https://v2.api.dailypics.cn/search/s/$encodedQuery';
     Response response = Response.fromJson({
-      'data': jsonDecode(await Http.get(url))['result'],
+      'data': jsonDecode((await http.get(url)).body)['result'],
     });
     await controller.animateTo(
       0,
@@ -178,7 +182,7 @@ class _SearchBarState extends State<SearchBar> {
   @override
   Widget build(BuildContext context) {
     return Hero(
-      tag: kSearchHeroTag,
+      tag: 'SearchBar',
       child: Container(
         padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
         child: Container(

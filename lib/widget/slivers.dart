@@ -30,7 +30,7 @@ class SliverImageCardList extends StatelessWidget {
         ? iPad && !portrait && adaptiveTablet ? 6 : 2
         : 1;
     return SliverPadding(
-      padding: Device.isIPad(context)
+      padding: Device.isIPad(context, true)
           ? EdgeInsets.fromLTRB(12, 12, 12, 0)
           : EdgeInsets.only(left: 4, top: 15, right: 4),
       sliver: SliverStaggeredGrid.countBuilder(

@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/widget/slivers.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TodayComponent extends StatefulWidget {
@@ -37,7 +37,22 @@ class _TodayComponentState extends State<TodayComponent>
       children: <Widget>[
         CupertinoScrollbar(
           controller: controller,
-          child: _buildScrollView(),
+          child: CustomScrollView(
+            controller: controller,
+            physics: BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
+            slivers: <Widget>[
+              CupertinoSliverRefreshControl(onRefresh: _fetchData),
+              SliverSafeArea(
+                sliver: SliverImageCardList(
+                  header: _buildHeader(),
+                  adaptiveTablet: true,
+                  data: data,
+                ),
+              ),
+            ],
+          ),
         ),
         ClipRect(
           child: BackdropFilter(
@@ -46,25 +61,6 @@ class _TodayComponentState extends State<TodayComponent>
               height: MediaQuery.of(context).padding.top,
               color: Color(0x00000000),
             ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildScrollView() {
-    return CustomScrollView(
-      controller: controller,
-      physics: BouncingScrollPhysics(
-        parent: AlwaysScrollableScrollPhysics(),
-      ),
-      slivers: <Widget>[
-        CupertinoSliverRefreshControl(onRefresh: _fetchData),
-        SliverSafeArea(
-          sliver: SliverImageCardList(
-            header: _buildHeader(),
-            adaptiveTablet: true,
-            data: data,
           ),
         ),
       ],
@@ -123,7 +119,7 @@ class _TodayComponentState extends State<TodayComponent>
 
   Future<void> _fetchData() async {
     _fetchText();
-    String source = await Http.get('https://v2.api.dailypics.cn/today');
+    String source = (await http.get('https://v2.api.dailypics.cn/today')).body;
     Response res = Response.fromJson({'data': jsonDecode(source)});
     data = res.data ?? [];
     await _fetchBing();
@@ -133,7 +129,7 @@ class _TodayComponentState extends State<TodayComponent>
 
   Future<void> _fetchText() async {
     String url = 'https://yijuzhan.com/api/word.php?m=json';
-    String source = await Http.get(url);
+    String source = (await http.get(url)).body;
     if (source.startsWith('{') && source.endsWith('}')) {
       setState(() => text = jsonDecode(source)['content']);
     } else {
@@ -143,7 +139,7 @@ class _TodayComponentState extends State<TodayComponent>
 
   Future<void> _fetchBing() async {
     String url = 'https://cn.bing.com/HPImageArchive.aspx?format=js&n=1&idx=0';
-    String source = await Http.get(url);
+    String source = (await http.get(url)).body;
     Map<String, dynamic> json = jsonDecode(source)['images'][0];
     String copyright = json['copyright'];
     data.add(Picture(

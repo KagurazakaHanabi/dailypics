@@ -12,9 +12,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-
-const double _kSearchBarHeight = 49;
 
 class RecentComponent extends StatefulWidget {
   @override
@@ -33,8 +32,9 @@ class _RecentComponentState extends State<RecentComponent>
   @override
   void initState() {
     super.initState();
-    controller = ScrollController(initialScrollOffset: _kSearchBarHeight)
-      ..addListener(_onScroll);
+    controller = ScrollController(
+      initialScrollOffset: kSearchBarHeight,
+    )..addListener(_onScrollUpdate);
     _fetchData();
   }
 
@@ -47,45 +47,53 @@ class _RecentComponentState extends State<RecentComponent>
       children: <Widget>[
         CupertinoScrollbar(
           controller: controller,
-          child: CustomScrollView(
-            controller: controller,
-            physics: BouncingScrollPhysics(
-              parent: AlwaysScrollableScrollPhysics(),
-            ),
-            slivers: <Widget>[
-              SliverPersistentHeader(
-                pinned: true,
-                delegate: _SliverHeaderDelegate(
-                  index: index,
-                  vsync: this,
-                  onValueChanged: (newValue) {
-                    if (!doing) {
-                      setState(() => index = newValue);
-                      if (data[index].length == 0) {
-                        _fetchData();
+          child: NotificationListener<UserScrollNotification>(
+            onNotification: (UserScrollNotification notification) {
+              if (notification.direction == ScrollDirection.idle) {
+                _onScrollEnd();
+              }
+              return false;
+            },
+            child: CustomScrollView(
+              controller: controller,
+              physics: BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics(),
+              ),
+              slivers: <Widget>[
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: _SliverHeaderDelegate(
+                    index: index,
+                    vsync: this,
+                    onValueChanged: (newValue) {
+                      if (!doing) {
+                        setState(() => index = newValue);
+                        if (data[index].length == 0) {
+                          _fetchData();
+                        }
                       }
-                    }
-                  },
+                    },
+                  ),
                 ),
-              ),
-              CupertinoSliverRefreshControl(onRefresh: _fetchData),
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: data[index].length == 0 ? windowHeight : 0,
+                CupertinoSliverRefreshControl(onRefresh: _fetchData),
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: data[index].length == 0 ? windowHeight : 0,
+                  ),
                 ),
-              ),
-              SliverPadding(
-                padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
-                sliver: SliverStaggeredGrid.countBuilder(
-                  crossAxisCount: Device.isIPad(context) ? 3 : 2,
-                  itemCount: data[index].length,
-                  itemBuilder: (_, i) => _Tile(data[index][i], i),
-                  staggeredTileBuilder: (_) => StaggeredTile.fit(1),
-                  mainAxisSpacing: 12,
-                  crossAxisSpacing: 12,
+                SliverPadding(
+                  padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
+                  sliver: SliverStaggeredGrid.countBuilder(
+                    crossAxisCount: Device.isIPad(context) ? 3 : 2,
+                    itemCount: data[index].length,
+                    itemBuilder: (_, i) => _Tile(data[index][i], i),
+                    staggeredTileBuilder: (_) => StaggeredTile.fit(1),
+                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 12,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         data[index].length == 0 ? CupertinoActivityIndicator() : Container(),
@@ -99,7 +107,7 @@ class _RecentComponentState extends State<RecentComponent>
     String uri =
         'https://v2.api.dailypics.cn/list?page=${cur[index]}&size=20&op=desc&sor'
         't=${types[index]}';
-    dynamic json = jsonDecode(await Http.get(uri));
+    dynamic json = jsonDecode((await http.get(uri)).body);
     Response res = Response.fromJson({'data': json['result']});
     data[index].addAll(await _parseMark(res.data));
     max[index] = json['maxpage'];
@@ -116,8 +124,9 @@ class _RecentComponentState extends State<RecentComponent>
     return pics;
   }
 
-  void _onScroll() {
+  void _onScrollUpdate() {
     ScrollPosition pos = controller.position;
+
     bool shouldFetch = pos.maxScrollExtent - pos.pixels < 256 && !doing;
     if (shouldFetch && max[index] - cur[index] > 0) {
       cur[index] += 1;
@@ -125,10 +134,31 @@ class _RecentComponentState extends State<RecentComponent>
     }
   }
 
+  void _onScrollEnd() {
+    ScrollPosition pos = controller.position;
+
+    Duration duration = Duration(milliseconds: 300);
+    double half = kSearchBarHeight / 2;
+    bool shouldExpand = pos.pixels <= half;
+    if (shouldExpand) {
+      controller.animateTo(0, duration: duration, curve: Curves.ease);
+    }
+
+    bool shouldFold = pos.pixels > half && pos.pixels < kSearchBarHeight;
+    if (shouldFold) {
+      controller.animateTo(
+        kSearchBarHeight,
+        duration: duration,
+        curve: Curves.ease,
+      );
+    }
+  }
+
   @override
   void dispose() {
     super.dispose();
-    controller.removeListener(_onScroll);
+    controller.removeListener(_onScrollUpdate);
+    controller.dispose();
   }
 
   @override
@@ -150,8 +180,8 @@ class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(BuildContext context, double shrinkOffset, _) {
-    double extent = math.min<double>(shrinkOffset, _kSearchBarHeight);
-    double barHeight = _kSearchBarHeight - extent;
+    double extent = math.min<double>(shrinkOffset, kSearchBarHeight);
+    double barHeight = kSearchBarHeight - extent;
     EdgeInsets padding = MediaQuery.of(context).padding;
     CupertinoThemeData theme = CupertinoTheme.of(context);
     TextStyle navTitleTextStyle = theme.textTheme.navTitleTextStyle;
@@ -189,7 +219,7 @@ class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
                 SizedBox(
                   height: barHeight,
                   child: SearchBar(
-                    shrinkOffset: barHeight / _kSearchBarHeight,
+                    shrinkOffset: barHeight / kSearchBarHeight,
                     onTap: () => SearchPage.push(context),
                   ),
                 ),

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:daily_pics/components/recent.dart';
-import 'package:daily_pics/components/settings.dart';
 import 'package:daily_pics/components/suggest.dart';
 import 'package:daily_pics/components/today.dart';
 import 'package:daily_pics/pages/details.dart';
@@ -34,6 +33,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return CupertinoTabScaffold(
+      resizeToAvoidBottomInset: false,
       tabBar: CupertinoTabBar(
         items: [
           _buildNavigationItem(Ionicons.ios_today, 'Today'),

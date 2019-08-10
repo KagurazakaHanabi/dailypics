@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/widget/slivers.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
 
 class SuggestComponent extends StatefulWidget {
   @override
@@ -57,7 +57,7 @@ class _SuggestComponentState extends State<SuggestComponent>
 
   Future<void> _fetchData() async {
     String uri = 'https://v2.api.dailypics.cn/random?count=20';
-    String source = await Http.get(uri);
+    String source = (await http.get(uri)).body;
     Response res = Response.fromJson({'data': jsonDecode(source)});
     setState(() => data = res.data);
   }

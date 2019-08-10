@@ -1,24 +1,8 @@
-import 'dart:io';
-
 import 'package:daily_pics/pages/home.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-void main() {
-  _setTargetPlatformForDesktop();
-  runApp(MyApp());
-}
-
-void _setTargetPlatformForDesktop() {
-  TargetPlatform targetPlatform;
-  if (Platform.isMacOS || Platform.isLinux || Platform.isWindows) {
-    targetPlatform = TargetPlatform.iOS;
-  }
-  if (targetPlatform != null) {
-    debugDefaultTargetPlatformOverride = targetPlatform;
-  }
-}
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override

@@ -16,6 +16,7 @@ import 'package:flutter/material.dart'
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
+import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -95,7 +96,9 @@ class _DetailsPageState extends State<DetailsPage> {
     bool dark = Utils.isColorSimilar(data.color, Color(0xff000000));
     Radius radius = Radius.circular(Device.isIPad(context) ? 16 : 0);
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+      value: dark && !Device.isIPad(context)
+          ? SystemUiOverlayStyle.light
+          : SystemUiOverlayStyle.dark,
       child: AdaptiveScaffold(
         backgroundColor: Color(0x00000000),
         child: Stack(
@@ -118,13 +121,7 @@ class _DetailsPageState extends State<DetailsPage> {
               ),
             ),
             NotificationListener<ScrollUpdateNotification>(
-              onNotification: (ScrollUpdateNotification n) {
-                if (n.metrics.outOfRange && n.metrics.pixels < -64 && !popped) {
-                  Navigator.of(context).pop();
-                  popped = true;
-                }
-                return false;
-              },
+              onNotification: _onScrollUpdate,
               child: ListView(
                 padding: EdgeInsets.zero,
                 children: <Widget>[
@@ -231,9 +228,18 @@ class _DetailsPageState extends State<DetailsPage> {
     );
   }
 
+  bool _onScrollUpdate(ScrollUpdateNotification n) {
+    if (n.metrics.outOfRange && n.metrics.pixels < -64 && !popped) {
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+      Navigator.of(context).pop();
+      popped = true;
+    }
+    return false;
+  }
+
   Future<void> _fetchData() async {
     String url = 'https://v2.api.dailypics.cn/member?id=${widget.pid}';
-    Map<String, dynamic> json = jsonDecode(await Http.get(url));
+    Map<String, dynamic> json = jsonDecode((await http.get(url)).body);
     if (json['error_code'] != null) {
       setState(() => error = json['msg'].toString());
     } else {

@@ -7,6 +7,7 @@ import 'dart:typed_data';
 import 'package:daily_pics/misc/bean.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
 class Utils {
@@ -52,7 +53,7 @@ class Utils {
     void Function(int count, int total) cb,
   ) async {
     dynamic json = jsonDecode(
-      await Http.upload('https://img.dpic.dev/upload', file, cb),
+      await uploadFile('https://img.dpic.dev/upload', file, cb),
     );
     if (!json['ret']) {
       return jsonEncode({
@@ -62,7 +63,34 @@ class Utils {
     }
     String url = 'https://img.dpic.dev/' + json['info']['md5'];
     data['url'] = url;
-    return await Http.post('https://v2.api.dailypics.cn/tg', data);
+    return (await http.post('https://v2.api.dailypics.cn/tg', body: data)).body;
+  }
+
+  static Future<String> uploadFile(
+    String url,
+    File file,
+    void Function(int, int) cb,
+  ) async {
+    HttpClient client = HttpClient();
+    HttpClientRequest request = await client.postUrl(Uri.parse(url));
+    String subType = file.path.substring(file.path.lastIndexOf('.') + 1);
+    request.headers.set('content-type', 'image/$subType');
+    int contentLength = file.statSync().size;
+    int byteCount = 0;
+    Stream<Uint8List> stream = file.openRead();
+    await request.addStream(stream.transform(StreamTransformer.fromHandlers(
+      handleData: (data, sink) {
+        byteCount += data.length;
+        sink.add(data);
+        if (cb != null) {
+          cb(byteCount, contentLength);
+        }
+      },
+      handleError: (_, __, ___) {},
+      handleDone: (sink) => sink.close(),
+    )));
+    HttpClientResponse response = await request.close();
+    return await response.cast<List<int>>().transform(utf8.decoder).join();
   }
 
   static Future<void> share(File imageFile) async {
@@ -118,54 +146,6 @@ class Utils {
       return false;
     }
     return abs(colorToHsv(c1)[2] - colorToHsv(c2)[2]) < 0.2;
-  }
-}
-
-class Http {
-  static Future<String> get(String url) async {
-    Uri uri = Uri.parse(url);
-    HttpClient client = HttpClient();
-    HttpClientRequest request = await client.getUrl(uri);
-    HttpClientResponse response = await request.close();
-    Stream stream = response.cast<List<int>>();
-    return await stream.transform(utf8.decoder).join();
-  }
-
-  static Future<String> post(String url, Map<String, dynamic> data) async {
-    HttpClient client = HttpClient();
-    HttpClientRequest request = await client.postUrl(Uri.parse(url));
-    request.headers.contentType = ContentType.json;
-    request.write(jsonEncode(data));
-    HttpClientResponse response = await request.close();
-    Stream stream = response.cast<List<int>>();
-    return await stream.transform(utf8.decoder).join();
-  }
-
-  static Future<String> upload(
-    String url,
-    File file,
-    void Function(int, int) cb,
-  ) async {
-    HttpClient client = HttpClient();
-    HttpClientRequest request = await client.postUrl(Uri.parse(url));
-    String subType = file.path.substring(file.path.lastIndexOf('.') + 1);
-    request.headers.set('content-type', 'image/$subType');
-    int contentLength = file.statSync().size;
-    int byteCount = 0;
-    Stream<Uint8List> stream = file.openRead();
-    await request.addStream(stream.transform(StreamTransformer.fromHandlers(
-      handleData: (data, sink) {
-        byteCount += data.length;
-        sink.add(data);
-        if (cb != null) {
-          cb(byteCount, contentLength);
-        }
-      },
-      handleError: (_, __, ___) {},
-      handleDone: (sink) => sink.close(),
-    )));
-    HttpClientResponse response = await request.close();
-    return await response.cast<List<int>>().transform(utf8.decoder).join();
   }
 }
 
