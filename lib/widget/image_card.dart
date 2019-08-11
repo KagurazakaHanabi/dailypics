@@ -37,7 +37,6 @@ class _ImageCardState extends State<ImageCard> {
 
   @override
   Widget build(BuildContext context) {
-    bool dark = Utils.isColorSimilar(widget.data.color, Color(0xff000000));
     return AnimatedTransform.scale(
       scale: scale,
       duration: duration,
@@ -101,7 +100,9 @@ class _ImageCardState extends State<ImageCard> {
                         Text(
                           widget.data.title,
                           style: TextStyle(
-                            color: dark ? Color(0xffffffff) : Color(0xff000000),
+                            color: Utils.isDarkColor(widget.data.color)
+                                ? Color(0xffffffff)
+                                : Color(0xff000000),
                             fontWeight: FontWeight.w500,
                             fontSize: 28,
                           ),
@@ -113,9 +114,9 @@ class _ImageCardState extends State<ImageCard> {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              color: dark
-                                  ? Color(0xffffffff).withAlpha(179)
-                                  : Color(0xff000000).withAlpha(179),
+                              color: Utils.isDarkColor(widget.data.color)
+                                  ? Color(0xB3ffffff)
+                                  : Color(0xB3000000),
                               fontSize: 13,
                             ),
                           ),

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:daily_pics/main.dart';
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/widget/adaptive_scaffold.dart';
@@ -93,12 +94,11 @@ class _DetailsPageState extends State<DetailsPage> {
         ),
       );
     }
-    bool dark = Utils.isColorSimilar(data.color, Color(0xff000000));
     Radius radius = Radius.circular(Device.isIPad(context) ? 16 : 0);
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: dark && !Device.isIPad(context)
-          ? SystemUiOverlayStyle.light
-          : SystemUiOverlayStyle.dark,
+      value: Utils.isDarkColor(data.color) && !Device.isIPad(context)
+          ? OverlayStyles.light
+          : OverlayStyles.dark,
       child: AdaptiveScaffold(
         backgroundColor: Color(0x00000000),
         child: Stack(
@@ -230,7 +230,6 @@ class _DetailsPageState extends State<DetailsPage> {
 
   bool _onScrollUpdate(ScrollUpdateNotification n) {
     if (n.metrics.outOfRange && n.metrics.pixels < -64 && !popped) {
-      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
       Navigator.of(context).pop();
       popped = true;
     }

@@ -139,7 +139,7 @@ class _RecentComponentState extends State<RecentComponent>
 
     Duration duration = Duration(milliseconds: 300);
     double half = kSearchBarHeight / 2;
-    bool shouldExpand = pos.pixels <= half;
+    bool shouldExpand = pos.pixels != 0 && pos.pixels <= half;
     if (shouldExpand) {
       controller.animateTo(0, duration: duration, curve: Curves.ease);
     }

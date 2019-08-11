@@ -3,8 +3,11 @@ import 'dart:async';
 import 'package:daily_pics/components/recent.dart';
 import 'package:daily_pics/components/suggest.dart';
 import 'package:daily_pics/components/today.dart';
+import 'package:daily_pics/main.dart';
+import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/pages/details.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:uni_links/uni_links.dart';
 
@@ -32,19 +35,24 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoTabScaffold(
-      resizeToAvoidBottomInset: false,
-      tabBar: CupertinoTabBar(
-        items: [
-          _buildNavigationItem(Ionicons.ios_today, 'Today'),
-          _buildNavigationItem(Ionicons.ios_time, '以往'),
-          _buildNavigationItem(Ionicons.ios_flame, '推荐 '),
-          //_buildNavigationItem(Ionicons.ios_settings, '更多'),
-        ],
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: Utils.isDarkColor(CupertinoTheme.of(context).barBackgroundColor)
+          ? OverlayStyles.light
+          : OverlayStyles.dark,
+      child: CupertinoTabScaffold(
+        resizeToAvoidBottomInset: false,
+        tabBar: CupertinoTabBar(
+          items: [
+            _buildNavigationItem(Ionicons.ios_today, 'Today'),
+            _buildNavigationItem(Ionicons.ios_time, '以往'),
+            _buildNavigationItem(Ionicons.ios_flame, '推荐 '),
+            //_buildNavigationItem(Ionicons.ios_settings, '更多'),
+          ],
+        ),
+        tabBuilder: (_, i) {
+          return CupertinoTabView(builder: (_) => _tabs[i]);
+        },
       ),
-      tabBuilder: (_, i) {
-        return CupertinoTabView(builder: (_) => _tabs[i]);
-      },
     );
   }
 
@@ -61,16 +69,14 @@ class _HomePageState extends State<HomePage> {
   void _handleUniLink(Uri uri) {
     if (uri == null) return;
     String uuid = uri.path.substring(1);
-    switch(uri.host) {
-      case 'p': {
+    switch (uri.host) {
+      case 'p':
         DetailsPage.push(context, pid: uuid);
         break;
-      }
 
-      case 't': {
+      case 't':
         // TODO: 2019-07-26 Yaerin: Support tujian://t/$tid
         break;
-      }
     }
   }
 }

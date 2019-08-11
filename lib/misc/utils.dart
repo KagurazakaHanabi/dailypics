@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:daily_pics/misc/bean.dart';
@@ -114,38 +113,10 @@ class Utils {
     return data.url + '?f=jpg&q=50&w=$width';
   }
 
-  static T abs<T extends num>(T a) {
-    if (a < 0) {
-      return -a;
-    }
-    return a;
-  }
-
-  static List<double> colorToHsv(Color c) {
-    double r = c.red / 255;
-    double g = c.green / 255;
-    double b = c.blue / 255;
-    double max = math.max(math.max(r, g), math.max(g, b));
-    double min = math.min(math.min(r, g), math.min(g, b));
-    double v = max;
-    double s = (max - min) / max;
-    double h;
-    if (r == max) {
-      h = (g - b) / (max - min) * 60;
-    } else if (g == max) {
-      h = 120 + (b - r) / (max - min) * 60;
-    } else if (b == max) {
-      h = 240 + (r - g) / (max - min) * 60;
-    }
-    if (h < 0) h = h + 360;
-    return [h, s, v];
-  }
-
-  static bool isColorSimilar(Color c1, Color c2) {
-    if (c1 == null || c2 == null) {
-      return false;
-    }
-    return abs(colorToHsv(c1)[2] - colorToHsv(c2)[2]) < 0.2;
+  static bool isDarkColor(Color c) {
+    if (c == null) return false;
+    // See https://github.com/FooStudio/tinycolor
+    return (c.red * 299 + c.green * 587 + c.blue * 114) / 1000 < 128;
   }
 }
 
