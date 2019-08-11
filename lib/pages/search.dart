@@ -133,9 +133,8 @@ class _SearchPageState extends State<SearchPage> {
     setState(() => doing = true);
     String encodedQuery = Uri.encodeQueryComponent(query);
     String url = 'https://v2.api.dailypics.cn/search/s/$encodedQuery';
-    Response response = Response.fromJson({
-      'data': jsonDecode((await http.get(url)).body)['result'],
-    });
+    dynamic json = jsonDecode((await http.get(url)).body);
+    Response response = Response.fromJson({'data': json['result']});
     await controller.animateTo(
       0,
       curve: Curves.ease,
