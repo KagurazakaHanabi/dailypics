@@ -8,6 +8,8 @@ import 'image_card.dart';
 class SliverImageCardList extends StatelessWidget {
   final Widget header;
 
+  final Widget footer;
+
   final List<Picture> data;
 
   final String Function(int index) tagBuilder;
@@ -17,10 +19,13 @@ class SliverImageCardList extends StatelessWidget {
   const SliverImageCardList({
     Key key,
     this.header,
-    this.data,
+    this.footer,
+    @required this.data,
     this.tagBuilder,
     this.adaptiveTablet = false,
-  }) : super(key: key);
+  })  : assert(data != null),
+        assert(adaptiveTablet != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +40,9 @@ class SliverImageCardList extends StatelessWidget {
           : EdgeInsets.only(left: 4, top: 15, right: 4),
       sliver: SliverStaggeredGrid.countBuilder(
         crossAxisCount: cnt,
-        itemCount: (data?.length ?? 0) + 1,
+        itemCount: data.length + 2,
         staggeredTileBuilder: (i) {
-          if (i == 0) {
+          if (i == 0 || i == data.length + 1) {
             return StaggeredTile.fit(cnt);
           } else if (iPad && !portrait && adaptiveTablet) {
             if (_needWiden(i)) {
@@ -52,6 +57,8 @@ class SliverImageCardList extends StatelessWidget {
         itemBuilder: (_, int i) {
           if (i == 0) {
             return header ?? Container();
+          } else if (i == data.length + 1) {
+            return footer ?? Container();
           } else if (iPad && !portrait && adaptiveTablet) {
             return ImageCard(
               data[i - 1],

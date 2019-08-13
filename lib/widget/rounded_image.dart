@@ -25,6 +25,7 @@ class RoundedImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Hero(
       tag: heroTag,
+      transitionOnUserGestures: true,
       child: ClipRRect(
         borderRadius: borderRadius,
         child: CachedNetworkImage(

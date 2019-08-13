@@ -2,10 +2,11 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:daily_pics/misc/bean.dart';
+import 'package:daily_pics/misc/utils.dart';
+import 'package:daily_pics/pages/recent.dart';
 import 'package:daily_pics/widget/slivers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 class TodayComponent extends StatefulWidget {
   @override
@@ -47,6 +48,7 @@ class _TodayComponentState extends State<TodayComponent>
               SliverSafeArea(
                 sliver: SliverImageCardList(
                   header: _buildHeader(),
+                  footer: _buildFooter(),
                   adaptiveTablet: true,
                   data: data,
                 ),
@@ -111,6 +113,40 @@ class _TodayComponentState extends State<TodayComponent>
     );
   }
 
+  Widget _buildFooter() {
+    return Container(
+      margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
+      padding: EdgeInsets.symmetric(vertical: 14),
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(
+            color: Color(0x4C000000),
+            width: 0,
+          ),
+        ),
+      ),
+      child: GestureDetector(
+        onTap: () => RecentPage.push(context),
+        child: Row(
+          children: <Widget>[
+            Text(
+              '往期精选',
+              style: TextStyle(
+                color: Color(0x8A000000),
+                fontSize: 14,
+              ),
+            ),
+            Icon(
+              CupertinoIcons.forward,
+              color: Color(0x8A000000),
+              size: 16,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   String _getDate() {
     DateTime date = DateTime.now();
     List<String> weekdays = ['一', '二', '三', '四', '五', '六', '日'];
@@ -166,8 +202,7 @@ class _TodayComponentState extends State<TodayComponent>
   }
 
   Future<void> _parseMark() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> list = prefs.getStringList('marked') ?? [];
+    List<String> list = await Settings.getMarked();
     for (int i = 0; i < data.length; i++) {
       data[i].marked = list.contains(data[i].id);
     }

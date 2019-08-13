@@ -4,6 +4,7 @@ import 'dart:ui' show ImageFilter, window;
 
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/utils.dart';
+import 'package:daily_pics/pages/details.dart';
 import 'package:daily_pics/widget/image_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show LinearProgressIndicator;
@@ -57,7 +58,9 @@ class _SearchPageState extends State<SearchPage> {
                         child: SearchBar(
                           autofocus: true,
                           onSubmitted: (value) {
-                            if (value.isNotEmpty) {
+                            if (Utils.isUUID(value)) {
+                              DetailsPage.push(context, pid: value);
+                            } else if (value.isNotEmpty) {
                               query = value;
                               _fetchData();
                             }

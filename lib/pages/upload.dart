@@ -46,9 +46,9 @@ class _UploadPageState extends State<UploadPage> {
             onSubmitted: _handleSubmitted,
           ),
           CupertinoSegmentedControl<String>(
-            selectedColor: Color(0xff9c9c9c),
-            borderColor: Color(0xff9c9c9c),
-            pressedColor: Color(0xff9c9c9c).withOpacity(0.2),
+            selectedColor: Color(0xFF9C9C9C),
+            borderColor: Color(0xFF9C9C9C),
+            pressedColor: Color(0xFF9C9C9C).withOpacity(0.2),
             padding: EdgeInsets.symmetric(vertical: 8),
             groupValue: type,
             children: {
@@ -78,7 +78,7 @@ class _UploadPageState extends State<UploadPage> {
             child: CupertinoButton(
               pressedOpacity: 0.7,
               padding: EdgeInsets.symmetric(vertical: 8),
-              color: Color(0xff353a40),
+              color: Color(0xFF353A40),
               child: Text('提交'),
               onPressed: () async {
                 if (progress != null) return;
@@ -157,8 +157,8 @@ class _UploadPageState extends State<UploadPage> {
                 borderRadius: BorderRadius.circular(4),
                 child: LinearProgressIndicator(
                   value: progress,
-                  backgroundColor: Color(0xff9c9c9c),
-                  valueColor: AlwaysStoppedAnimation(Color(0xff353a40)),
+                  backgroundColor: Color(0xFF9C9C9C),
+                  valueColor: AlwaysStoppedAnimation(Color(0xFF353A40)),
                 ),
               ),
             ),
@@ -189,11 +189,11 @@ class _UploadPageState extends State<UploadPage> {
           margin: EdgeInsets.symmetric(vertical: 16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            color: Color(0xffe0e0e0),
+            color: Color(0xFFE0E0E0),
             image: image,
             boxShadow: [
               BoxShadow(
-                color: Color(0xffd9d9d9),
+                color: Color(0xFFD9D9D9),
                 blurRadius: 12,
               )
             ],
@@ -228,7 +228,7 @@ class _UploadPageState extends State<UploadPage> {
                         },
                         child: Icon(
                           Ionicons.ios_informat_circle_outline,
-                          color: Color(0xff919191),
+                          color: Color(0xFF919191),
                         ),
                       ),
                     ),
@@ -236,7 +236,7 @@ class _UploadPageState extends State<UploadPage> {
                       alignment: Alignment.center,
                       child: Icon(
                         Ionicons.ios_add_circle_outline,
-                        color: Color(0xff9c9c9c),
+                        color: Color(0xFF9C9C9C),
                         size: 64,
                       ),
                     ),
@@ -297,10 +297,10 @@ class TextField extends StatelessWidget {
         maxLines: null,
         textInputAction: textInputAction,
         onSubmitted: onSubmitted,
-        cursorColor: Color(0xff353a40),
+        cursorColor: Color(0xFF353A40),
         style: TextStyle(fontSize: 16),
         decoration: BoxDecoration(
-          border: Border.all(color: Color(0xff919191), width: 0),
+          border: Border.all(color: Color(0xFF919191), width: 0),
           borderRadius: BorderRadius.circular(4),
         ),
       ),

@@ -8,7 +8,6 @@ import 'package:daily_pics/main.dart';
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/widget/adaptive_scaffold.dart';
-import 'package:daily_pics/widget/divider.dart';
 import 'package:daily_pics/widget/image_card.dart';
 import 'package:daily_pics/widget/rounded_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,7 +18,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class DetailsPage extends StatefulWidget {
   final Picture data;
@@ -28,7 +26,7 @@ class DetailsPage extends StatefulWidget {
 
   final String heroTag;
 
-  DetailsPage({this.data, this.pid, this.heroTag = '##'});
+  DetailsPage({this.data, this.pid, this.heroTag});
 
   @override
   State<StatefulWidget> createState() => _DetailsPageState();
@@ -75,7 +73,7 @@ class _DetailsPageState extends State<DetailsPage> {
       result = Center(
         child: Text(
           error,
-          style: TextStyle(color: Color(0x8a000000), fontSize: 14),
+          style: TextStyle(color: Color(0x8A000000), fontSize: 14),
         ),
       );
     } else if (widget.data != null) {
@@ -116,7 +114,7 @@ class _DetailsPageState extends State<DetailsPage> {
             Container(
               margin: EdgeInsets.only(top: 80),
               decoration: BoxDecoration(
-                color: Color(0xffffffff),
+                color: Color(0xFFFFFFFF),
                 borderRadius: BorderRadius.vertical(top: radius),
               ),
             ),
@@ -134,14 +132,14 @@ class _DetailsPageState extends State<DetailsPage> {
                       borderRadius: BorderRadius.vertical(top: radius),
                       placeholder: (_, __) {
                         return Container(
-                          color: Color(0xffe0e0e0),
+                          color: Color(0xFFE0E0E0),
                           child: Image.asset('res/placeholder.jpg'),
                         );
                       },
                     ),
                   ),
                   Container(
-                    color: Color(0xffffffff),
+                    color: Color(0xFFFFFFFF),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -180,20 +178,27 @@ class _DetailsPageState extends State<DetailsPage> {
                           child: SelectableText(
                             data.content,
                             style: TextStyle(
-                              color: Color(0x8a000000),
+                              color: Color(0x8A000000),
                               fontSize: 15,
                               height: 1.2,
                             ),
                           ),
                         ),
-                        Divider(),
                         Container(
                           alignment: Alignment.center,
                           padding: EdgeInsets.symmetric(vertical: 29),
+                          decoration: BoxDecoration(
+                            border: Border(
+                              top: BorderSide(
+                                color: Color(0x4C000000),
+                                width: 0,
+                              ),
+                            ),
+                          ),
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
-                              color: Color(0xfff2f2f7),
+                              color: Color(0xFFF2F2F7),
                             ),
                             child: CupertinoButton(
                               pressedOpacity: 0.4,
@@ -268,14 +273,13 @@ class _DetailsPageState extends State<DetailsPage> {
     } else {
       data.marked = !data.marked;
     }
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    HashSet<String> list = HashSet.from(prefs.getStringList('marked') ?? []);
+    HashSet<String> list = HashSet.from(await Settings.getMarked());
     if (data.marked) {
       list.add(data.id);
     } else {
       list.remove(data.id);
     }
-    await prefs.setStringList('marked', list.toList());
+    await Settings.setMarked(list.toList());
     setState(() {});
   }
 }
@@ -334,7 +338,7 @@ class _SaveButtonState extends State<SaveButton> {
           decoration: BoxDecoration(
             color: progress == 1 && Platform.isAndroid
                 ? primaryColor
-                : Color(0xfff2f2f7),
+                : Color(0xFFF2F2F7),
             borderRadius: BorderRadius.circular(18),
           ),
           child: Text(
@@ -343,7 +347,7 @@ class _SaveButtonState extends State<SaveButton> {
               fontSize: 15,
               fontWeight: FontWeight.w500,
               color: progress == 1 && Platform.isAndroid
-                  ? Color(0xfff2f2f7)
+                  ? Color(0xFFF2F2F7)
                   : primaryColor,
             ),
           ),
@@ -356,9 +360,9 @@ class _SaveButtonState extends State<SaveButton> {
           child: CircularProgressIndicator(
             strokeWidth: 2,
             value: progress,
-            backgroundColor: progress != null ? Color(0xffdadade) : null,
+            backgroundColor: progress != null ? Color(0xFFDADADE) : null,
             valueColor: progress == null
-                ? AlwaysStoppedAnimation(Color(0xffdadade))
+                ? AlwaysStoppedAnimation(Color(0xFFDADADE))
                 : null,
           ),
         ),

@@ -1,11 +1,10 @@
 import 'dart:async';
 
-import 'package:daily_pics/components/recent.dart';
 import 'package:daily_pics/components/suggest.dart';
 import 'package:daily_pics/components/today.dart';
-import 'package:daily_pics/main.dart';
 import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/pages/details.dart';
+import 'package:daily_pics/pages/recent.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
@@ -19,7 +18,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final List<Widget> _tabs = [
     TodayComponent(),
-    RecentComponent(),
     SuggestComponent(),
     //SettingsComponent(),
   ];
@@ -36,15 +34,14 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: Utils.isDarkColor(CupertinoTheme.of(context).barBackgroundColor)
-          ? OverlayStyles.light
-          : OverlayStyles.dark,
+      value: Utils.getOverlayStyle(
+        CupertinoTheme.of(context).barBackgroundColor,
+      ),
       child: CupertinoTabScaffold(
         resizeToAvoidBottomInset: false,
         tabBar: CupertinoTabBar(
           items: [
             _buildNavigationItem(Ionicons.ios_today, 'Today'),
-            _buildNavigationItem(Ionicons.ios_time, '以往'),
             _buildNavigationItem(Ionicons.ios_flame, '推荐 '),
             //_buildNavigationItem(Ionicons.ios_settings, '更多'),
           ],
@@ -75,7 +72,7 @@ class _HomePageState extends State<HomePage> {
         break;
 
       case 't':
-        // TODO: 2019-07-26 Yaerin: Support tujian://t/$tid
+        RecentPage.push(context, tid: uuid);
         break;
     }
   }

@@ -31,14 +31,14 @@ class AppDelegate: FlutterAppDelegate {
                 let albums: PHFetchResult = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .albumRegular, options: nil)
                 var album: PHAssetCollection? = nil;
                 for i in 0..<albums.count {
-                    if albums.object(at: i).localizedTitle == "Tujian R" {
+                    if albums.object(at: i).localizedTitle == "图鉴日图" {
                         album = albums.object(at: i)
                         break
                     }
                 }
                 if album == nil {
                     PHPhotoLibrary.shared().performChanges({
-                        PHAssetCollectionChangeRequest.creationRequestForAssetCollection(withTitle: "Tujian R")
+                        PHAssetCollectionChangeRequest.creationRequestForAssetCollection(withTitle: "图鉴日图")
                     }, completionHandler: { (success: Bool, error: Error?) in
                         if success {
                             self.syncAlbum(file: file, result: result)

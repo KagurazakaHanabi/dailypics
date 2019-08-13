@@ -5,6 +5,7 @@ import 'package:daily_pics/widget/animated_transform.dart';
 import 'package:daily_pics/widget/qrcode.dart';
 import 'package:daily_pics/widget/rounded_image.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart' show Colors;
 
 class ImageCard extends StatefulWidget {
   final Picture data;
@@ -50,8 +51,9 @@ class _ImageCardState extends State<ImageCard> {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Color(0xffd9d9d9),
-                offset: Offset(0, 16),
+                color: Colors.black26,
+                offset: Offset(0, 4),
+                spreadRadius: -24,
                 blurRadius: 32,
               )
             ],
@@ -86,7 +88,7 @@ class _ImageCardState extends State<ImageCard> {
                       imageUrl: Utils.getCompressed(widget.data),
                       placeholder: (_, __) {
                         return Container(
-                          color: Color(0xffe0e0e0),
+                          color: Color(0xFFE0E0E0),
                           child: Image.asset('res/placeholder.jpg'),
                         );
                       },
@@ -101,8 +103,8 @@ class _ImageCardState extends State<ImageCard> {
                           widget.data.title,
                           style: TextStyle(
                             color: Utils.isDarkColor(widget.data.color)
-                                ? Color(0xffffffff)
-                                : Color(0xff000000),
+                                ? Color(0xFFFFFFFF)
+                                : Color(0xFF000000),
                             fontWeight: FontWeight.w500,
                             fontSize: 28,
                           ),

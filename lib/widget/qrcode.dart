@@ -42,7 +42,7 @@ class _QrCodePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     canvas.drawRect(
       Rect.fromLTWH(0, 0, size.width, size.height),
-      Paint()..color = Color(0xffffffff),
+      Paint()..color = Color(0xFFFFFFFF),
     );
     canvas.translate(1.5, 1.5);
     for (int x = 0; x < code.moduleCount; x++) {
@@ -50,7 +50,7 @@ class _QrCodePainter extends CustomPainter {
         if (code.isDark(y, x)) {
           canvas.drawRect(
             Rect.fromLTWH(x * 1.5, y *1.5, 1.5, 1.5),
-            Paint()..color = Color(0xff000000),
+            Paint()..color = Color(0xFF000000),
           );
         }
       }
