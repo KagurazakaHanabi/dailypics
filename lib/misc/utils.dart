@@ -1,3 +1,17 @@
+// Copyright 2019 KagurazakaHanabi<i@yaerin.com>
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -13,6 +27,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Utils {
   static MethodChannel _channel = MethodChannel('ml.cerasus.pics');
+
+  static Future<void> share(File file) async {
+    await _channel.invokeMethod('share', file.path);
+  }
+
+  static Future<void> useAsWallpaper(File file) async {
+    await _channel.invokeMethod('useAsWallpaper', file.path);
+  }
+
+  static Future<void> requestReview(bool inApp) async {
+    await _channel.invokeMethod('requestReview');
+  }
 
   static Future<File> download(
     String url,
@@ -92,14 +118,6 @@ class Utils {
     )));
     HttpClientResponse response = await request.close();
     return await response.cast<List<int>>().transform(utf8.decoder).join();
-  }
-
-  static Future<void> share(File imageFile) async {
-    await _channel.invokeMethod('share', imageFile.path);
-  }
-
-  static Future<void> useAsWallpaper(File imageFile) async {
-    await _channel.invokeMethod('useAsWallpaper', imageFile.path);
   }
 
   static String getCompressed(Picture data) {

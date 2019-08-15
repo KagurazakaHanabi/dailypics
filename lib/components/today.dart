@@ -1,3 +1,17 @@
+// Copyright 2019 KagurazakaHanabi<i@yaerin.com>
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 import 'dart:convert';
 import 'dart:ui';
 
@@ -6,6 +20,7 @@ import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/pages/recent.dart';
 import 'package:daily_pics/widget/slivers.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart' show Colors;
 import 'package:http/http.dart' as http;
 
 class TodayComponent extends StatefulWidget {
@@ -61,7 +76,7 @@ class _TodayComponentState extends State<TodayComponent>
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
               height: MediaQuery.of(context).padding.top,
-              color: Color(0x00000000),
+              color: Colors.transparent,
             ),
           ),
         ),
@@ -132,13 +147,13 @@ class _TodayComponentState extends State<TodayComponent>
             Text(
               '往期精选',
               style: TextStyle(
-                color: Color(0x8A000000),
+                color: Colors.black54,
                 fontSize: 14,
               ),
             ),
             Icon(
               CupertinoIcons.forward,
-              color: Color(0x8A000000),
+              color: Colors.black54,
               size: 16,
             ),
           ],

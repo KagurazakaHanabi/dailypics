@@ -1,3 +1,17 @@
+// Copyright 2019 KagurazakaHanabi<i@yaerin.com>
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
@@ -12,7 +26,7 @@ import 'package:daily_pics/widget/image_card.dart';
 import 'package:daily_pics/widget/rounded_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart'
-    show CircularProgressIndicator, SelectableText;
+    show CircularProgressIndicator, Colors, SelectableText;
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
@@ -73,7 +87,7 @@ class _DetailsPageState extends State<DetailsPage> {
       result = Center(
         child: Text(
           error,
-          style: TextStyle(color: Color(0x8A000000), fontSize: 14),
+          style: TextStyle(color: Colors.black54, fontSize: 14),
         ),
       );
     } else if (widget.data != null) {
@@ -98,7 +112,7 @@ class _DetailsPageState extends State<DetailsPage> {
           ? OverlayStyles.light
           : OverlayStyles.dark,
       child: AdaptiveScaffold(
-        backgroundColor: Color(0x00000000),
+        backgroundColor: Colors.transparent,
         child: Stack(
           children: <Widget>[
             Container(
@@ -114,7 +128,7 @@ class _DetailsPageState extends State<DetailsPage> {
             Container(
               margin: EdgeInsets.only(top: 80),
               decoration: BoxDecoration(
-                color: Color(0xFFFFFFFF),
+                color: Colors.white,
                 borderRadius: BorderRadius.vertical(top: radius),
               ),
             ),
@@ -139,7 +153,7 @@ class _DetailsPageState extends State<DetailsPage> {
                     ),
                   ),
                   Container(
-                    color: Color(0xFFFFFFFF),
+                    color: Colors.white,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -178,7 +192,7 @@ class _DetailsPageState extends State<DetailsPage> {
                           child: SelectableText(
                             data.content,
                             style: TextStyle(
-                              color: Color(0x8A000000),
+                              color: Colors.black54,
                               fontSize: 15,
                               height: 1.2,
                             ),
@@ -293,7 +307,7 @@ class CloseButton extends StatelessWidget {
         padding: EdgeInsets.all(16),
         child: Icon(
           CupertinoIcons.clear_circled_solid,
-          color: Color(0x61000000),
+          color: Colors.black38,
           size: 32,
         ),
       ),
