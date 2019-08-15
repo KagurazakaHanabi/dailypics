@@ -326,21 +326,37 @@ class SaveButton extends StatefulWidget {
 
 class _SaveButtonState extends State<SaveButton> {
   bool started = false;
+  bool denied = false;
   double progress;
   File file;
+
+
+  @override
+  void initState() {
+    super.initState();
+    Utils.isAlbumAuthorized().then((granted) {
+      setState(() => denied = !granted);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     Color primaryColor = CupertinoTheme.of(context).primaryColor;
     return GestureDetector(
       onTap: () async {
-        if (!started) {
+        if (denied) {
+          Utils.openAppSettings();
+        } else if (!started) {
           setState(() => started = true);
-          file = await Utils.download(widget.url, (int count, int total) {
-            if (mounted) {
-              setState(() => progress = count / total);
-            }
-          });
+          try {
+            file = await Utils.download(widget.url, (int count, int total) {
+              if (mounted) {
+                setState(() => progress = count / total);
+              }
+            });
+          } on PlatformException catch (e) {
+            if (e.code == '0') setState(() => denied = true);
+          }
         } else if (progress == 1 && Platform.isAndroid) {
           Utils.useAsWallpaper(file);
         }
@@ -350,19 +366,25 @@ class _SaveButtonState extends State<SaveButton> {
           alignment: Alignment.center,
           padding: EdgeInsets.symmetric(vertical: 3, horizontal: 20),
           decoration: BoxDecoration(
-            color: progress == 1 && Platform.isAndroid
-                ? primaryColor
-                : Color(0xFFF2F2F7),
+            color: denied
+                ? CupertinoColors.destructiveRed
+                : progress == 1 && Platform.isAndroid
+                    ? primaryColor
+                    : Color(0xFFF2F2F7),
             borderRadius: BorderRadius.circular(18),
           ),
           child: Text(
-            progress != 1 ? '获取' : Platform.isAndroid ? '设定' : '完成',
+            denied
+                ? '授权'
+                : progress != 1 ? '获取' : Platform.isAndroid ? '设定' : '完成',
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w500,
-              color: progress == 1 && Platform.isAndroid
+              color: denied
                   ? Color(0xFFF2F2F7)
-                  : primaryColor,
+                  : progress == 1 && Platform.isAndroid
+                      ? Color(0xFFF2F2F7)
+                      : primaryColor,
             ),
           ),
         ),

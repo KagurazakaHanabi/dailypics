@@ -17,7 +17,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:daily_pics/main.dart';
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/local_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -38,7 +37,15 @@ class Utils {
   }
 
   static Future<void> requestReview(bool inApp) async {
-    await _channel.invokeMethod('requestReview');
+    await _channel.invokeMethod('requestReview', inApp);
+  }
+
+  static Future<bool> isAlbumAuthorized() {
+    return _channel.invokeMethod('isAlbumAuthorized');
+  }
+
+  static Future<void> openAppSettings() async {
+    await _channel.invokeMethod('openAppSettings');
   }
 
   static Future<File> download(
@@ -147,10 +154,6 @@ class Utils {
     );
     return regExp.hasMatch(input);
   }
-
-  static SystemUiOverlayStyle getOverlayStyle(Color color) {
-    return Utils.isDarkColor(color) ? OverlayStyles.light : OverlayStyles.dark;
-  }
 }
 
 class Device {
@@ -169,13 +172,25 @@ class Device {
 }
 
 class Settings {
-  static LocalStorage _localStorage;
+  static LocalStorage _prefs;
 
   static Future<void> initial() async {
-    _localStorage = LocalStorage(await SharedPreferences.getInstance());
+    _prefs = LocalStorage(await SharedPreferences.getInstance());
   }
 
-  static List<String> get marked => _localStorage['marked'] ?? [];
+  static List<String> get marked => _prefs['marked'] ?? [];
 
-  static set marked(List<String> value) => _localStorage['marked'] = value;
+  static set marked(List<String> value) => _prefs['marked'] = value;
+
+  /// App 启动次数
+  ///
+  /// 示例：'[1, 2, 2, 0, 1]'
+  static String get launchTimes => _prefs['launch_times'] ?? '[0]';
+
+  static set launchTimes(String value) => _prefs['launch_times'] = value;
+
+  /// 最后启动时间
+  static String get lastLaunch => _prefs['last_launch'];
+
+  static set lastLaunch(String value) => _prefs['last_launch'] = value;
 }

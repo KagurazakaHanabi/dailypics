@@ -1,6 +1,7 @@
-import UIKit
 import Flutter
 import Photos
+import UIKit
+import StoreKit
 
 @UIApplicationMain
 class AppDelegate: FlutterAppDelegate {
@@ -13,16 +14,53 @@ class AppDelegate: FlutterAppDelegate {
         channel.setMethodCallHandler({
             (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
             switch call.method {
-            case "syncAlbum":
-                self.syncAlbum(file: call.arguments as! String, result: result)
             case "share":
                 self.share(imageFile: call.arguments as! String, result: result)
+            case "requestReview":
+                self.requestReview(inApp: call.arguments as! Bool, result: result)
+            case "isAlbumAuthorized":
+                self.isAlbumAuthorized(result: result)
+            case "openAppSettings":
+                self.openAppSettings(result: result)
+            case "syncAlbum":
+                self.syncAlbum(file: call.arguments as! String, result: result)
             default:
                 result(FlutterMethodNotImplemented)
             }
         })
         GeneratedPluginRegistrant.register(with: self)
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+    }
+
+    private func share(imageFile: String, result: FlutterResult) {
+        do {
+            let data = try Data(contentsOf: URL.init(string: "file://" + imageFile)!)
+            let controller = UIActivityViewController.init(activityItems: [UIImage(data: data) as Any], applicationActivities: nil)
+            window.rootViewController!.present(controller, animated: true, completion: nil)
+            result(nil)
+        } catch let error {
+            result(FlutterError(code: "0", message: error.localizedDescription, details: nil))
+        }
+    }
+
+    private func requestReview(inApp: Bool, result: FlutterResult) {
+        if inApp && #available(iOS 10.3, *) {
+            SKStoreReviewController.requestReview();
+            result(nil)
+        } else {
+            // TODO 2019-08-16: 唤起 App Store 撰写评论页面
+        }
+    }
+
+    private func isAlbumAuthorized(result: FlutterResult) {
+        let status = PHPhotoLibrary.authorizationStatus()
+        result(status == .authorized || status == .notDetermined)
+    }
+
+    private func openAppSettings(result: FlutterResult) {
+        let url = NSURL(string: UIApplicationOpenSettingsURLString)!
+        UIApplication.sharedApplication().openURL(url)
+        result(nil)
     }
     
     private func syncAlbum(file: String, result: @escaping FlutterResult) {
@@ -65,16 +103,5 @@ class AppDelegate: FlutterAppDelegate {
                 result(FlutterError(code: "-1", message: "Permission Denied", details: nil))
             }
         })
-    }
-    
-    private func share(imageFile: String, result: FlutterResult) {
-        do {
-            let data = try Data(contentsOf: URL.init(string: "file://" + imageFile)!)
-            let controller = UIActivityViewController.init(activityItems: [UIImage(data: data) as Any], applicationActivities: nil)
-            window.rootViewController!.present(controller, animated: true, completion: nil)
-            result(nil)
-        } catch let error {
-            result(FlutterError(code: "0", message: error.localizedDescription, details: nil))
-        }
     }
 }

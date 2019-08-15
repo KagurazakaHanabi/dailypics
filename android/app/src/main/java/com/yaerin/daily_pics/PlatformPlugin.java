@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.provider.Settings;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
@@ -41,11 +42,6 @@ public class PlatformPlugin implements MethodCallHandler {
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         switch (call.method) {
-            case "syncAlbum": {
-                syncAlbum((String) call.arguments, result);
-                break;
-            }
-
             case "share": {
                 share((String) call.arguments, result);
                 break;
@@ -56,21 +52,30 @@ public class PlatformPlugin implements MethodCallHandler {
                 break;
             }
 
+            case "requestReview": {
+                requestReview(result);
+                break;
+            }
+
+            case "isAlbumAuthorized": {
+                result.success(true);
+                break;
+            }
+
+            case "openAppSettings": {
+                openAppSettings(result);
+                break;
+            }
+
+            case "syncAlbum": {
+                syncAlbum((String) call.arguments, result);
+                break;
+            }
+
             default: {
                 result.notImplemented();
                 break;
             }
-        }
-    }
-
-    private void syncAlbum(String file, Result result) {
-        Context context = mRegistrar.activity();
-        ContentResolver cr = context.getContentResolver();
-        try {
-            MediaStore.Images.Media.insertImage(cr, file, null, null);
-            result.success(null);
-        } catch (IOException e) {
-            result.error("0", e.getLocalizedMessage(), e);
         }
     }
 
@@ -93,6 +98,33 @@ public class PlatformPlugin implements MethodCallHandler {
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         context.startActivity(Intent.createChooser(intent, "设置为壁纸"));
         result.success(null);
+    }
+
+    private void requestReview(Result result) {
+        Uri uri = Uri.parse("market://details?id=" + BuildConfig.APPLICATION_ID);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        mRegistrar.activity().startActivity(intent);
+        result.success(null);
+    }
+
+    private void openAppSettings(Result result) {
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setData(Uri.fromParts("package", BuildConfig.APPLICATION_ID, null));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        mRegistrar.activity().startActivity(intent);
+        result.success(null);
+    }
+
+    private void syncAlbum(String file, Result result) {
+        Context context = mRegistrar.activity();
+        ContentResolver cr = context.getContentResolver();
+        try {
+            MediaStore.Images.Media.insertImage(cr, file, null, null);
+            result.success(null);
+        } catch (IOException e) {
+            result.error("0", e.getLocalizedMessage(), e);
+        }
     }
 
     /**

@@ -13,9 +13,12 @@
 // limitations under the License.
 
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:daily_pics/components/settings.dart';
 import 'package:daily_pics/components/suggest.dart';
 import 'package:daily_pics/components/today.dart';
+import 'package:daily_pics/main.dart';
 import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/pages/details.dart';
 import 'package:daily_pics/pages/recent.dart';
@@ -33,7 +36,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _tabs = [
     TodayComponent(),
     SuggestComponent(),
-    //SettingsComponent(),
+    SettingsComponent(),
   ];
 
   StreamSubscription _subscription;
@@ -44,21 +47,39 @@ class _HomePageState extends State<HomePage> {
     // 处理 App 内打开
     getInitialUri().then(_handleUniLink);
     _subscription = getUriLinksStream().listen(_handleUniLink);
+
+    // 记录五天内启动次数，大于十次则允许展示 App 内评分
+    List<int> times = List.from(jsonDecode(Settings.launchTimes)).cast<int>();
+    DateTime lastLaunch;
+    if (Settings.lastLaunch == null) {
+      lastLaunch = DateTime.now();
+      Settings.lastLaunch = DateTime.now().toString();
+    } else {
+      lastLaunch = DateTime.parse(Settings.lastLaunch);
+    }
+    if (lastLaunch.day == DateTime.now().day) {
+      times[times.length - 1] += 1;
+    } else {
+      if (times.length == 5) times.removeAt(0);
+      times.add(1);
+      Settings.lastLaunch = DateTime.now().toString();
+    }
+    Settings.launchTimes = jsonEncode(times);
   }
 
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: Utils.getOverlayStyle(
-        CupertinoTheme.of(context).barBackgroundColor,
-      ),
+      value: Utils.isDarkColor(CupertinoTheme.of(context).barBackgroundColor)
+          ? OverlayStyles.light
+          : OverlayStyles.dark,
       child: CupertinoTabScaffold(
         resizeToAvoidBottomInset: false,
         tabBar: CupertinoTabBar(
           items: [
             _buildNavigationItem(Ionicons.ios_today, 'Today'),
             _buildNavigationItem(Ionicons.ios_flame, '推荐 '),
-            //_buildNavigationItem(Ionicons.ios_settings, '更多'),
+            _buildNavigationItem(Ionicons.ios_settings, '更多'),
           ],
         ),
         tabBuilder: (_, i) {

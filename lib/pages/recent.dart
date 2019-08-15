@@ -221,9 +221,10 @@ class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
     EdgeInsets padding = MediaQuery.of(context).padding;
     CupertinoThemeData theme = CupertinoTheme.of(context);
     TextStyle navTitleTextStyle = theme.textTheme.navTitleTextStyle;
-    //CupertinoNavigationBar
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: Utils.getOverlayStyle(theme.barBackgroundColor),
+      value: Utils.isDarkColor(theme.barBackgroundColor)
+          ? OverlayStyles.light
+          : OverlayStyles.dark,
       child: OverflowBox(
         minHeight: 0,
         maxHeight: double.infinity,
