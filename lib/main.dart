@@ -12,12 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/pages/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  // 初始化设置
+  await Settings.initial();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override

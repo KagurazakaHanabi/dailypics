@@ -287,13 +287,13 @@ class _DetailsPageState extends State<DetailsPage> {
     } else {
       data.marked = !data.marked;
     }
-    HashSet<String> list = HashSet.from(await Settings.getMarked());
+    HashSet<String> hashSet = HashSet.from(Settings.marked);
     if (data.marked) {
-      list.add(data.id);
+      hashSet.add(data.id);
     } else {
-      list.remove(data.id);
+      hashSet.remove(data.id);
     }
-    await Settings.setMarked(list.toList());
+    Settings.marked = hashSet.toList();
     setState(() {});
   }
 }

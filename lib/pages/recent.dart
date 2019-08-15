@@ -153,7 +153,7 @@ class _RecentPageState extends State<RecentPage>
   }
 
   Future<List<Picture>> _parseMark(List<Picture> pics) async {
-    List<String> list = await Settings.getMarked();
+    List<String> list = Settings.marked;
     for (int i = 0; i < pics.length; i++) {
       pics[i].marked = list.contains(pics[i].id);
     }

@@ -41,6 +41,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    // 处理 App 内打开
     getInitialUri().then(_handleUniLink);
     _subscription = getUriLinksStream().listen(_handleUniLink);
   }

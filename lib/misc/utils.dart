@@ -19,6 +19,7 @@ import 'dart:typed_data';
 
 import 'package:daily_pics/main.dart';
 import 'package:daily_pics/misc/bean.dart';
+import 'package:daily_pics/misc/local_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -168,13 +169,13 @@ class Device {
 }
 
 class Settings {
-  static Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  static LocalStorage _localStorage;
 
-  static Future<List<String>> getMarked() async {
-    return (await _prefs).getStringList('marked') ?? [];
+  static Future<void> initial() async {
+    _localStorage = LocalStorage(await SharedPreferences.getInstance());
   }
 
-  static Future<void> setMarked(List<String> value) async {
-    return (await _prefs).setStringList('marked', value);
-  }
+  static List<String> get marked => _localStorage['marked'] ?? [];
+
+  static set marked(List<String> value) => _localStorage['marked'] = value;
 }

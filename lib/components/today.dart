@@ -217,7 +217,7 @@ class _TodayComponentState extends State<TodayComponent>
   }
 
   Future<void> _parseMark() async {
-    List<String> list = await Settings.getMarked();
+    List<String> list = Settings.marked;
     for (int i = 0; i < data.length; i++) {
       data[i].marked = list.contains(data[i].id);
     }
