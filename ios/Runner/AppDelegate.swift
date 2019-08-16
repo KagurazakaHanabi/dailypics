@@ -15,7 +15,9 @@ class AppDelegate: FlutterAppDelegate {
             (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
             switch call.method {
             case "share":
-                self.share(imageFile: call.arguments as! String, result: result)
+                self.share(file: call.arguments as! String, result: result)
+            case "useAsWallpaper":
+                self.useAsWallpaper(file: call.arguments as! String, result: result)
             case "requestReview":
                 self.requestReview(inApp: call.arguments as! Bool, result: result)
             case "isAlbumAuthorized":
@@ -32,9 +34,9 @@ class AppDelegate: FlutterAppDelegate {
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 
-    private func share(imageFile: String, result: FlutterResult) {
+    private func share(file: String, result: FlutterResult) {
         do {
-            let data = try Data(contentsOf: URL.init(string: "file://" + imageFile)!)
+            let data = try Data(contentsOf: URL.init(string: "file://" + file)!)
             let controller = UIActivityViewController.init(activityItems: [UIImage(data: data) as Any], applicationActivities: nil)
             window.rootViewController!.present(controller, animated: true, completion: nil)
             result(nil)
@@ -42,13 +44,20 @@ class AppDelegate: FlutterAppDelegate {
             result(FlutterError(code: "0", message: error.localizedDescription, details: nil))
         }
     }
-
+    
+    private func useAsWallpaper(file: String, result: FlutterResult) {
+        result(FlutterMethodNotImplemented)
+    }
+    
+    // TODO 2019-08-16: Waiting for test.
     private func requestReview(inApp: Bool, result: FlutterResult) {
-        if inApp && #available(iOS 10.3, *) {
+        if inApp, #available(iOS 10.3, *) {
             SKStoreReviewController.requestReview();
             result(nil)
         } else {
-            // TODO 2019-08-16: 唤起 App Store 撰写评论页面
+            let url = "item-apps://itunes.apple.com/app/id1457009047?action=write-review"
+            UIApplication.shared.openURL(URL.init(string: url)!)
+            result(nil)
         }
     }
 
@@ -58,8 +67,7 @@ class AppDelegate: FlutterAppDelegate {
     }
 
     private func openAppSettings(result: FlutterResult) {
-        let url = NSURL(string: UIApplicationOpenSettingsURLString)!
-        UIApplication.sharedApplication().openURL(url)
+        UIApplication.shared.openURL(URL.init(string: UIApplication.openSettingsURLString)!)
         result(nil)
     }
     

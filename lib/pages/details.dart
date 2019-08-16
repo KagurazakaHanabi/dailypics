@@ -324,19 +324,27 @@ class SaveButton extends StatefulWidget {
   _SaveButtonState createState() => _SaveButtonState();
 }
 
-class _SaveButtonState extends State<SaveButton> {
+class _SaveButtonState extends State<SaveButton> with WidgetsBindingObserver {
   bool started = false;
   bool denied = false;
   double progress;
   File file;
 
-
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     Utils.isAlbumAuthorized().then((granted) {
       setState(() => denied = !granted);
     });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.resumed && mounted) {
+      bool granted = await Utils.isAlbumAuthorized();
+      setState(() => denied = !granted);
+    }
   }
 
   @override
@@ -408,5 +416,11 @@ class _SaveButtonState extends State<SaveButton> {
         duration: Duration(milliseconds: 200),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 }
