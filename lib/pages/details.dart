@@ -182,7 +182,7 @@ class _DetailsPageState extends State<DetailsPage> {
                               ),
                               Padding(
                                 padding: EdgeInsets.only(left: 16),
-                                child: SaveButton(url: data.url),
+                                child: SaveButton(data),
                               ),
                             ],
                           ),
@@ -316,9 +316,9 @@ class CloseButton extends StatelessWidget {
 }
 
 class SaveButton extends StatefulWidget {
-  final String url;
+  final Picture data;
 
-  SaveButton({Key key, @required this.url}) : super(key: key);
+  SaveButton(this.data);
 
   @override
   _SaveButtonState createState() => _SaveButtonState();
@@ -357,7 +357,7 @@ class _SaveButtonState extends State<SaveButton> with WidgetsBindingObserver {
         } else if (!started) {
           setState(() => started = true);
           try {
-            file = await Utils.download(widget.url, (int count, int total) {
+            file = await Utils.download(widget.data, (count, total) {
               if (mounted) {
                 setState(() => progress = count / total);
               }

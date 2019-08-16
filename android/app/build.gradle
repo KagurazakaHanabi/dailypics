@@ -15,7 +15,7 @@ apply plugin: 'com.android.application'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
 
     lintOptions {
         disable 'InvalidPackage'
@@ -24,9 +24,9 @@ android {
     defaultConfig {
         applicationId "cn.dailypics.android"
         minSdkVersion 16
-        targetSdkVersion 28
-        versionCode 190807
-        versionName '1.0.0'
+        targetSdkVersion 29
+        versionCode 190814
+        versionName '1.0.1'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 

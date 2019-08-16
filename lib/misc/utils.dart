@@ -49,10 +49,11 @@ class Utils {
   }
 
   static Future<File> download(
-    String url,
+    Picture data,
     void Function(int count, int total) cb,
   ) async {
     Completer<File> completer = Completer();
+    String url = data.url;
     String dest = (await getTemporaryDirectory()).path;
     File file;
     String name;
@@ -76,7 +77,11 @@ class Utils {
         cb(count += data.length, response.contentLength);
       }
     }, onDone: () async {
-      await _channel.invokeMethod('syncAlbum', file.path);
+      await _channel.invokeMethod('syncAlbum', {
+        'file': file.path,
+        'title': data.title,
+        'content': data.content,
+      });
       completer.complete(file);
     });
     return completer.future;

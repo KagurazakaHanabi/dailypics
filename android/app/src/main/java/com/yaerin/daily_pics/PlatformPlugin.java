@@ -2,19 +2,26 @@ package com.yaerin.daily_pics;
 
 import android.app.WallpaperManager;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.provider.Settings;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 import io.flutter.plugin.common.MethodCall;
@@ -22,6 +29,11 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
+
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.os.Environment.DIRECTORY_PICTURES;
+import static android.os.Environment.getExternalStoragePublicDirectory;
+import static androidx.core.content.ContextCompat.checkSelfPermission;
 
 public class PlatformPlugin implements MethodCallHandler {
     private static final String PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + ".file_provider";
@@ -58,7 +70,7 @@ public class PlatformPlugin implements MethodCallHandler {
             }
 
             case "isAlbumAuthorized": {
-                result.success(true);
+                isAlbumAuthorized(result);
                 break;
             }
 
@@ -68,7 +80,11 @@ public class PlatformPlugin implements MethodCallHandler {
             }
 
             case "syncAlbum": {
-                syncAlbum((String) call.arguments, result);
+                try {
+                    syncAlbum(call, result);
+                } catch (IOException e) {
+                    result.error("0", "The image failed to be stored", null);
+                }
                 break;
             }
 
@@ -91,6 +107,7 @@ public class PlatformPlugin implements MethodCallHandler {
         result.success(null);
     }
 
+    // FIXME 2019-08-17: 部分设备上不可用
     private void useAsWallpaper(String file, Result result) {
         Context context = mRegistrar.activity();
         Uri uri = FileProvider.getUriForFile(context, PROVIDER_AUTHORITY, new File(file));
@@ -108,6 +125,12 @@ public class PlatformPlugin implements MethodCallHandler {
         result.success(null);
     }
 
+    private void isAlbumAuthorized(Result result) {
+        Context context = mRegistrar.activity();
+        int status = checkSelfPermission(context, WRITE_EXTERNAL_STORAGE);
+        result.success(status == PackageManager.PERMISSION_GRANTED);
+    }
+
     private void openAppSettings(Result result) {
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.setData(Uri.fromParts("package", BuildConfig.APPLICATION_ID, null));
@@ -116,14 +139,64 @@ public class PlatformPlugin implements MethodCallHandler {
         result.success(null);
     }
 
-    private void syncAlbum(String file, Result result) {
-        Context context = mRegistrar.activity();
-        ContentResolver cr = context.getContentResolver();
-        try {
-            MediaStore.Images.Media.insertImage(cr, file, null, null);
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private void syncAlbum(MethodCall call, Result result) throws IOException {
+        ContentResolver cr = mRegistrar.activity().getContentResolver();
+
+        String file = call.argument("file");
+        String title = call.argument("title");
+        String description = call.argument("content");
+
+        assert file != null;
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, title);
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, title);
+        values.put(MediaStore.Images.Media.DESCRIPTION, description);
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+
+        Uri uri = null;
+        OutputStream os;
+        File dest = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            values.put(MediaStore.Images.Media.IS_PENDING, true);
+            values.put(MediaStore.Images.Media.RELATIVE_PATH, DIRECTORY_PICTURES + "/图鉴日图");
+            uri = cr.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            if (uri != null) {
+                os = cr.openOutputStream(uri);
+            } else {
+                result.error("0", "The image failed to be stored", null);
+                return;
+            }
+        } else {
+            File dir = new File(getExternalStoragePublicDirectory(DIRECTORY_PICTURES), "/图鉴日图");
+            if (!dir.exists()) dir.mkdirs();
+            dest = new File(dir, new File(file).getName());
+            os = new FileOutputStream(dest);
+        }
+
+        if (os != null) {
+            BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+            BufferedOutputStream bos = new BufferedOutputStream(os);
+            byte[] bytes = new byte[1024];
+            int len;
+            while ((len = bis.read(bytes)) != -1) {
+                bos.write(bytes, 0, len);
+            }
+            bis.close();
+            bos.close();
+        } else {
+            result.error("0", "The image failed to be stored", null);
+            return;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            values.put(MediaStore.Images.Media.IS_PENDING, false);
+            cr.update(uri, values, null, null);
             result.success(null);
-        } catch (IOException e) {
-            result.error("0", e.getLocalizedMessage(), e);
+        } else {
+            values.put(MediaStore.Images.Media.DATA, dest.getAbsolutePath());
+            cr.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            result.success(null);
         }
     }
 
@@ -136,8 +209,6 @@ public class PlatformPlugin implements MethodCallHandler {
      *
      * @param imageUri The image URI that will be set in the intent. The must be a content
      *                 URI and its provider must resolve its type to "image/*"
-     * @throws IllegalArgumentException if the URI is not a content URI or its MIME type is
-     *                                  not "image/*"
      * @see WallpaperManager#getCropAndSetWallpaperIntent(Uri)
      */
     private Intent getCropAndSetWallpaperIntent(Context context, Uri imageUri) {

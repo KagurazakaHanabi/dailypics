@@ -25,7 +25,7 @@ class AppDelegate: FlutterAppDelegate {
             case "openAppSettings":
                 self.openAppSettings(result: result)
             case "syncAlbum":
-                self.syncAlbum(file: call.arguments as! String, result: result)
+                self.syncAlbum(file: call.arguments["file"], result: result)
             default:
                 result(FlutterMethodNotImplemented)
             }
