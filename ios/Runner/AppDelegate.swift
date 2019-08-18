@@ -25,7 +25,7 @@ class AppDelegate: FlutterAppDelegate {
             case "openAppSettings":
                 self.openAppSettings(result: result)
             case "syncAlbum":
-                self.syncAlbum(file: call.arguments["file"], result: result)
+                self.syncAlbum(file: (call.arguments as! Dictionary<String, String>)["file"]!, result: result)
             default:
                 result(FlutterMethodNotImplemented)
             }
@@ -49,13 +49,12 @@ class AppDelegate: FlutterAppDelegate {
         result(FlutterMethodNotImplemented)
     }
     
-    // TODO 2019-08-16: Waiting for test.
     private func requestReview(inApp: Bool, result: FlutterResult) {
         if inApp, #available(iOS 10.3, *) {
             SKStoreReviewController.requestReview();
             result(nil)
         } else {
-            let url = "item-apps://itunes.apple.com/app/id1457009047?action=write-review"
+            let url = "itms-apps://itunes.apple.com/app/id1457009047?action=write-review"
             UIApplication.shared.openURL(URL.init(string: url)!)
             result(nil)
         }
