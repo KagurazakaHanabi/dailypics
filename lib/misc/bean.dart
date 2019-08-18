@@ -91,3 +91,22 @@ class Picture {
     return '#' + color.value.toRadixString(16);
   }
 }
+
+@JsonSerializable()
+class Member {
+  String assetName;
+
+  String name;
+
+  String position;
+
+  String url;
+
+  Member({this.assetName, this.name, this.position, this.url});
+
+  factory Member.fromJson(Map<String, dynamic> json) {
+    return _$MemberFromJson(json);
+  }
+
+  String toJson() => jsonEncode(_$MemberToJson(this));
+}

@@ -39,17 +39,17 @@ class LocalStorage {
 
   dynamic get(String key) => _preferences.get(key);
 
-  void set(String key, dynamic value) {
+  Future<bool> set(String key, dynamic value) {
     if (value is bool) {
-      _preferences.setBool(key, value);
+      return _preferences.setBool(key, value);
     } else if (value is int) {
-      _preferences.setInt(key, value);
+      return _preferences.setInt(key, value);
     } else if (value is double) {
-      _preferences.setDouble(key, value);
+      return _preferences.setDouble(key, value);
     } else if (value is String) {
-      _preferences.setString(key, value);
+      return _preferences.setString(key, value);
     } else if (value is List<String>) {
-      _preferences.setStringList(key, value);
+      return _preferences.setStringList(key, value);
     } else {
       throw UnsupportedError(
         'The type of value must be one of bool, int, double, String, and List<String>.',
@@ -77,21 +77,22 @@ class LocalStorage {
     return value;
   }
 
+  /// 慎用！
   void operator []=(String key, dynamic value) => set(key, value);
 
-  void setBool(String key, bool value) => _preferences.setBool(key, value);
+  Future<bool> setBool(String key, bool value) => _preferences.setBool(key, value);
 
-  void setInt(String key, int value) => _preferences.setInt(key, value);
+  Future<bool> setInt(String key, int value) => _preferences.setInt(key, value);
 
-  void setDouble(String key, double value) {
-    _preferences.setDouble(key, value);
+  Future<bool> setDouble(String key, double value) {
+    return _preferences.setDouble(key, value);
   }
 
-  void setString(String key, String value) {
-    _preferences.setString(key, value);
+  Future<bool> setString(String key, String value) {
+    return _preferences.setString(key, value);
   }
 
-  void setStringList(String key, List<String> value) {
-    _preferences.setStringList(key, value);
+  Future<bool> setStringList(String key, List<String> value) {
+    return _preferences.setStringList(key, value);
   }
 }

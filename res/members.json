@@ -1,0 +1,68 @@
+[
+  {
+    "assetName": "chimon.jpg",
+    "name": "Chimon",
+    "position": "前端 / 后端",
+    "url": "mailto:Chimon@Chimon.me"
+  },
+  {
+    "assetName": "createlite.jpg",
+    "name": "Createlite",
+    "position": "监督",
+    "url": "https://github.com/Createlite"
+  },
+  {
+    "assetName": "copyright.jpg",
+    "name": "Copyright³",
+    "position": "后端",
+    "url": "https://github.com/unstartdev"
+  },
+  {
+    "assetName": "hanabi.jpg",
+    "name": "神楽坂花火",
+    "position": "iOS 开发",
+    "url": "https://github.com/KagurazakaHanabi"
+  },
+  {
+    "assetName": "iota9star.jpg",
+    "name": "iota9star",
+    "position": "Android 开发",
+    "url": null
+  },
+  {
+    "assetName": "gadgetry.jpg",
+    "name": "Gadgetry",
+    "position": "Python 开发",
+    "url": "https://github.com/gggxbbb"
+  },
+  {
+    "assetName": "sftmi.jpg",
+    "name": "Kiyoi Bread",
+    "position": "UI 设计",
+    "url": null
+  },
+  {
+    "assetName": "galentw.jpg",
+    "name": "Galentwww",
+    "position": "运营",
+    "url": null
+  },
+  {
+    "assetName": "night.jpg",
+    "name": "Night Glow.",
+    "position": "运营",
+    "url": null
+  },
+  {
+    "assetName": "delsart.jpg",
+    "name": "Delsart",
+    "position": "小程序",
+    "url": null
+  },
+  {
+    "assetName": "recheast.jpg",
+    "name": "Recheast",
+    "position": "公关",
+    "url": null
+  }
+]

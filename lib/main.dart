@@ -19,7 +19,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
-  // 初始化设置
   await Settings.initial();
   runApp(MyApp());
 }

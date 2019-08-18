@@ -15,11 +15,11 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:daily_pics/components/settings.dart';
 import 'package:daily_pics/components/suggest.dart';
 import 'package:daily_pics/components/today.dart';
 import 'package:daily_pics/main.dart';
 import 'package:daily_pics/misc/utils.dart';
+import 'package:daily_pics/pages/about.dart';
 import 'package:daily_pics/pages/details.dart';
 import 'package:daily_pics/pages/recent.dart';
 import 'package:flutter/cupertino.dart';
@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _tabs = [
     TodayComponent(),
     SuggestComponent(),
-    SettingsComponent(),
+    AboutPage(), // FIXME 2019-08-18: 暂时代替 [SettingsComponent]
   ];
 
   StreamSubscription _subscription;
