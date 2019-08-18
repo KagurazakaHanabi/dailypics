@@ -12,6 +12,12 @@ import 'package:url_launcher/url_launcher.dart';
 class AboutPage extends StatefulWidget {
   @override
   _AboutPageState createState() => _AboutPageState();
+
+  static Future<void> push(BuildContext context) {
+    return Navigator.of(context).push(
+      CupertinoPageRoute(builder: (_) => AboutPage()),
+    );
+  }
 }
 
 class _AboutPageState extends State<AboutPage> {
@@ -35,16 +41,18 @@ class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CupertinoScrollbar(
-        controller: controller,
-        child: _buildList(),
+      body: SafeArea(
+        child: CupertinoScrollbar(
+          controller: controller,
+          child: _buildList(),
+        ),
       ),
       appBar: CupertinoNavigationBar(
         /*padding: EdgeInsetsDirectional.zero,
         leading: CupertinoButton(
           child: Icon(CupertinoIcons.back),
           padding: EdgeInsets.zero,
-          onPressed: () {},
+          onPressed: () => Navigator.of(context).pop(),
         ),*/
         middle: Text('关于'),
       ),
@@ -52,8 +60,12 @@ class _AboutPageState extends State<AboutPage> {
   }
 
   Widget _buildList() {
+    Size size = MediaQuery.of(context).size;
     final String prefix = 'res/avatars/';
     return ListView(
+      padding: Device.isIPad(context) && !Device.isPortrait(context)
+          ? EdgeInsets.symmetric(horizontal: (size.width - size.height) / 2)
+          : EdgeInsets.zero,
       controller: controller,
       children: <Widget>[
         _buildHeader(),
@@ -127,7 +139,11 @@ class _AboutPageState extends State<AboutPage> {
         ),
         Text(
           appName,
-          style: TextStyle(fontWeight: FontWeight.w500, letterSpacing: 0.5),
+          style: TextStyle(
+            fontSize: 17,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.5,
+          ),
         ),
         Text(
           '版本号 $version($buildNumber)',
