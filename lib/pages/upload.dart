@@ -28,7 +28,6 @@ class UploadPage extends StatefulWidget {
 }
 
 class _UploadPageState extends State<UploadPage> {
-  FocusScopeNode focusScopeNode = FocusScopeNode();
   TextEditingController title = TextEditingController();
   TextEditingController content = TextEditingController();
   TextEditingController username = TextEditingController();
@@ -42,6 +41,7 @@ class _UploadPageState extends State<UploadPage> {
   Widget build(BuildContext context) {
     EdgeInsets windowPadding = MediaQuery.of(context).padding;
     return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(middle: Text('投稿')),
       child: ListView(
         padding: windowPadding + EdgeInsets.fromLTRB(16, 0, 16, 0),
         children: <Widget>[
@@ -50,14 +50,11 @@ class _UploadPageState extends State<UploadPage> {
             controller: title,
             placeholder: '标题*',
             minLines: 2,
-            onSubmitted: _handleSubmitted,
           ),
           TextField(
             controller: content,
             placeholder: '描述*',
             minLines: 4,
-            textInputAction: TextInputAction.newline,
-            onSubmitted: _handleSubmitted,
           ),
           CupertinoSegmentedControl<String>(
             selectedColor: Color(0xFF9C9C9C),
@@ -78,14 +75,12 @@ class _UploadPageState extends State<UploadPage> {
             controller: username,
             placeholder: '用户名*',
             minLines: 2,
-            onSubmitted: _handleSubmitted,
           ),
           TextField(
             controller: email,
             placeholder: '邮箱地址',
             minLines: 2,
             textInputAction: TextInputAction.done,
-            onSubmitted: _handleSubmitted,
           ),
           Padding(
             padding: EdgeInsets.only(top: 8),
@@ -260,8 +255,6 @@ class _UploadPageState extends State<UploadPage> {
       ),
     );
   }
-
-  void _handleSubmitted(_) => focusScopeNode.nextFocus();
 
   Future<void> _showDialog(String title) {
     return showCupertinoDialog(

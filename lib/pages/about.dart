@@ -15,6 +15,8 @@ class AboutPage extends StatefulWidget {
 }
 
 class _AboutPageState extends State<AboutPage> {
+  ScrollController controller = ScrollController();
+
   PackageInfo packageInfo;
   List<Member> members;
 
@@ -32,8 +34,11 @@ class _AboutPageState extends State<AboutPage> {
 
   @override
   Widget build(BuildContext context) {
-    final String prefix = 'res/avatars/';
     return Scaffold(
+      body: CupertinoScrollbar(
+        controller: controller,
+        child: _buildList(),
+      ),
       appBar: CupertinoNavigationBar(
         /*padding: EdgeInsetsDirectional.zero,
         leading: CupertinoButton(
@@ -43,61 +48,66 @@ class _AboutPageState extends State<AboutPage> {
         ),*/
         middle: Text('关于'),
       ),
-      body: ListView(
-        children: <Widget>[
-          _buildHeader(),
-          Divider(),
-          Padding(
-            padding: EdgeInsets.only(left: 16, top: 8, bottom: 32),
-            child: Text(
-              '团队信息',
-              style: TextStyle(fontSize: 22),
-            ),
+    );
+  }
+
+  Widget _buildList() {
+    final String prefix = 'res/avatars/';
+    return ListView(
+      controller: controller,
+      children: <Widget>[
+        _buildHeader(),
+        Divider(),
+        Padding(
+          padding: EdgeInsets.only(left: 16, top: 8, bottom: 32),
+          child: Text(
+            '团队信息',
+            style: TextStyle(fontSize: 22),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List<Widget>.generate(members != null ? 3 : 0, (i) {
-              Member member = members[i];
-              return GestureDetector(
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: List<Widget>.generate(members != null ? 3 : 0, (i) {
+            Member member = members[i];
+            return GestureDetector(
+              onTap: member.url == null ? null : () => launch(member.url),
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: CircleAvatar(
+                      radius: 26,
+                      backgroundImage: AssetImage(prefix + member.assetName),
+                    ),
+                  ),
+                  Text(member.name),
+                  Text(
+                    member.position,
+                    style: TextStyle(fontSize: 14, color: Colors.black54),
+                  ),
+                ],
+              ),
+            );
+          }),
+        ),
+        Divider(color: Colors.transparent, height: 32),
+        Column(
+          children: List<Widget>.generate(
+            members != null ? members.length - 3 : 0,
+            (index) {
+              Member member = members[index + 3];
+              return ListTile(
                 onTap: member.url == null ? null : () => launch(member.url),
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 8),
-                      child: CircleAvatar(
-                        radius: 26,
-                        backgroundImage: AssetImage(prefix + member.assetName),
-                      ),
-                    ),
-                    Text(member.name),
-                    Text(
-                      member.position,
-                      style: TextStyle(fontSize: 14, color: Colors.black54),
-                    ),
-                  ],
+                title: Text(member.name),
+                subtitle: Text(member.position),
+                leading: CircleAvatar(
+                  backgroundImage: AssetImage(prefix + member.assetName),
                 ),
               );
-            }),
+            },
           ),
-          Divider(color: Colors.transparent, height: 32),
-          Column(
-            children: List<Widget>.generate(
-              members != null ? members.length - 3 : 0,
-              (index) {
-                Member member = members[index + 3];
-                return ListTile(
-                  onTap: member.url == null ? null : () => launch(member.url),
-                  title: Text(member.name),
-                  subtitle: Text(member.position),
-                  leading: CircleAvatar(
-                    backgroundImage: AssetImage(prefix + member.assetName),
-                  ),
-                );
-              },
-            ),
-          )
-        ],
-      ),
+        )
+      ],
     );
   }
 
@@ -110,7 +120,7 @@ class _AboutPageState extends State<AboutPage> {
         Container(
           padding: EdgeInsets.symmetric(vertical: 20),
           child: CircleAvatar(
-            radius: 24,
+            radius: 32,
             backgroundColor: Colors.transparent,
             backgroundImage: AssetImage('res/ic_launcher.png'),
           ),

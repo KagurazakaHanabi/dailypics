@@ -18,7 +18,6 @@ import 'dart:ui' show ImageFilter, window;
 
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/utils.dart';
-import 'package:daily_pics/pages/details.dart';
 import 'package:daily_pics/widget/image_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show LinearProgressIndicator;
@@ -36,7 +35,7 @@ class SearchPage extends StatefulWidget {
       PageRouteBuilder(
         pageBuilder: (_, __, ___) => SearchPage(),
         transitionsBuilder: (_, Animation<double> animation, __, Widget child) {
-          return _FadeUpwardsPageTransition(animation: animation, child: child);
+          return FadeTransition(opacity: animation, child: child);
         },
       ),
     );
@@ -73,7 +72,7 @@ class _SearchPageState extends State<SearchPage> {
                           autofocus: true,
                           onSubmitted: (value) {
                             if (Utils.isUUID(value)) {
-                              DetailsPage.push(context, pid: value);
+                              _fetchData(value);
                             } else if (value.isNotEmpty) {
                               query = value;
                               _fetchData();
@@ -146,21 +145,34 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  Future<void> _fetchData() async {
+  Future<void> _fetchData([String uuid]) async {
     setState(() => doing = true);
-    String encodedQuery = Uri.encodeQueryComponent(query);
-    String url = 'https://v2.api.dailypics.cn/search/s/$encodedQuery';
-    dynamic json = jsonDecode((await http.get(url)).body);
-    Response response = Response.fromJson({'data': json['result']});
-    await controller.animateTo(
-      0,
-      curve: Curves.ease,
-      duration: Duration(milliseconds: 300),
-    );
+    Response response;
+    if (uuid != null) {
+      String url = 'https://v2.api.dailypics.cn/member?id=$uuid';
+      Map<String, dynamic> json = jsonDecode((await http.get(url)).body);
+      if (json['error_code'] != null) {
+        response = Response(data: []);
+      } else {
+        response = Response(data: [Picture.fromJson(json)]);
+      }
+    } else {
+      String encodedQuery = Uri.encodeQueryComponent(query);
+      String url = 'https://v2.api.dailypics.cn/search/s/$encodedQuery';
+      dynamic json = jsonDecode((await http.get(url)).body);
+      response = Response.fromJson({'data': json['result']});
+    }
     setState(() {
       doing = false;
       data = response.data;
     });
+    if (controller.position.pixels > 320) {
+      await controller.animateTo(
+        0,
+        curve: Curves.decelerate,
+        duration: Duration(milliseconds: 300),
+      );
+    }
   }
 
   @override
@@ -233,44 +245,6 @@ class _SearchBarState extends State<SearchBar> {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _FadeUpwardsPageTransition extends StatelessWidget {
-  _FadeUpwardsPageTransition({
-    Key key,
-    @required Animation<double> animation,
-    @required this.child,
-  })  : _positionAnimation = animation.drive(
-          _bottomUpTween.chain(_fastOutSlowInTween),
-        ),
-        _opacityAnimation = animation.drive(_easeInTween),
-        super(key: key);
-
-  static final Tween<Offset> _bottomUpTween = Tween<Offset>(
-    begin: const Offset(0.0, 0.25),
-    end: Offset.zero,
-  );
-  static final Animatable<double> _fastOutSlowInTween = CurveTween(
-    curve: Curves.fastOutSlowIn,
-  );
-  static final Animatable<double> _easeInTween = CurveTween(
-    curve: Curves.easeIn,
-  );
-
-  final Animation<Offset> _positionAnimation;
-  final Animation<double> _opacityAnimation;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return SlideTransition(
-      position: _positionAnimation,
-      child: FadeTransition(
-        opacity: _opacityAnimation,
-        child: child,
       ),
     );
   }
