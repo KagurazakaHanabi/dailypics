@@ -25,13 +25,14 @@ import 'package:daily_pics/widget/adaptive_scaffold.dart';
 import 'package:daily_pics/widget/image_card.dart';
 import 'package:daily_pics/widget/rounded_image.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart'
-    show CircularProgressIndicator, Colors, SelectableText;
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart' show CircularProgressIndicator, Colors;
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailsPage extends StatefulWidget {
   final Picture data;
@@ -163,7 +164,7 @@ class _DetailsPageState extends State<DetailsPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Expanded(
-                                child: SelectableText(
+                                child: Text(
                                   data.title,
                                   style: TextStyle(
                                     fontSize: 22,
@@ -173,11 +174,14 @@ class _DetailsPageState extends State<DetailsPage> {
                               ),
                               GestureDetector(
                                 onTap: _mark,
-                                child: Icon(
-                                  data.marked
-                                      ? Ionicons.ios_star
-                                      : Ionicons.ios_star_outline,
-                                  size: 22,
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 12),
+                                  child: Icon(
+                                    data.marked
+                                        ? Ionicons.ios_star
+                                        : Ionicons.ios_star_outline,
+                                    size: 22,
+                                  ),
                                 ),
                               ),
                               Padding(
@@ -189,14 +193,7 @@ class _DetailsPageState extends State<DetailsPage> {
                         ),
                         Padding(
                           padding: EdgeInsets.fromLTRB(18, 0, 18, 48),
-                          child: SelectableText(
-                            data.content,
-                            style: TextStyle(
-                              color: Colors.black54,
-                              fontSize: 15,
-                              height: 1.2,
-                            ),
-                          ),
+                          child: _buildContent(),
                         ),
                         Container(
                           alignment: Alignment.center,
@@ -242,6 +239,51 @@ class _DetailsPageState extends State<DetailsPage> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContent() {
+    String content = widget.data.content;
+    RegExp regExp = RegExp(r'Pixiv#[^0][0-9]+', caseSensitive: false);
+    List<RegExpMatch> matches = regExp.allMatches(content).toList();
+    List<InlineSpan> children = [];
+    for (int i = 0; i < matches.length; i++) {
+      RegExpMatch e = matches[i];
+      children.add(
+        TextSpan(
+          text: e.input.substring(e.start, e.end),
+          style: TextStyle(color: CupertinoTheme.of(context).primaryColor),
+          recognizer: TapGestureRecognizer()
+            ..onTap = () {
+              launch(
+                'https://www.pixiv.net/member_illust.php'
+                '?illust_id=${RegExp(r'[0-9]+').stringMatch(e.input)}',
+              );
+            },
+          children: [
+            TextSpan(
+              style: TextStyle(color: Colors.black54),
+              text: content.substring(
+                e.end,
+                i == matches.length - 1 ? null : matches[i + 1].start,
+              ),
+            )
+          ],
+        ),
+      );
+    }
+    return Text.rich(
+      TextSpan(
+        children: children,
+        text: matches.length == 0
+            ? content
+            : content.substring(0, matches[0].start),
+        style: TextStyle(
+          color: Colors.black54,
+          fontSize: 15,
+          height: 1.2,
         ),
       ),
     );
