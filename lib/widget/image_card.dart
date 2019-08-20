@@ -57,106 +57,103 @@ class _ImageCardState extends State<ImageCard> {
       duration: duration,
       curve: Curves.easeInOut,
       alignment: Alignment.center,
-      child: AspectRatio(
-        aspectRatio: widget.aspectRatio ?? 4 / 5,
-        child: Container(
-          padding: EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black26,
-                offset: Offset(0, 4),
-                spreadRadius: -24,
-                blurRadius: 32,
-              )
-            ],
-          ),
-          child: GestureDetector(
-            onTapDown: (_) {
-              tapDown = DateTime.now();
-              setState(() => scale = 0.97);
-            },
-            onTapCancel: () => setState(() => scale = 1.0),
-            onTapUp: (_) async {
-              if (DateTime.now().difference(tapDown) < duration) {
-                await Future.delayed(duration);
-              }
-              setState(() => scale = 1.0);
-              DetailsPage.push(
-                context,
-                data: widget.data,
-                heroTag: widget.heroTag,
-              );
-            },
-            child: RepaintBoundary(
-              key: widget.repaintKey,
-              child: Stack(
-                children: <Widget>[
-                  AspectRatio(
-                    aspectRatio: widget.aspectRatio,
-                    child: RoundedImage(
-                      fit: BoxFit.cover,
-                      heroTag: widget.heroTag,
-                      borderRadius: BorderRadius.circular(16),
-                      imageUrl: Utils.getCompressed(widget.data),
-                      placeholder: (_, __) {
-                        return Container(
-                          color: Color(0xFFE0E0E0),
-                          child: Image.asset('res/placeholder.jpg'),
-                        );
-                      },
-                    ),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              offset: Offset(0, 4),
+              spreadRadius: -24,
+              blurRadius: 32,
+            )
+          ],
+        ),
+        child: GestureDetector(
+          onTapDown: (_) {
+            tapDown = DateTime.now();
+            setState(() => scale = 0.97);
+          },
+          onTapCancel: () => setState(() => scale = 1.0),
+          onTapUp: (_) async {
+            if (DateTime.now().difference(tapDown) < duration) {
+              await Future.delayed(duration);
+            }
+            setState(() => scale = 1.0);
+            DetailsPage.push(
+              context,
+              data: widget.data,
+              heroTag: widget.heroTag,
+            );
+          },
+          child: RepaintBoundary(
+            key: widget.repaintKey,
+            child: Stack(
+              children: <Widget>[
+                AspectRatio(
+                  aspectRatio: widget.aspectRatio,
+                  child: RoundedImage(
+                    fit: BoxFit.cover,
+                    heroTag: widget.heroTag,
+                    borderRadius: BorderRadius.circular(16),
+                    imageUrl: Utils.getCompressed(widget.data),
+                    placeholder: (_, __) {
+                      return Container(
+                        color: Color(0xFFE0E0E0),
+                        child: Image.asset('res/placeholder.jpg'),
+                      );
+                    },
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 16, top: 32, right: 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          widget.data.title,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 16, top: 32, right: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        widget.data.title,
+                        style: TextStyle(
+                          color: Utils.isDarkColor(widget.data.color)
+                              ? Colors.white
+                              : Colors.black,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 28,
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 4),
+                        child: Text(
+                          widget.data.content,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             color: Utils.isDarkColor(widget.data.color)
-                                ? Colors.white
-                                : Colors.black,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 28,
+                                ? Color(0xB3ffffff)
+                                : Color(0xB3000000),
+                            fontSize: 13,
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 4),
-                          child: Text(
-                            widget.data.content,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: Utils.isDarkColor(widget.data.color)
-                                  ? Color(0xB3ffffff)
-                                  : Color(0xB3000000),
-                              fontSize: 13,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Offstage(
-                    offstage: !widget.showQrCode,
-                    child: AspectRatio(
-                      aspectRatio: widget.aspectRatio,
-                      child: Container(
-                        alignment: Alignment.bottomRight,
-                        padding: EdgeInsets.only(right: 8, bottom: 8),
-                        child: QrCodeView(
-                          widget.data.url.contains('bing.com/')
-                              ? 'https://cn.bing.com/'
-                              : 'https://dailypics.cn/p/${widget.data.id}',
-                        ),
+                ),
+                Offstage(
+                  offstage: !widget.showQrCode,
+                  child: AspectRatio(
+                    aspectRatio: widget.aspectRatio,
+                    child: Container(
+                      alignment: Alignment.bottomRight,
+                      padding: EdgeInsets.only(right: 8, bottom: 8),
+                      child: QrCodeView(
+                        widget.data.url.contains('bing.com/')
+                            ? 'https://cn.bing.com/'
+                            : 'https://dailypics.cn/p/${widget.data.id}',
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

@@ -35,8 +35,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final List<Widget> _tabs = [
     TodayComponent(),
+    RecentPage(),       // FIXME 2019-08-21: 暂时放在这吧
     SuggestComponent(),
-    AboutPage(), // FIXME 2019-08-18: 暂时代替 [SettingsComponent]
+    AboutPage(),        // FIXME 2019-08-18: 暂时代替 [SettingsComponent]
   ];
 
   StreamSubscription _subscription;
@@ -78,6 +79,7 @@ class _HomePageState extends State<HomePage> {
         tabBar: CupertinoTabBar(
           items: [
             _buildNavigationItem(Ionicons.ios_today, 'Today'),
+            _buildNavigationItem(Ionicons.ios_time, '以往'),
             _buildNavigationItem(Ionicons.ios_flame, '推荐 '),
             _buildNavigationItem(Ionicons.ios_settings, '更多'),
           ],

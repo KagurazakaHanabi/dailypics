@@ -78,6 +78,7 @@ class _RecentPageState extends State<RecentPage>
     super.build(context);
     double windowHeight = MediaQuery.of(context).size.height;
     return CupertinoPageScaffold(
+      resizeToAvoidBottomInset: false,
       child: Stack(
         alignment: Alignment.center,
         children: <Widget>[
@@ -219,6 +220,7 @@ class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
     double extent = math.min<double>(shrinkOffset, kSearchBarHeight);
     double barHeight = kSearchBarHeight - extent;
     EdgeInsets padding = MediaQuery.of(context).padding;
+    bool canPop = Navigator.of(context).canPop();
     CupertinoThemeData theme = CupertinoTheme.of(context);
     TextStyle navTitleTextStyle = theme.textTheme.navTitleTextStyle;
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -250,14 +252,17 @@ class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
                 children: <Widget>[
                   Container(
                     height: 44,
-                    padding: EdgeInsets.only(right: 44),
+                    padding: EdgeInsets.only(left: canPop ? 0 : 44, right: 44),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        CupertinoButton(
-                          child: Icon(CupertinoIcons.back),
-                          padding: EdgeInsets.zero,
-                          onPressed: () => Navigator.of(context).pop(),
+                        Offstage(
+                          offstage: !canPop,
+                          child: CupertinoButton(
+                            child: Icon(CupertinoIcons.back),
+                            padding: EdgeInsets.zero,
+                            onPressed: () => Navigator.of(context).pop(),
+                          ),
                         ),
                         Expanded(
                           child: Text(

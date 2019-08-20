@@ -55,15 +55,13 @@ class _TodayComponentState extends State<TodayComponent>
           controller: controller,
           child: CustomScrollView(
             controller: controller,
-            physics: BouncingScrollPhysics(
-              parent: AlwaysScrollableScrollPhysics(),
-            ),
+            physics: AlwaysScrollableScrollPhysics(),
             slivers: <Widget>[
               CupertinoSliverRefreshControl(onRefresh: _fetchData),
               SliverSafeArea(
                 sliver: SliverImageCardList(
                   header: _buildHeader(),
-                  footer: _buildFooter(),
+                  //footer: _buildFooter(),
                   adaptiveTablet: true,
                   data: data,
                 ),
@@ -117,7 +115,7 @@ class _TodayComponentState extends State<TodayComponent>
             ),
           ),
           Text(
-            text ?? '',
+            text ?? ' ',
             style: TextStyle(
               color: CupertinoColors.inactiveGray,
               fontSize: 12,
