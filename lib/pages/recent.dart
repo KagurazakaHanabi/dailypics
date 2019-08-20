@@ -78,6 +78,7 @@ class _RecentPageState extends State<RecentPage>
     super.build(context);
     double windowHeight = MediaQuery.of(context).size.height;
     return CupertinoPageScaffold(
+      resizeToAvoidBottomInset: false,
       child: Stack(
         alignment: Alignment.center,
         children: <Widget>[

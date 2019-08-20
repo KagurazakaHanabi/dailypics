@@ -111,21 +111,19 @@ class PanelViewState extends State<PanelView>
           height: size.height,
           child: widget.child,
         ),
-        widget.scrimColor != null
-            ? Offstage(
-                offstage: _anim.value == 0,
-                child: GestureDetector(
-                  onTap: widget.ignorePointer ? close : null,
-                  child: Container(
-                    width: size.width,
-                    height: size.height,
-                    color: widget.scrimColor.withOpacity(
-                      _anim.value * widget.scrimOpacity,
-                    ),
-                  ),
-                ),
-              )
-            : Container(),
+        Offstage(
+          offstage: _anim.value == 0 || widget.scrimColor == null,
+          child: GestureDetector(
+            onTap: !widget.ignorePointer ? close : null,
+            child: Container(
+              width: size.width,
+              height: size.height,
+              color: widget.scrimColor?.withOpacity(
+                _anim.value * widget.scrimOpacity,
+              ),
+            ),
+          ),
+        ),
         Positioned(
           top: widget.alignment.y == -1 ? extent * (_anim.value - 1) : null,
           bottom: widget.alignment.y == 1 ? extent * (_anim.value - 1) : null,

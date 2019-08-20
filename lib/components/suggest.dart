@@ -48,9 +48,7 @@ class _SuggestComponentState extends State<SuggestComponent>
         controller: controller,
         child: CustomScrollView(
           controller: controller,
-          physics: BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics(),
-          ),
+          physics: AlwaysScrollableScrollPhysics(),
           slivers: <Widget>[
             CupertinoSliverNavigationBar(
               largeTitle: Text('推荐'),

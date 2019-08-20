@@ -110,3 +110,18 @@ class Member {
 
   String toJson() => jsonEncode(_$MemberToJson(this));
 }
+
+@JsonSerializable()
+class User {
+  String nickname;
+
+  String username;
+
+  User({this.nickname, this.username});
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return _$UserFromJson(json);
+  }
+
+  String toJson() => jsonEncode(_$UserToJson(this));
+}

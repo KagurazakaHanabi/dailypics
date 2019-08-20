@@ -18,9 +18,11 @@ import 'dart:ui';
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/pages/recent.dart';
+import 'package:daily_pics/widget/animated_transform.dart';
 import 'package:daily_pics/widget/slivers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show Colors;
+import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:http/http.dart' as http;
 
 class TodayComponent extends StatefulWidget {
@@ -55,9 +57,7 @@ class _TodayComponentState extends State<TodayComponent>
           controller: controller,
           child: CustomScrollView(
             controller: controller,
-            physics: BouncingScrollPhysics(
-              parent: AlwaysScrollableScrollPhysics(),
-            ),
+            physics: AlwaysScrollableScrollPhysics(),
             slivers: <Widget>[
               CupertinoSliverRefreshControl(onRefresh: _fetchData),
               SliverSafeArea(
@@ -117,12 +117,13 @@ class _TodayComponentState extends State<TodayComponent>
             ),
           ),
           Text(
-            text ?? '',
+            text ?? ' ',
             style: TextStyle(
               color: CupertinoColors.inactiveGray,
               fontSize: 12,
             ),
           ),
+          _RecentCard(), // FIXME 2019/8/20: 临时，后期删除（大概吧...
         ],
       ),
     );
@@ -231,4 +232,85 @@ class _TodayComponentState extends State<TodayComponent>
 
   @override
   bool get wantKeepAlive => data != null;
+}
+
+class _RecentCard extends StatefulWidget {
+  @override
+  _RecentCardState createState() => _RecentCardState();
+}
+
+class _RecentCardState extends State<_RecentCard> {
+  final Duration duration = Duration(milliseconds: 150);
+
+  double scale = 1;
+  DateTime tapDown;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedTransform.scale(
+      scale: scale,
+      duration: duration,
+      curve: Curves.easeInOut,
+      alignment: Alignment.center,
+      child: Container(
+        padding: EdgeInsets.only(top: 16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              offset: Offset(0, 4),
+              spreadRadius: -24,
+              blurRadius: 32,
+            )
+          ],
+        ),
+        child: GestureDetector(
+          onTapDown: (_) {
+            tapDown = DateTime.now();
+            setState(() => scale = 0.97);
+          },
+          onTapCancel: () => setState(() => scale = 1.0),
+          onTapUp: (_) async {
+            if (DateTime.now().difference(tapDown) < duration) {
+              await Future.delayed(duration);
+            }
+            setState(() => scale = 1.0);
+            RecentPage.push(context);
+          },
+          child: Stack(
+            children: <Widget>[
+              AspectRatio(
+                aspectRatio: 2 / 1,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.asset('res/926de690.jpg', fit: BoxFit.cover),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 16, top: 16, right: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Text(
+                      '往期精选',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 20,
+                      ),
+                    ),
+                    Icon(
+                      Ionicons.ios_arrow_forward,
+                      color: Colors.white,
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

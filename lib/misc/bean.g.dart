@@ -68,3 +68,15 @@ Map<String, dynamic> _$MemberToJson(Member instance) => <String, dynamic>{
       'position': instance.position,
       'url': instance.url,
     };
+
+User _$UserFromJson(Map<String, dynamic> json) {
+  return User(
+    nickname: json['nickname'] as String,
+    username: json['username'] as String,
+  );
+}
+
+Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
+      'nickname': instance.nickname,
+      'username': instance.username,
+    };

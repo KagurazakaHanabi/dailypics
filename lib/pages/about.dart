@@ -55,6 +55,11 @@ class _AboutPageState extends State<AboutPage> {
           onPressed: () => Navigator.of(context).pop(),
         ),*/
         middle: Text('关于'),
+        /*trailing: CupertinoButton(
+          padding: EdgeInsets.zero,
+          child: Text('测试入口'),
+          onPressed: () => UserSpacePage.push(context),
+        ),*/
       ),
     );
   }
@@ -166,7 +171,7 @@ class _AboutPageState extends State<AboutPage> {
               _buildAction(
                 Ionicons.ios_link,
                 '官网',
-                () => launch('https://tupics.github.io/'),
+                () => launch('https://www.dailypics.cn/'),
               ),
               _buildAction(
                 Ionicons.ios_star_half,
