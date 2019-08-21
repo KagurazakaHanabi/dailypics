@@ -30,7 +30,6 @@
 # Android related
 **/android/**/gradle-wrapper.jar
 **/android/.gradle
-**/android/app/signingConfigs.gradle
 **/android/captures/
 **/android/gradlew
 **/android/gradlew.bat
@@ -60,7 +59,7 @@
 **/ios/Flutter/Generated.xcconfig
 **/ios/Flutter/app.flx
 **/ios/Flutter/app.zip
-**/ios/Flutter/flutter_export_enviroment.sh
+**/ios/Flutter/flutter_export_environment.sh
 **/ios/Flutter/flutter_assets/
 **/ios/ServiceDefinitions.json
 **/ios/Runner/GeneratedPluginRegistrant.*
