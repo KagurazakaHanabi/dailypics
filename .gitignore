@@ -23,6 +23,7 @@
 .dart_tool/
 .flutter-plugins
 .packages
+.packages.generated
 .pub-cache/
 .pub/
 /build/
