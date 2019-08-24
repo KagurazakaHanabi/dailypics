@@ -21,6 +21,7 @@ import 'package:daily_pics/widget/buttons.dart';
 import 'package:daily_pics/widget/hightlight.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show CircleAvatar, Colors, Divider;
+import 'package:image_picker/image_picker.dart';
 
 class UserSpacePage extends StatefulWidget {
   final User data;
@@ -242,7 +243,9 @@ class _UserSpacePageState extends State<UserSpacePage> {
             ),
             CupertinoActionSheetAction(
               child: Text('从相册选择'),
-              onPressed: () {},
+              onPressed: () async => Navigator.of(context).pop(
+                await ImagePicker.pickImage(source: ImageSource.gallery),
+              ),
             ),
           ],
           cancelButton: CupertinoActionSheetAction(
