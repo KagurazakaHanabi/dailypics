@@ -14,7 +14,9 @@
 
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_pics/misc/bean.dart';
+import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/widget/buttons.dart';
 import 'package:daily_pics/widget/hightlight.dart';
 import 'package:flutter/cupertino.dart';
@@ -63,13 +65,16 @@ class _UserSpacePageState extends State<UserSpacePage> {
   Widget _buildHeaderImage() {
     MediaQueryData queryData = MediaQuery.of(context);
     double pixels = position?.pixels ?? 0;
+    bool landscape = !Device.isPortrait(context);
     return Stack(
       children: <Widget>[
-        Image.network(
-          'https://via.placeholder.com/750x464?text=Cover',
+        CachedNetworkImage(
+          imageUrl: 'https://via.placeholder.com/750x500',
+          height: pixels < -76 ? 162 - pixels : pixels > 162 ? 0 : 162 - pixels,
+          fit: pixels < -76 && !(Device.isIPad(context) && landscape)
+              ? BoxFit.fill
+              : BoxFit.fitWidth,
           width: queryData.size.width,
-          height: pixels < -64 ? 162 - pixels : pixels > 162 ? 0 : 162 - pixels,
-          fit: pixels < -64 ? BoxFit.fill : BoxFit.fitWidth,
         ),
         Container(
           height: queryData.padding.top + 44,
@@ -120,8 +125,8 @@ class _UserSpacePageState extends State<UserSpacePage> {
                   onTap: () => _showActionSheet('设置头像'),
                   child: CircleAvatar(
                     radius: 48,
-                    backgroundImage: NetworkImage(
-                      'https://via.placeholder.com/256x256?text=Avatar',
+                    backgroundImage: CachedNetworkImageProvider(
+                      'https://via.placeholder.com/128x128',
                     ),
                   ),
                 ),
