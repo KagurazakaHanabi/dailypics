@@ -1,0 +1,17 @@
+# Miscellaneous
+*             text=auto
+*.md          text
+*.json        text
+*.yaml        text
+*.png         binary
+
+# Android related
+*.java        text diff=java
+*.gradle      text diff=java
+*.xml         text
+*.properties  text
+
+# iOS/Xcode related
+*.pbxproj     binary -merge=union
+*.m           text   diff=objc
+*.swift       text   diff=swift
