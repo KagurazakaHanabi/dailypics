@@ -177,13 +177,9 @@ class _TodayComponentState extends State<TodayComponent>
   }
 
   Future<void> _fetchText() async {
-    String url = 'https://yijuzhan.com/api/word.php?m=json';
+    String url = 'https://v1.hitokoto.cn/?encode=text';
     String source = (await http.get(url)).body;
-    if (source.startsWith('{') && source.endsWith('}')) {
-      setState(() => text = jsonDecode(source)['content']);
-    } else {
-      setState(() => text = source);
-    }
+    setState(() => text = source);
   }
 
   Future<void> _fetchBing() async {

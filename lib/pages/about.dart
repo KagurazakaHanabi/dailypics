@@ -40,11 +40,23 @@ class _AboutPageState extends State<AboutPage> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    double padding = (size.width - size.height) / 2;
     return Scaffold(
-      body: SafeArea(
-        child: CupertinoScrollbar(
+      body: CupertinoScrollbar(
+        controller: controller,
+        child: CustomScrollView(
           controller: controller,
-          child: _buildList(),
+          slivers: <Widget>[
+            SliverPadding(
+              padding: Device.isIPad(context) && !Device.isPortrait(context)
+                  ? EdgeInsets.symmetric(horizontal: padding)
+                  : EdgeInsets.zero,
+              sliver: SliverToBoxAdapter(
+                child: _buildList(),
+              ),
+            ),
+          ],
         ),
       ),
       appBar: CupertinoNavigationBar(
@@ -65,13 +77,8 @@ class _AboutPageState extends State<AboutPage> {
   }
 
   Widget _buildList() {
-    Size size = MediaQuery.of(context).size;
     final String prefix = 'res/avatars/';
-    return ListView(
-      padding: Device.isIPad(context) && !Device.isPortrait(context)
-          ? EdgeInsets.symmetric(horizontal: (size.width - size.height) / 2)
-          : EdgeInsets.zero,
-      controller: controller,
+    return Column(
       children: <Widget>[
         _buildHeader(),
         Divider(),
