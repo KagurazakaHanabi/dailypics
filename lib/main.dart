@@ -14,6 +14,7 @@
 
 import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/pages/home.dart';
+import 'package:daily_pics/widget/error.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -21,6 +22,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Settings.initial();
+  ErrorWidget.builder = (details) {
+    return CustomErrorWidget(details);
+  };
   runApp(MyApp());
 }
 
