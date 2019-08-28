@@ -54,44 +54,37 @@ public class PlatformPlugin implements MethodCallHandler {
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         switch (call.method) {
-            case "share": {
+            case "share":
                 share((String) call.arguments, result);
                 break;
-            }
 
-            case "useAsWallpaper": {
+            case "useAsWallpaper":
                 useAsWallpaper((String) call.arguments, result);
                 break;
-            }
 
-            case "requestReview": {
+            case "requestReview":
                 requestReview(result);
                 break;
-            }
 
-            case "isAlbumAuthorized": {
+            case "isAlbumAuthorized":
                 isAlbumAuthorized(result);
                 break;
-            }
 
-            case "openAppSettings": {
+            case "openAppSettings":
                 openAppSettings(result);
                 break;
-            }
 
-            case "syncAlbum": {
+            case "syncAlbum":
                 try {
                     syncAlbum(call, result);
                 } catch (IOException e) {
                     result.error("0", "The image failed to be stored", null);
                 }
                 break;
-            }
 
-            default: {
+            default:
                 result.notImplemented();
                 break;
-            }
         }
     }
 
@@ -107,14 +100,22 @@ public class PlatformPlugin implements MethodCallHandler {
         result.success(null);
     }
 
-    // FIXME 2019-08-17: 部分设备上不可用
     private void useAsWallpaper(String file, Result result) {
         Context context = mRegistrar.activity();
-        Uri uri = FileProvider.getUriForFile(context, PROVIDER_AUTHORITY, new File(file));
-        Intent intent = getCropAndSetWallpaperIntent(context, uri);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        context.startActivity(Intent.createChooser(intent, "设置为壁纸"));
-        result.success(null);
+        try {
+            Uri uri = FileProvider.getUriForFile(context, PROVIDER_AUTHORITY, new File(file));
+            Intent intent = getCropAndSetWallpaperIntent(context, uri);
+            context.startActivity(Intent.createChooser(intent, "设置为壁纸"));
+            result.success(null);
+        } catch (Exception e) {
+            WallpaperManager wm = WallpaperManager.getInstance(context);
+            try {
+                wm.setStream(new FileInputStream(new File(file)));
+                result.success(null);
+            } catch (IOException ex) {
+                result.error("0", ex.getLocalizedMessage(), null);
+            }
+        }
     }
 
     private void requestReview(Result result) {
@@ -222,8 +223,8 @@ public class PlatformPlugin implements MethodCallHandler {
         }
 
         final PackageManager packageManager = context.getPackageManager();
-        Intent cropAndSetWallpaperIntent =
-                new Intent(ACTION_CROP_AND_SET_WALLPAPER, imageUri);
+        Intent cropAndSetWallpaperIntent = new Intent(ACTION_CROP_AND_SET_WALLPAPER);
+        cropAndSetWallpaperIntent.setDataAndType(imageUri, "image/*");
         cropAndSetWallpaperIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
         // Find out if the default HOME activity supports CROP_AND_SET_WALLPAPER
@@ -241,8 +242,15 @@ public class PlatformPlugin implements MethodCallHandler {
         }
 
         // fallback crop activity
-        // com.android.internal.R.string.config_wallpaperCropperPackage
-        final String cropperPackage = "com.android.wallpapercropper";
+        String cropperPackage;
+        try {
+            int resId = context.getResources().getIdentifier(
+                    "config_wallpaperCropperPackage", "string", "android");
+            cropperPackage = context.getResources().getString(resId);
+        } catch (Exception e) {
+            cropperPackage = "com.android.wallpapercropper";
+        }
+
         cropAndSetWallpaperIntent.setPackage(cropperPackage);
         List<ResolveInfo> cropAppList = packageManager.queryIntentActivities(
                 cropAndSetWallpaperIntent, 0);

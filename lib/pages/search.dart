@@ -167,11 +167,7 @@ class _SearchPageState extends State<SearchPage> {
       data = response.data;
     });
     if (controller.position.pixels > 320) {
-      await controller.animateTo(
-        0,
-        curve: Curves.decelerate,
-        duration: Duration(milliseconds: 300),
-      );
+      controller.jumpTo(0);
     }
   }
 

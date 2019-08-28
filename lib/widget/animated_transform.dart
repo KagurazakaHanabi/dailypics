@@ -26,6 +26,28 @@ class AnimatedTransform extends ImplicitlyAnimatedWidget {
   }) : assert(transform != null),
        super(key: key, curve: curve, duration: duration);
 
+  AnimatedTransform.rotate({
+    Key key,
+    this.child,
+    @required double angle,
+    this.alignment = Alignment.center,
+    this.transformHitTests = true,
+    Curve curve = Curves.linear,
+    @required Duration duration,
+  }) : transform = Matrix4.rotationZ(angle),
+       super(key: key, curve: curve, duration: duration);
+
+  AnimatedTransform.translate({
+    Key key,
+    this.child,
+    @required Offset offset,
+    this.transformHitTests = true,
+    Curve curve = Curves.linear,
+    @required Duration duration,
+  }) : transform = Matrix4.translationValues(offset.dx, offset.dy, 0.0),
+        alignment = null,
+        super(key: key, curve: curve, duration: duration);
+
   AnimatedTransform.scale({
     Key key,
     this.child,

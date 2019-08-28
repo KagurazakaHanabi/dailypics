@@ -353,7 +353,7 @@ class SaveButton extends StatefulWidget {
   _SaveButtonState createState() => _SaveButtonState();
 }
 
-class _SaveButtonState extends State<SaveButton> with WidgetsBindingObserver {
+class _SaveButtonState extends State<SaveButton> {
   bool started = false;
   bool denied = false;
   double progress;
@@ -362,18 +362,9 @@ class _SaveButtonState extends State<SaveButton> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
     Utils.isAlbumAuthorized().then((granted) {
       setState(() => denied = !granted);
     });
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    if (state == AppLifecycleState.resumed && mounted) {
-      bool granted = await Utils.isAlbumAuthorized();
-      setState(() => denied = !granted);
-    }
   }
 
   @override
@@ -392,7 +383,7 @@ class _SaveButtonState extends State<SaveButton> with WidgetsBindingObserver {
               }
             });
           } on PlatformException catch (e) {
-            if (e.code == '0') setState(() => denied = true);
+            if (e.code == '-1') setState(() => denied = true);
           }
         } else if (progress == 1 && Platform.isAndroid) {
           Utils.useAsWallpaper(file);
@@ -445,11 +436,5 @@ class _SaveButtonState extends State<SaveButton> with WidgetsBindingObserver {
         duration: Duration(milliseconds: 200),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
   }
 }
