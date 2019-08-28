@@ -41,37 +41,38 @@ class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    double padding = (size.width - size.height) / 2;
+    double padding = Device.isIPad(context) && !Device.isPortrait(context)
+        ? (size.width - size.height) / 2
+        : 0;
     return Scaffold(
       body: CupertinoScrollbar(
         controller: controller,
-        child: CustomScrollView(
-          controller: controller,
-          slivers: <Widget>[
-            SliverPadding(
-              padding: Device.isIPad(context) && !Device.isPortrait(context)
-                  ? EdgeInsets.symmetric(horizontal: padding)
-                  : EdgeInsets.zero,
-              sliver: SliverToBoxAdapter(
+        child: Stack(
+          children: <Widget>[
+            SingleChildScrollView(
+              controller: controller,
+              padding: MediaQuery.of(context).padding,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(padding, 44, padding, 0),
                 child: _buildList(),
               ),
             ),
+            CupertinoNavigationBar(
+              /*padding: EdgeInsetsDirectional.zero,
+              leading: CupertinoButton(
+                child: Icon(CupertinoIcons.back),
+                padding: EdgeInsets.zero,
+                onPressed: () => Navigator.of(context).pop(),
+              ),*/
+              middle: Text('关于'),
+              /*trailing: CupertinoButton(
+                padding: EdgeInsets.zero,
+                child: Text('测试入口'),
+                onPressed: () => UserSpacePage.push(context),
+              ),*/
+            )
           ],
         ),
-      ),
-      appBar: CupertinoNavigationBar(
-        /*padding: EdgeInsetsDirectional.zero,
-        leading: CupertinoButton(
-          child: Icon(CupertinoIcons.back),
-          padding: EdgeInsets.zero,
-          onPressed: () => Navigator.of(context).pop(),
-        ),*/
-        middle: Text('关于'),
-        /*trailing: CupertinoButton(
-          padding: EdgeInsets.zero,
-          child: Text('测试入口'),
-          onPressed: () => UserSpacePage.push(context),
-        ),*/
       ),
     );
   }
@@ -79,11 +80,12 @@ class _AboutPageState extends State<AboutPage> {
   Widget _buildList() {
     final String prefix = 'res/avatars/';
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        _buildHeader(),
+        _buildAppInfo(),
         Divider(),
         Padding(
-          padding: EdgeInsets.only(left: 16, top: 8, bottom: 32),
+          padding: EdgeInsets.only(left: 16, top: 8, bottom: 8),
           child: Text(
             '团队信息',
             style: TextStyle(fontSize: 22),
@@ -93,28 +95,31 @@ class _AboutPageState extends State<AboutPage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: List<Widget>.generate(members != null ? 3 : 0, (i) {
             Member member = members[i];
-            return GestureDetector(
-              onTap: member.url == null ? null : () => launch(member.url),
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 8),
-                    child: CircleAvatar(
-                      radius: 26,
-                      backgroundImage: AssetImage(prefix + member.assetName),
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              child: GestureDetector(
+                onTap: member.url == null ? null : () => launch(member.url),
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(6, 12, 6, 12),
+                      child: CircleAvatar(
+                        radius: 26,
+                        backgroundImage: AssetImage(prefix + member.assetName),
+                      ),
                     ),
-                  ),
-                  Text(member.name),
-                  Text(
-                    member.position,
-                    style: TextStyle(fontSize: 14, color: Colors.black54),
-                  ),
-                ],
+                    Text(member.name),
+                    Text(
+                      member.position,
+                      style: TextStyle(fontSize: 14, color: Colors.black54),
+                    ),
+                  ],
+                ),
               ),
             );
           }),
         ),
-        Divider(color: Colors.transparent, height: 32),
+        Divider(color: Colors.transparent, height: 16),
         Column(
           children: List<Widget>.generate(
             members != null ? members.length - 3 : 0,
@@ -135,60 +140,61 @@ class _AboutPageState extends State<AboutPage> {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildAppInfo() {
     final String appName = packageInfo?.appName ?? '';
     final String version = packageInfo?.version ?? '';
     final String buildNumber = packageInfo?.buildNumber ?? '';
-    return Column(
-      children: <Widget>[
-        Container(
-          padding: EdgeInsets.symmetric(vertical: 20),
-          child: CircleAvatar(
-            radius: 32,
-            backgroundColor: Colors.transparent,
-            backgroundImage: AssetImage('res/ic_launcher.png'),
+    return Padding(
+      padding: EdgeInsets.all(8),
+      child: Column(
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.fromLTRB(8, 8, 8, 16),
+            child: CircleAvatar(
+              radius: 32,
+              backgroundColor: Colors.transparent,
+              backgroundImage: AssetImage('res/ic_launcher.png'),
+            ),
           ),
-        ),
-        Text(
-          appName,
-          style: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w500,
-            letterSpacing: 0.5,
+          Text(appName, style: TextStyle(fontSize: 18)),
+          Text(
+            '版本号 $version($buildNumber)',
+            style: TextStyle(fontSize: 14, color: Colors.black54),
           ),
-        ),
-        Text(
-          '版本号 $version($buildNumber)',
-          style: TextStyle(fontSize: 14, color: Colors.black54, height: 1.5),
-        ),
-        Text(
-          '无人为孤岛，一图一世界',
-          style: TextStyle(fontSize: 14, color: Colors.black54, height: 2.2),
-        ),
-        Padding(
-          padding: EdgeInsets.only(top: 8, bottom: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              _buildAction(
-                Ionicons.logo_github,
-                '开源',
-                () => launch('https://github.com/KagurazakaHanabi/daily_pics'),
-              ),
-              _buildAction(
-                Ionicons.ios_link,
-                '官网',
-                () => launch('https://www.dailypics.cn/'),
-              ),
-              _buildAction(
-                Ionicons.ios_star_half,
-                '评分',
-                () => Utils.requestReview(false),
-              ),
-            ],
+          Padding(
+            padding: EdgeInsets.only(top: 8),
+            child: Text(
+              '无人为孤岛，一图一世界',
+              style: TextStyle(fontSize: 14, color: Colors.black54),
+            ),
           ),
-        ),
-      ],
+          Padding(
+            padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                _buildAction(
+                  Ionicons.logo_github,
+                  '开源',
+                  () => launch(
+                    'https://github.com/KagurazakaHanabi/daily_pics',
+                  ),
+                ),
+                _buildAction(
+                  Ionicons.ios_link,
+                  '官网',
+                  () => launch('https://www.dailypics.cn/'),
+                ),
+                _buildAction(
+                  Ionicons.ios_star_half,
+                  '评分',
+                  () => Utils.requestReview(false),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
