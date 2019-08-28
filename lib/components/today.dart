@@ -49,6 +49,7 @@ class _TodayComponentState extends State<TodayComponent>
         child: CupertinoActivityIndicator(),
       );
     }
+    bool isDark = CupertinoTheme.of(context).brightness == Brightness.dark;
     return Stack(
       children: <Widget>[
         CupertinoScrollbar(
@@ -74,7 +75,7 @@ class _TodayComponentState extends State<TodayComponent>
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
               height: MediaQuery.of(context).padding.top,
-              color: Colors.transparent,
+              color: isDark ? Color(0xB7000000) : Color(0xCCFFFFFF),
             ),
           ),
         ),
@@ -177,13 +178,9 @@ class _TodayComponentState extends State<TodayComponent>
   }
 
   Future<void> _fetchText() async {
-    String url = 'https://yijuzhan.com/api/word.php?m=json';
+    String url = 'https://v1.hitokoto.cn/?encode=text';
     String source = (await http.get(url)).body;
-    if (source.startsWith('{') && source.endsWith('}')) {
-      setState(() => text = jsonDecode(source)['content']);
-    } else {
-      setState(() => text = source);
-    }
+    setState(() => text = source);
   }
 
   Future<void> _fetchBing() async {

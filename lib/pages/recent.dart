@@ -313,7 +313,7 @@ class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
   double get minExtent => 105;
 
   @override
-  bool shouldRebuild(_) => true;
+  bool shouldRebuild(_) => false;
 }
 
 class _Tile extends StatefulWidget {
