@@ -24,7 +24,7 @@ class _AboutPageState extends State<AboutPage> {
   ScrollController controller = ScrollController();
 
   PackageInfo packageInfo;
-  List<Member> members;
+  List<Contributor> contributors;
 
   @override
   void initState() {
@@ -32,10 +32,15 @@ class _AboutPageState extends State<AboutPage> {
     PackageInfo.fromPlatform().then((info) {
       setState(() => packageInfo = info);
     });
-    DefaultAssetBundle.of(context).loadString('res/members.json').then((s) {
-      members = (jsonDecode(s) as List).map((e) => Member.fromJson(e)).toList();
-      setState(() {});
-    });
+    DefaultAssetBundle.of(context).loadString('res/contributors.json').then(
+      (String value) {
+        setState(() {
+          contributors = (jsonDecode(value) as List)
+              .map((e) => Contributor.fromJson(e))
+              .toList();
+        });
+      },
+    );
   }
 
   @override
@@ -93,8 +98,8 @@ class _AboutPageState extends State<AboutPage> {
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: List<Widget>.generate(members != null ? 3 : 0, (i) {
-            Member member = members[i];
+          children: List<Widget>.generate(contributors != null ? 3 : 0, (i) {
+            Contributor member = contributors[i];
             return Padding(
               padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: GestureDetector(
@@ -122,9 +127,9 @@ class _AboutPageState extends State<AboutPage> {
         Divider(color: Colors.transparent, height: 16),
         Column(
           children: List<Widget>.generate(
-            members != null ? members.length - 3 : 0,
+            contributors != null ? contributors.length - 3 : 0,
             (index) {
-              Member member = members[index + 3];
+              Contributor member = contributors[index + 3];
               return ListTile(
                 onTap: member.url == null ? null : () => launch(member.url),
                 title: Text(member.name),

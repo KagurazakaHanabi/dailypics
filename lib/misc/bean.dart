@@ -107,7 +107,7 @@ class Picture {
 }
 
 @JsonSerializable()
-class Member {
+class Contributor {
   String assetName;
 
   String name;
@@ -116,13 +116,13 @@ class Member {
 
   String url;
 
-  Member({this.assetName, this.name, this.position, this.url});
+  Contributor({this.assetName, this.name, this.position, this.url});
 
-  factory Member.fromJson(Map<String, dynamic> json) {
-    return _$MemberFromJson(json);
+  factory Contributor.fromJson(Map<String, dynamic> json) {
+    return _$ContributorFromJson(json);
   }
 
-  String toJson() => jsonEncode(_$MemberToJson(this));
+  String toJson() => jsonEncode(_$ContributorToJson(this));
 }
 
 @JsonSerializable()

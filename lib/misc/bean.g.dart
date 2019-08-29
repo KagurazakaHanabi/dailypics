@@ -53,8 +53,8 @@ Map<String, dynamic> _$PictureToJson(Picture instance) => <String, dynamic>{
       'marked': instance.marked,
     };
 
-Member _$MemberFromJson(Map<String, dynamic> json) {
-  return Member(
+Contributor _$ContributorFromJson(Map<String, dynamic> json) {
+  return Contributor(
     assetName: json['assetName'] as String,
     name: json['name'] as String,
     position: json['position'] as String,
@@ -62,7 +62,8 @@ Member _$MemberFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$MemberToJson(Member instance) => <String, dynamic>{
+Map<String, dynamic> _$ContributorToJson(Contributor instance) =>
+    <String, dynamic>{
       'assetName': instance.assetName,
       'name': instance.name,
       'position': instance.position,
