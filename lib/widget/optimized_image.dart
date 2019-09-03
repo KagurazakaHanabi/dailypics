@@ -13,27 +13,24 @@
 // limitations under the License.
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:daily_pics/misc/placeholder.dart';
 import 'package:flutter/cupertino.dart';
 
-class RoundedImage extends StatelessWidget {
+class OptimizedImage extends StatelessWidget {
   final String imageUrl;
-
-  final PlaceholderWidgetBuilder placeholder;
-
-  final BoxFit fit;
 
   final BorderRadius borderRadius;
 
   final Object heroTag;
 
-  RoundedImage({
+  OptimizedImage({
     Key key,
     this.imageUrl,
-    this.placeholder,
-    this.fit,
-    this.borderRadius,
+    this.borderRadius = BorderRadius.zero,
     this.heroTag,
-  }) : super(key: key);
+  })  : assert(imageUrl != null),
+        assert(borderRadius != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +41,16 @@ class RoundedImage extends StatelessWidget {
         borderRadius: borderRadius,
         child: CachedNetworkImage(
           imageUrl: imageUrl,
-          placeholder: placeholder,
-          fit: fit,
+          fit: BoxFit.cover,
+          placeholderFadeInDuration: Duration.zero,
+          fadeInDuration: Duration(milliseconds: 700),
+          fadeOutDuration: Duration(milliseconds: 300),
+          placeholder: (_, __) {
+            return Container(
+              color: Color(0xFFE0E0E0),
+              child: Image.memory(kPlaceholder),
+            );
+          },
         ),
       ),
     );
