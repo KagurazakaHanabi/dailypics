@@ -15,6 +15,7 @@
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
@@ -35,7 +36,16 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-const String _prefix = 'https://www.pixiv.net/member_illust.php?illust_id=';
+const double _kBackGestureWidth = 20.0;
+const double _kMinFlingVelocity = 1.0; // Screen widths per second.
+
+// An eyeballed value for the maximum time it takes for a page to animate forward
+// if the user releases a page mid swipe.
+const int _kMaxDroppedSwipePageForwardAnimationTime = 800; // Milliseconds.
+
+// The maximum time for a page to get reset to it's original position if the
+// user releases a page mid swipe.
+const int _kMaxPageBackAnimationTime = 300; // Milliseconds.
 
 class DetailsPage extends StatefulWidget {
   final Picture data;
@@ -56,17 +66,9 @@ class DetailsPage extends StatefulWidget {
     String heroTag,
   }) {
     return Navigator.of(context, rootNavigator: true).push(
-      PageRouteBuilder(
-        opaque: false,
-        pageBuilder: (_, animation, __) {
-          return FadeTransition(
-            opacity: animation,
-            child: DetailsPage(
-              data: data,
-              pid: pid,
-              heroTag: heroTag,
-            ),
-          );
+      _PageRouteBuilder(
+        builder: (_, animation, __) {
+          return DetailsPage(heroTag: heroTag, data: data, pid: pid);
         },
       ),
     );
@@ -242,7 +244,7 @@ class _DetailsPageState extends State<DetailsPage> {
 
   Widget _buildContent() {
     return Highlight(
-      text: widget.data.content,
+      text: data.content,
       style: TextStyle(color: CupertinoTheme.of(context).primaryColor),
       defaultStyle: TextStyle(color: Colors.black54, fontSize: 15, height: 1.2),
       patterns: {
@@ -262,7 +264,9 @@ class _DetailsPageState extends State<DetailsPage> {
             int start = e.start, end = e.end;
             String match = e.input.substring(start, end);
             String id = number.stringMatch(match);
-            return TapGestureRecognizer()..onTap = () => launch('$_prefix$id');
+            return TapGestureRecognizer()..onTap = () {
+              launch('https://www.pixiv.net/member_illust.php?illust_id=$id');
+            };
           },
         ),
       },
@@ -428,6 +432,218 @@ class _SaveButtonState extends State<SaveButton> {
             : CrossFadeState.showSecond,
         duration: Duration(milliseconds: 200),
       ),
+    );
+  }
+}
+
+class _PageRouteBuilder<T> extends PageRoute<T> {
+  _PageRouteBuilder({
+    this.enableSwipeBack = true,
+    @required this.builder,
+  }) : super();
+
+  final bool enableSwipeBack;
+
+  final RoutePageBuilder builder;
+
+  @override
+  final bool opaque = false;
+
+  @override
+  Duration get transitionDuration => Duration(milliseconds: 400);
+
+  @override
+  Widget buildPage(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+  ) {
+    return builder(context, animation, secondaryAnimation);
+  }
+
+  @override
+  Widget buildTransitions(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    Widget result = FadeTransition(
+      opacity: animation,
+      child: child,
+    );
+    if (enableSwipeBack) {
+      result = _BackGestureDetector(
+        controller: controller,
+        navigator: navigator,
+        child: result,
+      );
+    }
+    return result;
+  }
+
+  @override
+  Color get barrierColor => null;
+
+  @override
+  String get barrierLabel => null;
+
+  @override
+  bool get maintainState => false;
+}
+
+class _BackGestureDetector extends StatefulWidget {
+  const _BackGestureDetector({
+    Key key,
+    @required this.child,
+    @required this.navigator,
+    @required this.controller,
+  })  : assert(child != null),
+        assert(navigator != null),
+        assert(controller != null),
+        super(key: key);
+
+  final Widget child;
+
+  final NavigatorState navigator;
+
+  final AnimationController controller;
+
+  @override
+  _BackGestureDetectorState createState() => _BackGestureDetectorState();
+}
+
+class _BackGestureDetectorState extends State<_BackGestureDetector> {
+  HorizontalDragGestureRecognizer _recognizer;
+
+  @override
+  void initState() {
+    super.initState();
+    _recognizer = HorizontalDragGestureRecognizer()
+      ..onStart = _handleStart
+      ..onUpdate = _handleDragUpdate
+      ..onEnd = _handleDragEnd
+      ..onCancel = _handleDragCancel;
+  }
+
+  @override
+  void dispose() {
+    _recognizer.dispose();
+    super.dispose();
+  }
+
+  void _handleStart(DragStartDetails details) {
+    widget.navigator.didStartUserGesture();
+  }
+
+  void _handleDragUpdate(DragUpdateDetails details) {
+    double delta = details.primaryDelta / context.size.width;
+    widget.controller.value -= delta;
+  }
+
+  void _handleDragEnd(DragEndDetails details) {
+    double velocity = details.velocity.pixelsPerSecond.dx / context.size.width;
+    _dragEnd(velocity);
+  }
+
+  void _handleDragCancel() => _dragEnd(0.0);
+
+  void _handlePointerDown(PointerDownEvent event) {
+    _recognizer.addPointer(event);
+  }
+
+  /// The drag gesture has ended with a horizontal motion of
+  /// [fractionalVelocity] as a fraction of screen width per second.
+  void _dragEnd(double velocity) {
+    // Fling in the appropriate direction.
+    // AnimationController.fling is guaranteed to
+    // take at least one frame.
+    //
+    // This curve has been determined through rigorously eyeballing native iOS
+    // animations.
+    const Curve animationCurve = Curves.fastLinearToSlowEaseIn;
+    bool animateForward;
+
+    // If the user releases the page before mid screen with sufficient velocity,
+    // or after mid screen, we should animate the page out. Otherwise, the page
+    // should be animated back in.
+    if (velocity.abs() >= _kMinFlingVelocity) {
+      animateForward = velocity <= 0;
+    } else {
+      animateForward = widget.controller.value > 0.5;
+    }
+
+    if (animateForward) {
+      // The closer the panel is to dismissing, the shorter the animation is.
+      // We want to cap the animation time, but we want to use a linear curve
+      // to determine it.
+      final int droppedPageForwardAnimationTime = math.min(
+        ui.lerpDouble(
+          _kMaxDroppedSwipePageForwardAnimationTime,
+          0,
+          widget.controller.value,
+        ).floor(),
+        _kMaxPageBackAnimationTime,
+      );
+      widget.controller.animateTo(
+        1.0,
+        duration: Duration(milliseconds: droppedPageForwardAnimationTime),
+        curve: animationCurve,
+      );
+    } else {
+      // This route is destined to pop at this point. Reuse navigator's pop.
+      widget.navigator.pop();
+
+      // The popping may have finished inline if already at the target destination.
+      if (widget.controller.isAnimating) {
+        // Otherwise, use a custom popping animation duration and curve.
+        final int droppedPageBackAnimationTime = ui.lerpDouble(
+          0,
+          _kMaxDroppedSwipePageForwardAnimationTime,
+          widget.controller.value,
+        ).floor();
+        widget.controller.animateBack(
+          0.0,
+          duration: Duration(milliseconds: droppedPageBackAnimationTime),
+          curve: animationCurve,
+        );
+      }
+    }
+
+    if (widget.controller.isAnimating) {
+      // Keep the userGestureInProgress in true state so we don't change the
+      // curve of the page transition mid-flight since CupertinoPageTransition
+      // depends on userGestureInProgress.
+      AnimationStatusListener animationStatusCallback;
+      animationStatusCallback = (AnimationStatus status) {
+        widget.navigator.didStopUserGesture();
+        widget.controller.removeStatusListener(animationStatusCallback);
+      };
+      widget.controller.addStatusListener(animationStatusCallback);
+    } else {
+      widget.navigator.didStopUserGesture();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double dragAreaWidth = MediaQuery.of(context).padding.left;
+    dragAreaWidth = math.max(dragAreaWidth, _kBackGestureWidth);
+    return Stack(
+      fit: StackFit.passthrough,
+      children: <Widget>[
+        widget.child,
+        Positioned(
+          left: 0,
+          top: 0,
+          bottom: 0,
+          width: dragAreaWidth,
+          child: Listener(
+            onPointerDown: _handlePointerDown,
+            behavior: HitTestBehavior.translucent,
+          ),
+        ),
+      ],
     );
   }
 }

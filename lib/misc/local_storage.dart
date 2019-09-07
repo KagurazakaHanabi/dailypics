@@ -31,15 +31,16 @@ class LocalStorage {
 
   final SharedPreferences _preferences;
 
-  void clear() {
-    _preferences.clear();
-  }
+  Future<bool> clear() => _preferences.clear();
 
   bool containsKey(String key) => _preferences.containsKey(key);
 
   dynamic get(String key) => _preferences.get(key);
 
   Future<bool> set(String key, dynamic value) {
+    if (value == null) {
+      return _preferences.remove(key);
+    }
     if (value is bool) {
       return _preferences.setBool(key, value);
     } else if (value is int) {

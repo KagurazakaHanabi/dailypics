@@ -6,8 +6,8 @@
 *.png         binary
 
 # Android related
-*.java        text diff=java
-*.gradle      text diff=java
+*.java        text   diff=java
+*.gradle      text   diff=java
 *.xml         text
 *.properties  text
 

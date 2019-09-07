@@ -35,9 +35,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final List<Widget> _tabs = [
     TodayComponent(),
-    RecentPage(),       // FIXME 2019-08-21: 暂时放在这吧
+    RecentPage(),
     SuggestComponent(),
-    AboutPage(),        // FIXME 2019-08-18: 暂时代替 [SettingsComponent]
+    AboutPage(),
   ];
 
   StreamSubscription _subscription;

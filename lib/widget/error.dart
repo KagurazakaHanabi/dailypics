@@ -26,6 +26,7 @@ class CustomErrorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Colors.white,
       alignment: Alignment.center,
       padding: EdgeInsets.all(16),
       child: Text(

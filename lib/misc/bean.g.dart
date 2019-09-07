@@ -29,7 +29,7 @@ Picture _$PictureFromJson(Map<String, dynamic> json) {
     content: json['p_content'] as String,
     width: json['width'] as int,
     height: json['height'] as int,
-    url: json['local_url'] as String,
+    url: Picture._replaceHost(json['local_url'] as String),
     color: Picture._colorFromHex(json['theme_color'] as String),
     textColor: Picture._colorFromHex(json['text_color'] as String),
     type: json['TNAME'] as String,
