@@ -61,6 +61,7 @@ class DetailsPage extends StatefulWidget {
   }) {
     return Navigator.of(context, rootNavigator: true).push(
       _PageRouteBuilder(
+        enableSwipeBack: !Device.isIPad(context),
         builder: (_, animation, __) {
           return DetailsPage(heroTag: heroTag, data: data, pid: pid);
         },
@@ -95,6 +96,7 @@ class _DetailsPageState extends State<DetailsPage> {
     }
     if (result != null) {
       return AdaptiveScaffold(
+        backgroundColor: Colors.transparent,
         child: Stack(
           children: <Widget>[
             result,
@@ -258,9 +260,10 @@ class _DetailsPageState extends State<DetailsPage> {
             int start = e.start, end = e.end;
             String match = e.input.substring(start, end);
             String id = number.stringMatch(match);
-            return TapGestureRecognizer()..onTap = () {
-              launch('https://www.pixiv.net/member_illust.php?illust_id=$id');
-            };
+            return TapGestureRecognizer()
+              ..onTap = () {
+                launch('https://www.pixiv.net/member_illust.php?illust_id=$id');
+              };
           },
         ),
       },
@@ -568,14 +571,8 @@ class _BackGestureDetectorState extends State<_BackGestureDetector> {
     }
 
     if (animateForward) {
-      final int animationTime = math.min(
-        ui.lerpDouble(
-          _kMaxAnimationTime,
-          0,
-          widget.controller.value,
-        ).floor(),
-        _kMaxAnimationTime,
-      );
+      final int animationTime =
+          ui.lerpDouble(_kMaxAnimationTime, 0, widget.controller.value).floor();
       widget.controller.animateTo(
         1.0,
         duration: Duration(milliseconds: animationTime),
@@ -585,11 +582,9 @@ class _BackGestureDetectorState extends State<_BackGestureDetector> {
       widget.navigator.pop();
 
       if (widget.controller.isAnimating) {
-        final int animationTime = ui.lerpDouble(
-          0,
-          _kMaxAnimationTime,
-          widget.controller.value,
-        ).floor();
+        final int animationTime = ui
+            .lerpDouble(0, _kMaxAnimationTime, widget.controller.value)
+            .floor();
         widget.controller.animateBack(
           0.0,
           duration: Duration(milliseconds: animationTime),

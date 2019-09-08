@@ -23,8 +23,8 @@ class AnimatedTransform extends ImplicitlyAnimatedWidget {
     this.transformHitTests = true,
     Curve curve = Curves.linear,
     @required Duration duration,
-  }) : assert(transform != null),
-       super(key: key, curve: curve, duration: duration);
+  })  : assert(transform != null),
+        super(key: key, curve: curve, duration: duration);
 
   AnimatedTransform.rotate({
     Key key,
@@ -34,8 +34,8 @@ class AnimatedTransform extends ImplicitlyAnimatedWidget {
     this.transformHitTests = true,
     Curve curve = Curves.linear,
     @required Duration duration,
-  }) : transform = Matrix4.rotationZ(angle),
-       super(key: key, curve: curve, duration: duration);
+  })  : transform = Matrix4.rotationZ(angle),
+        super(key: key, curve: curve, duration: duration);
 
   AnimatedTransform.translate({
     Key key,
@@ -44,7 +44,7 @@ class AnimatedTransform extends ImplicitlyAnimatedWidget {
     this.transformHitTests = true,
     Curve curve = Curves.linear,
     @required Duration duration,
-  }) : transform = Matrix4.translationValues(offset.dx, offset.dy, 0.0),
+  })  : transform = Matrix4.translationValues(offset.dx, offset.dy, 0.0),
         alignment = null,
         super(key: key, curve: curve, duration: duration);
 
@@ -56,8 +56,8 @@ class AnimatedTransform extends ImplicitlyAnimatedWidget {
     this.transformHitTests = true,
     Curve curve = Curves.linear,
     @required Duration duration,
-  }) : transform = Matrix4.diagonal3Values(scale, scale, 1),
-       super(key: key, curve: curve, duration: duration);
+  })  : transform = Matrix4.diagonal3Values(scale, scale, 1),
+        super(key: key, curve: curve, duration: duration);
 
   final Widget child;
 
