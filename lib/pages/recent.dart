@@ -16,12 +16,12 @@ import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_pics/main.dart';
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/pages/details.dart';
 import 'package:daily_pics/pages/search.dart';
+import 'package:daily_pics/widget/optimized_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show Colors;
 import 'package:flutter/rendering.dart';
@@ -362,18 +362,9 @@ class _TileState extends State<_Tile> {
             children: <Widget>[
               AspectRatio(
                 aspectRatio: aspectRatio,
-                child: Hero(
-                  tag: '${widget.index}-${widget.data.id}',
-                  child: CachedNetworkImage(
-                    imageUrl: Utils.getCompressed(widget.data),
-                    fit: BoxFit.cover,
-                    placeholder: (_, __) {
-                      return Container(
-                        color: Color(0xFFE0E0E0),
-                        child: Image.asset('res/placeholder.jpg'),
-                      );
-                    },
-                  ),
+                child: OptimizedImage(
+                  heroTag: '${widget.index}-${widget.data.id}',
+                  imageUrl: Utils.getCompressed(widget.data),
                 ),
               ),
               Padding(
