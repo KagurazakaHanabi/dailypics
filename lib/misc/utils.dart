@@ -140,7 +140,7 @@ class Utils {
     } else {
       width = data.width > 720 ? 720 : data.width;
     }
-    if (!data.url.contains('img.dpic.dev/')) {
+    if (!data.url.contains('images.dailypics.cn/')) {
       return data.url;
     }
     return data.url + '?f=jpg&q=50&w=$width';

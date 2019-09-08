@@ -39,13 +39,7 @@ import 'package:url_launcher/url_launcher.dart';
 const double _kBackGestureWidth = 20.0;
 const double _kMinFlingVelocity = 1.0; // Screen widths per second.
 
-// An eyeballed value for the maximum time it takes for a page to animate forward
-// if the user releases a page mid swipe.
-const int _kMaxDroppedSwipePageForwardAnimationTime = 800; // Milliseconds.
-
-// The maximum time for a page to get reset to it's original position if the
-// user releases a page mid swipe.
-const int _kMaxPageBackAnimationTime = 300; // Milliseconds.
+const int _kMaxAnimationTime = 400; // Milliseconds.
 
 class DetailsPage extends StatefulWidget {
   final Picture data;
@@ -106,7 +100,7 @@ class _DetailsPageState extends State<DetailsPage> {
             result,
             Align(
               alignment: Alignment.topRight,
-              child: CloseButton(),
+              child: _CloseButton(),
             ),
           ],
         ),
@@ -184,7 +178,7 @@ class _DetailsPageState extends State<DetailsPage> {
                               ),
                               Padding(
                                 padding: EdgeInsets.only(left: 16),
-                                child: SaveButton(data),
+                                child: _SaveButton(data),
                               ),
                             ],
                           ),
@@ -233,7 +227,7 @@ class _DetailsPageState extends State<DetailsPage> {
               offstage: Device.isIPad(context),
               child: Align(
                 alignment: Alignment.topRight,
-                child: CloseButton(),
+                child: _CloseButton(),
               ),
             ),
           ],
@@ -324,7 +318,7 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 }
 
-class CloseButton extends StatelessWidget {
+class _CloseButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -341,16 +335,16 @@ class CloseButton extends StatelessWidget {
   }
 }
 
-class SaveButton extends StatefulWidget {
+class _SaveButton extends StatefulWidget {
   final Picture data;
 
-  SaveButton(this.data);
+  _SaveButton(this.data);
 
   @override
   _SaveButtonState createState() => _SaveButtonState();
 }
 
-class _SaveButtonState extends State<SaveButton> {
+class _SaveButtonState extends State<_SaveButton> {
   bool started = false;
   bool denied = false;
   double progress;
@@ -537,7 +531,7 @@ class _BackGestureDetectorState extends State<_BackGestureDetector> {
   }
 
   void _handleDragUpdate(DragUpdateDetails details) {
-    double delta = details.primaryDelta / context.size.width;
+    double delta = details.primaryDelta / context.size.width * 2;
     widget.controller.value -= delta;
   }
 
@@ -561,7 +555,7 @@ class _BackGestureDetectorState extends State<_BackGestureDetector> {
     //
     // This curve has been determined through rigorously eyeballing native iOS
     // animations.
-    const Curve animationCurve = Curves.fastLinearToSlowEaseIn;
+    const Curve animationCurve = Curves.linear;
     bool animateForward;
 
     // If the user releases the page before mid screen with sufficient velocity,
@@ -570,50 +564,41 @@ class _BackGestureDetectorState extends State<_BackGestureDetector> {
     if (velocity.abs() >= _kMinFlingVelocity) {
       animateForward = velocity <= 0;
     } else {
-      animateForward = widget.controller.value > 0.5;
+      animateForward = widget.controller.value > 0.75;
     }
 
     if (animateForward) {
-      // The closer the panel is to dismissing, the shorter the animation is.
-      // We want to cap the animation time, but we want to use a linear curve
-      // to determine it.
-      final int droppedPageForwardAnimationTime = math.min(
+      final int animationTime = math.min(
         ui.lerpDouble(
-          _kMaxDroppedSwipePageForwardAnimationTime,
+          _kMaxAnimationTime,
           0,
           widget.controller.value,
         ).floor(),
-        _kMaxPageBackAnimationTime,
+        _kMaxAnimationTime,
       );
       widget.controller.animateTo(
         1.0,
-        duration: Duration(milliseconds: droppedPageForwardAnimationTime),
+        duration: Duration(milliseconds: animationTime),
         curve: animationCurve,
       );
     } else {
-      // This route is destined to pop at this point. Reuse navigator's pop.
       widget.navigator.pop();
 
-      // The popping may have finished inline if already at the target destination.
       if (widget.controller.isAnimating) {
-        // Otherwise, use a custom popping animation duration and curve.
-        final int droppedPageBackAnimationTime = ui.lerpDouble(
+        final int animationTime = ui.lerpDouble(
           0,
-          _kMaxDroppedSwipePageForwardAnimationTime,
+          _kMaxAnimationTime,
           widget.controller.value,
         ).floor();
         widget.controller.animateBack(
           0.0,
-          duration: Duration(milliseconds: droppedPageBackAnimationTime),
+          duration: Duration(milliseconds: animationTime),
           curve: animationCurve,
         );
       }
     }
 
     if (widget.controller.isAnimating) {
-      // Keep the userGestureInProgress in true state so we don't change the
-      // curve of the page transition mid-flight since CupertinoPageTransition
-      // depends on userGestureInProgress.
       AnimationStatusListener animationStatusCallback;
       animationStatusCallback = (AnimationStatus status) {
         widget.navigator.didStopUserGesture();
