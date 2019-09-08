@@ -16,8 +16,8 @@ import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/pages/details.dart';
 import 'package:daily_pics/widget/animated_transform.dart';
-import 'package:daily_pics/widget/optimized_image.dart';
 import 'package:daily_pics/widget/qrcode.dart';
+import 'package:daily_pics/widget/rounded_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show Colors;
 
@@ -95,10 +95,17 @@ class _ImageCardState extends State<ImageCard> {
                 children: <Widget>[
                   AspectRatio(
                     aspectRatio: widget.aspectRatio,
-                    child: OptimizedImage(
+                    child: RoundedImage(
+                      fit: BoxFit.cover,
                       heroTag: widget.heroTag,
                       borderRadius: BorderRadius.circular(16),
                       imageUrl: Utils.getCompressed(widget.data),
+                      placeholder: (_, __) {
+                        return Container(
+                          color: Color(0xFFE0E0E0),
+                          child: Image.asset('res/placeholder.jpg'),
+                        );
+                      },
                     ),
                   ),
                   Padding(

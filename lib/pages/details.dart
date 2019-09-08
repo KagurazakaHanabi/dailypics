@@ -25,7 +25,7 @@ import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/widget/adaptive_scaffold.dart';
 import 'package:daily_pics/widget/hightlight.dart';
 import 'package:daily_pics/widget/image_card.dart';
-import 'package:daily_pics/widget/optimized_image.dart';
+import 'package:daily_pics/widget/rounded_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' show CircularProgressIndicator, Colors;
@@ -145,10 +145,17 @@ class _DetailsPageState extends State<DetailsPage> {
                 children: <Widget>[
                   AspectRatio(
                     aspectRatio: data.width / data.height,
-                    child: OptimizedImage(
+                    child: RoundedImage(
+                      fit: BoxFit.cover,
                       imageUrl: Utils.getCompressed(data),
                       heroTag: widget.heroTag ?? DateTime.now(),
                       borderRadius: BorderRadius.vertical(top: radius),
+                      placeholder: (_, __) {
+                        return Container(
+                          color: Color(0xFFE0E0E0),
+                          child: Image.asset('res/placeholder.jpg'),
+                        );
+                      },
                     ),
                   ),
                   Container(
