@@ -62,7 +62,7 @@ class _TodayComponentState extends State<TodayComponent>
               SliverSafeArea(
                 sliver: SliverImageCardList(
                   header: _buildHeader(),
-                  footer: _buildFooter(),
+                  //footer: _buildFooter(),
                   adaptiveTablet: true,
                   data: AppModel.of(context).today,
                 ),
