@@ -12,31 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'package:daily_pics/misc/bean.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:scoped_model/scoped_model.dart';
+import 'package:flutter/services.dart';
 
-class AppModel extends Model {
-  List<Picture> _today = [];
-  List<Picture> get today => _today;
-  set today(List<Picture> data) {
-    _today = data;
-    notifyListeners();
-  }
+class C {
+  static const String type_illus = '4ac1c07f-a9f7-11e8-a8ea-0202761b0892';
+  static const String type_photo = '5398f27b-a9f7-11e8-a8ea-0202761b0892';
+  static const String type_deskt = 'e5771003-b4ed-11e8-a8ea-0202761b0892';
+}
 
-  List<Picture> _recent = [];
-  List<Picture> get recent => _recent;
-  set recent(List<Picture> data) {
-    _recent = data;
-    notifyListeners();
-  }
+class OverlayStyles {
+  static final SystemUiOverlayStyle light = SystemUiOverlayStyle.light.copyWith(
+    statusBarColor: Color(0x00000000),
+  );
 
-  @override
-  void notifyListeners() {
-    super.notifyListeners();
-  }
-
-  static AppModel of(BuildContext context) {
-    return ScopedModel.of<AppModel>(context, rebuildOnChange: true);
-  }
+  static final SystemUiOverlayStyle dark = SystemUiOverlayStyle.dark.copyWith(
+    statusBarColor: Color(0x00000000),
+  );
 }

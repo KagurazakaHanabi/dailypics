@@ -17,7 +17,6 @@ import 'package:daily_pics/model/app.dart';
 import 'package:daily_pics/pages/home.dart';
 import 'package:daily_pics/widget/error.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -52,20 +51,4 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
-}
-
-class C {
-  static const String type_illus = '4ac1c07f-a9f7-11e8-a8ea-0202761b0892';
-  static const String type_photo = '5398f27b-a9f7-11e8-a8ea-0202761b0892';
-  static const String type_deskt = 'e5771003-b4ed-11e8-a8ea-0202761b0892';
-}
-
-class OverlayStyles {
-  static final SystemUiOverlayStyle light = SystemUiOverlayStyle.light.copyWith(
-    statusBarColor: Color(0x00000000),
-  );
-
-  static final SystemUiOverlayStyle dark = SystemUiOverlayStyle.dark.copyWith(
-    statusBarColor: Color(0x00000000),
-  );
 }

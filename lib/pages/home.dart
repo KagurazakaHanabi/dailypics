@@ -17,7 +17,7 @@ import 'dart:convert';
 
 import 'package:daily_pics/components/suggest.dart';
 import 'package:daily_pics/components/today.dart';
-import 'package:daily_pics/main.dart';
+import 'package:daily_pics/misc/constants.dart';
 import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/pages/about.dart';
 import 'package:daily_pics/pages/details.dart';

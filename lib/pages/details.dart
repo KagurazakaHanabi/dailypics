@@ -19,8 +19,8 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:daily_pics/main.dart';
 import 'package:daily_pics/misc/bean.dart';
+import 'package:daily_pics/misc/constants.dart';
 import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/widget/adaptive_scaffold.dart';
 import 'package:daily_pics/widget/hightlight.dart';

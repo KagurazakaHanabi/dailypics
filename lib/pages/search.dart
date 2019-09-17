@@ -51,97 +51,107 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    EdgeInsets windowPadding = MediaQuery.of(context).padding;
-    Color barBackgroundColor = CupertinoTheme.of(context).barBackgroundColor;
+    MediaQueryData queryData = MediaQuery.of(context);
+    EdgeInsets windowPadding = queryData.padding;
+    windowPadding = windowPadding.copyWith(top: 90);
     return CupertinoPageScaffold(
       resizeToAvoidBottomInset: false,
-      child: Column(
-        children: <Widget>[
-          ClipRect(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-              child: Container(
-                padding: EdgeInsets.only(top: windowPadding.top),
-                color: barBackgroundColor,
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 16),
-                        child: SearchBar(
-                          autofocus: true,
-                          onSubmitted: (value) {
-                            if (Utils.isUUID(value)) {
-                              _fetchData(value);
-                            } else if (value.isNotEmpty) {
-                              query = value;
-                              _fetchData();
-                            }
-                          },
+      child: MediaQuery(
+        data: queryData.copyWith(padding: windowPadding),
+        child: Stack(
+          children: <Widget>[
+            CupertinoScrollbar(
+              controller: controller,
+              child: StaggeredGridView.countBuilder(
+                controller: controller,
+                padding: Device.isIPad(context)
+                    ? EdgeInsets.fromLTRB(12, 12, 12, 0) + windowPadding
+                    : EdgeInsets.fromLTRB(4, 0, 4, 0) + windowPadding,
+                crossAxisCount: Device.isIPad(context) ? 2 : 1,
+                staggeredTileBuilder: (_) => StaggeredTile.fit(1),
+                itemCount: data.length == 0 ? 1 : data.length,
+                itemBuilder: (_, i) {
+                  if (data.length != 0) {
+                    return ImageCard(data[i], '$query-${data[i].id}');
+                  } else if (query.isNotEmpty && !doing) {
+                    return Container(
+                      padding: EdgeInsets.only(top: 16),
+                      alignment: Alignment.center,
+                      child: Text(
+                        '未找到相关内容',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Color(0xB3000000),
                         ),
                       ),
-                    ),
-                    CupertinoButton(
-                      padding: EdgeInsets.fromLTRB(0, 16, 16, 16),
-                      child: Text('取消'),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ],
-                ),
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
               ),
             ),
-          ),
-          SizedBox(
-            height: doing ? 2 : 1 / window.devicePixelRatio,
-            child: LinearProgressIndicator(
-              backgroundColor: barBackgroundColor,
-              valueColor: AlwaysStoppedAnimation(Color(0x4C000000)),
-              value: (doing ?? false) ? null : 1,
+            ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: _buildSearchBar(),
+              ),
             ),
-          ),
-          Flexible(
-            child: SafeArea(
-              top: false,
-              child: MediaQuery.removePadding(
-                context: context,
-                removeTop: true,
-                removeBottom: true,
-                child: CupertinoScrollbar(
-                  controller: controller,
-                  child: StaggeredGridView.countBuilder(
-                    controller: controller,
-                    padding: Device.isIPad(context)
-                        ? EdgeInsets.fromLTRB(12, 12, 12, 0)
-                        : EdgeInsets.only(left: 4, right: 4),
-                    crossAxisCount: Device.isIPad(context) ? 2 : 1,
-                    staggeredTileBuilder: (_) => StaggeredTile.fit(1),
-                    itemCount: data.length == 0 ? 1 : data.length,
-                    itemBuilder: (_, i) {
-                      if (data.length != 0) {
-                        return ImageCard(data[i], '$query-${data[i].id}');
-                      } else if (query.isNotEmpty && !doing) {
-                        return Container(
-                          padding: EdgeInsets.only(top: 16),
-                          alignment: Alignment.center,
-                          child: Text(
-                            '未找到相关内容',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Color(0xB3000000),
-                            ),
-                          ),
-                        );
-                      } else {
-                        return Container();
-                      }
-                    },
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchBar() {
+    EdgeInsets padding = MediaQuery.of(context).padding;
+    Color barBackgroundColor = CupertinoTheme.of(context).barBackgroundColor;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Container(
+          alignment: Alignment.center,
+          padding: EdgeInsets.only(top: padding.top),
+          color: barBackgroundColor,
+          child: SizedBox(
+            width: 500,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 16),
+                    child: SearchBar(
+                      autofocus: true,
+                      onSubmitted: (value) {
+                        if (Utils.isUUID(value)) {
+                          _fetchData(value);
+                        } else if (value.isNotEmpty) {
+                          query = value;
+                          _fetchData();
+                        }
+                      },
+                    ),
                   ),
                 ),
-              ),
+                CupertinoButton(
+                  padding: EdgeInsets.fromLTRB(0, 16, 16, 16),
+                  child: Text('取消'),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+        SizedBox(
+          height: doing ? 2 : 1 / window.devicePixelRatio,
+          child: LinearProgressIndicator(
+            backgroundColor: barBackgroundColor,
+            valueColor: AlwaysStoppedAnimation(Color(0x4C000000)),
+            value: (doing ?? false) ? null : 1,
+          ),
+        ),
+      ],
     );
   }
 

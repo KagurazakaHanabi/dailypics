@@ -16,9 +16,10 @@ import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
-import 'package:daily_pics/main.dart';
 import 'package:daily_pics/misc/bean.dart';
+import 'package:daily_pics/misc/constants.dart';
 import 'package:daily_pics/misc/utils.dart';
+import 'package:daily_pics/model/app.dart';
 import 'package:daily_pics/pages/details.dart';
 import 'package:daily_pics/pages/search.dart';
 import 'package:daily_pics/widget/optimized_image.dart';
@@ -29,6 +30,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:http/http.dart' as http;
+import 'package:scoped_model/scoped_model.dart';
 
 class RecentPage extends StatefulWidget {
   final String tid;
@@ -55,7 +57,7 @@ class _RecentPageState extends State<RecentPage>
   final List<String> types = [C.type_photo, C.type_illus, C.type_deskt];
 
   ScrollController controller;
-  Map<int, List<Picture>> data = {0: [], 1: [], 2: []};
+  //Map<int, List<Picture>> data = {0: [], 1: [], 2: []};
   bool doing = false;
   int index = 0;
   Map<int, int> cur = {0: 1, 1: 1, 2: 1};
@@ -79,12 +81,12 @@ class _RecentPageState extends State<RecentPage>
     double windowHeight = MediaQuery.of(context).size.height;
     return CupertinoPageScaffold(
       resizeToAvoidBottomInset: false,
-      child: Stack(
-        alignment: Alignment.center,
-        children: <Widget>[
-          CupertinoScrollbar(
-            controller: controller,
-            child: NotificationListener<UserScrollNotification>(
+      child: ScopedModelDescendant<AppModel>(builder: (_, __, model) {
+        List<Picture> data = _where(types[index]);
+        return Stack(
+          alignment: Alignment.center,
+          children: <Widget>[
+            NotificationListener<UserScrollNotification>(
               onNotification: (UserScrollNotification notification) {
                 if (notification.direction == ScrollDirection.idle) {
                   _onScrollEnd();
@@ -105,7 +107,7 @@ class _RecentPageState extends State<RecentPage>
                       onValueChanged: (newValue) {
                         if (!doing) {
                           setState(() => index = newValue);
-                          if (data[index].length == 0) {
+                          if (_where(types[index]).length == 0) {
                             _fetchData();
                           }
                         }
@@ -115,15 +117,15 @@ class _RecentPageState extends State<RecentPage>
                   CupertinoSliverRefreshControl(onRefresh: _fetchData),
                   SliverToBoxAdapter(
                     child: SizedBox(
-                      height: data[index].length == 0 ? windowHeight : 0,
+                      height: data.length == 0 ? windowHeight : 0,
                     ),
                   ),
                   SliverPadding(
                     padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
                     sliver: SliverStaggeredGrid.countBuilder(
                       crossAxisCount: Device.isIPad(context) ? 3 : 2,
-                      itemCount: data[index].length,
-                      itemBuilder: (_, i) => _Tile(data[index][i], i),
+                      itemCount: data.length,
+                      itemBuilder: (_, i) => _Tile(data[i], i),
                       staggeredTileBuilder: (_) => StaggeredTile.fit(1),
                       mainAxisSpacing: 12,
                       crossAxisSpacing: 12,
@@ -132,10 +134,10 @@ class _RecentPageState extends State<RecentPage>
                 ],
               ),
             ),
-          ),
-          data[index].length == 0 ? CupertinoActivityIndicator() : Container(),
-        ],
-      ),
+            data.length == 0 ? CupertinoActivityIndicator() : Container(),
+          ],
+        );
+      }),
     );
   }
 
@@ -147,18 +149,20 @@ class _RecentPageState extends State<RecentPage>
         't=${types[index]}';
     dynamic json = jsonDecode((await http.get(uri)).body);
     Response res = Response.fromJson({'data': json['result']});
-    data[index].addAll(await _parseMark(res.data));
+    List<Picture> data = res.data ?? [];
+    List<String> list = Settings.marked;
+    for (int i = 0; i < data.length; i++) {
+      data[i].marked = list.contains(data[i].id);
+    }
     max[index] = json['maxpage'];
     doing = false;
-    setState(() {});
+    AppModel model = AppModel.of(context);
+    model.recent.addAll(data);
+    model.notifyListeners();
   }
 
-  Future<List<Picture>> _parseMark(List<Picture> pics) async {
-    List<String> list = Settings.marked;
-    for (int i = 0; i < pics.length; i++) {
-      pics[i].marked = list.contains(pics[i].id);
-    }
-    return pics;
+  List<Picture> _where(String tid) {
+    return AppModel.of(context).recent.where((e) => e.tid == tid).toList();
   }
 
   void _onScrollUpdate() {
@@ -199,7 +203,7 @@ class _RecentPageState extends State<RecentPage>
   }
 
   @override
-  bool get wantKeepAlive => data != null;
+  bool get wantKeepAlive => true;
 }
 
 class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
