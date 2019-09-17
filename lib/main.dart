@@ -13,11 +13,13 @@
 // limitations under the License.
 
 import 'package:daily_pics/misc/utils.dart';
+import 'package:daily_pics/model/app.dart';
 import 'package:daily_pics/pages/home.dart';
 import 'package:daily_pics/widget/error.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,20 +31,25 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  final AppModel model = AppModel();
+
   @override
   Widget build(BuildContext context) {
-    return CupertinoApp(
-      title: '图鉴日图',
-      home: HomePage(),
-      supportedLocales: [
-        Locale('zh'),
-        Locale('en'),
-      ],
-      localizationsDelegates: [
-        GlobalCupertinoLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
+    return ScopedModel<AppModel>(
+      model: model,
+      child: CupertinoApp(
+        title: '图鉴日图',
+        home: HomePage(),
+        supportedLocales: [
+          Locale('zh'),
+          Locale('en'),
+        ],
+        localizationsDelegates: [
+          GlobalCupertinoLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+      ),
     );
   }
 }

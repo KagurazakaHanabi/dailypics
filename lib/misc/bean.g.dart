@@ -24,6 +24,7 @@ Map<String, dynamic> _$ResponseToJson(Response instance) => <String, dynamic>{
 Picture _$PictureFromJson(Map<String, dynamic> json) {
   return Picture(
     id: json['PID'] as String,
+    tid: json['TID'] as String,
     user: json['username'] as String,
     title: json['p_title'] as String,
     content: json['p_content'] as String,
@@ -31,8 +32,6 @@ Picture _$PictureFromJson(Map<String, dynamic> json) {
     height: json['height'] as int,
     url: Picture._replaceHost(json['local_url'] as String),
     color: Picture._colorFromHex(json['theme_color'] as String),
-    textColor: Picture._colorFromHex(json['text_color'] as String),
-    type: json['TNAME'] as String,
     date: json['p_date'] as String,
     marked: json['marked'] as bool ?? false,
   );
@@ -40,6 +39,7 @@ Picture _$PictureFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$PictureToJson(Picture instance) => <String, dynamic>{
       'PID': instance.id,
+      'TID': instance.tid,
       'username': instance.user,
       'p_title': instance.title,
       'p_content': instance.content,
@@ -47,8 +47,6 @@ Map<String, dynamic> _$PictureToJson(Picture instance) => <String, dynamic>{
       'height': instance.height,
       'local_url': instance.url,
       'theme_color': Picture._colorToHex(instance.color),
-      'text_color': Picture._colorToHex(instance.textColor),
-      'TNAME': instance.type,
       'p_date': instance.date,
       'marked': instance.marked,
     };

@@ -39,6 +39,9 @@ class Picture {
   @JsonKey(name: 'PID')
   String id;
 
+  @JsonKey(name: 'TID')
+  String tid;
+
   @JsonKey(name: 'username')
   String user;
 
@@ -58,12 +61,6 @@ class Picture {
   @JsonKey(name: 'theme_color', fromJson: _colorFromHex, toJson: _colorToHex)
   Color color;
 
-  @JsonKey(name: 'text_color', fromJson: _colorFromHex, toJson: _colorToHex)
-  Color textColor;
-
-  @JsonKey(name: 'TNAME')
-  String type;
-
   @JsonKey(name: 'p_date')
   String date;
 
@@ -72,6 +69,7 @@ class Picture {
 
   Picture({
     this.id,
+    this.tid,
     this.user,
     this.title,
     this.content,
@@ -79,8 +77,6 @@ class Picture {
     this.height,
     this.url,
     this.color,
-    this.textColor,
-    this.type,
     this.date,
     this.marked,
   });

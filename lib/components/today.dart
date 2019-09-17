@@ -17,11 +17,13 @@ import 'dart:ui';
 
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/utils.dart';
+import 'package:daily_pics/model/app.dart';
 import 'package:daily_pics/pages/recent.dart';
 import 'package:daily_pics/widget/slivers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show Colors;
 import 'package:http/http.dart' as http;
+import 'package:scoped_model/scoped_model.dart';
 
 class TodayComponent extends StatefulWidget {
   @override
@@ -33,7 +35,6 @@ class _TodayComponentState extends State<TodayComponent>
   ScrollController controller = ScrollController();
 
   String text;
-  List<Picture> data;
 
   @override
   void initState() {
@@ -44,7 +45,7 @@ class _TodayComponentState extends State<TodayComponent>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (data == null) {
+    if (AppModel.of(context).today == null) {
       return Center(
         child: CupertinoActivityIndicator(),
       );
@@ -60,11 +61,15 @@ class _TodayComponentState extends State<TodayComponent>
             slivers: <Widget>[
               CupertinoSliverRefreshControl(onRefresh: _fetchData),
               SliverSafeArea(
-                sliver: SliverImageCardList(
-                  header: _buildHeader(),
-                  //footer: _buildFooter(),
-                  adaptiveTablet: true,
-                  data: data,
+                sliver: ScopedModelDescendant<AppModel>(
+                  builder: (_, __, model) {
+                    return SliverImageCardList(
+                      header: _buildHeader(),
+                      //footer: _buildFooter(),
+                      adaptiveTablet: true,
+                      data: model.today,
+                    );
+                  },
                 ),
               ),
             ],
@@ -171,51 +176,18 @@ class _TodayComponentState extends State<TodayComponent>
     _fetchText();
     String source = (await http.get('https://v2.api.dailypics.cn/today')).body;
     Response res = Response.fromJson({'data': jsonDecode(source)});
-    data = res.data ?? [];
-    await _fetchBing();
-    await _parseMark();
-    setState(() {});
+    List<Picture> data = res.data ?? [];
+    List<String> list = Settings.marked;
+    for (int i = 0; i < data.length; i++) {
+      data[i].marked = list.contains(data[i].id);
+    }
+    AppModel.of(context).today = data;
   }
 
   Future<void> _fetchText() async {
     String url = 'https://v1.hitokoto.cn/?encode=text';
     String source = (await http.get(url)).body;
     setState(() => text = source);
-  }
-
-  Future<void> _fetchBing() async {
-    String url = 'https://cn.bing.com/HPImageArchive.aspx?format=js&n=1&idx=0';
-    String source = (await http.get(url)).body;
-    Map<String, dynamic> json = jsonDecode(source)['images'][0];
-    String copyright = json['copyright'];
-    data.add(Picture(
-      id: '${json['urlbase']}_1080x1920'.split('?')[1],
-      title: _parseBing(copyright)[0],
-      content: _parseBing(copyright)[1],
-      width: 1080,
-      height: 1920,
-      user: '',
-      url: 'https://cn.bing.com${json['urlbase']}_1080x1920.jpg',
-      date: json['enddate'],
-      type: ' 必应',
-    ));
-  }
-
-  List<String> _parseBing(String copyright) {
-    List<String> split = copyright.split('，');
-    if (split.length > 1) {
-      return split;
-    }
-
-    split = copyright.replaceAll(RegExp('[【|】]'), '').split(' (');
-    return [split[0], split[1].substring(0, split[1].length - 2)];
-  }
-
-  Future<void> _parseMark() async {
-    List<String> list = Settings.marked;
-    for (int i = 0; i < data.length; i++) {
-      data[i].marked = list.contains(data[i].id);
-    }
   }
 
   @override
@@ -225,5 +197,5 @@ class _TodayComponentState extends State<TodayComponent>
   }
 
   @override
-  bool get wantKeepAlive => data != null;
+  bool get wantKeepAlive => true;
 }
