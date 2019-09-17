@@ -1,0 +1,10 @@
+android {
+    signingConfigs {
+        release {
+            storeFile file("D:\\AndroidStudioProjects\\Createlite.jks")
+            keyAlias "createlite"
+            storePassword "123456"
+            keyPassword "123456"
+        }
+    }
+}

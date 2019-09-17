@@ -52,7 +52,7 @@ class OptimizedImage extends StatelessWidget {
         },
       ),
     );
-    if (result != null) {
+    if (heroTag != null) {
       result = Hero(
         tag: heroTag,
         transitionOnUserGestures: true,
