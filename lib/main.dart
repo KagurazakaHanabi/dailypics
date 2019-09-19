@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import 'package:daily_pics/misc/constants.dart';
 import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/model/app.dart';
 import 'package:daily_pics/pages/home.dart';
@@ -39,6 +40,19 @@ class MyApp extends StatelessWidget {
       child: CupertinoApp(
         title: '图鉴日图',
         home: HomePage(),
+        // FIXME: 2019/9/19 等待 CupertinoApp 加入 darkTheme 字段
+        builder: (BuildContext context, Widget child) {
+          Brightness brightness = MediaQuery.platformBrightnessOf(context);
+          bool isDark = brightness == Brightness.dark;
+          CupertinoThemeData theme = isDark ? Themes.dark : Themes.light;
+          return CupertinoTheme(
+            data: theme,
+            child: DefaultTextStyle(
+              style: theme.textTheme.textStyle,
+              child: child,
+            ),
+          );
+        },
         supportedLocales: [
           Locale('zh'),
           Locale('en'),

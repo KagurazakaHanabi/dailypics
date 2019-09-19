@@ -4,7 +4,7 @@ import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart'
-    show CircleAvatar, Colors, Divider, ListTile, Scaffold;
+    show CircleAvatar, Colors, Divider, ListTile, Scaffold, Theme, ThemeData;
 import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -50,98 +50,39 @@ class _AboutPageState extends State<AboutPage> {
         ? (size.width - size.height) / 2
         : 0;
     return Scaffold(
-      body: CupertinoScrollbar(
-        controller: controller,
-        child: Stack(
-          children: <Widget>[
-            SingleChildScrollView(
-              controller: controller,
-              padding: MediaQuery.of(context).padding,
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(padding, 44, padding, 0),
-                child: _buildList(),
+      backgroundColor: Colors.transparent,
+      body: DefaultTextStyle(
+        style: CupertinoTheme.of(context).textTheme.textStyle,
+        child: CupertinoScrollbar(
+          controller: controller,
+          child: Stack(
+            children: <Widget>[
+              SingleChildScrollView(
+                controller: controller,
+                padding: MediaQuery.of(context).padding,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(padding, 44, padding, 0),
+                  child: _buildList(),
+                ),
               ),
-            ),
-            CupertinoNavigationBar(
-              /*padding: EdgeInsetsDirectional.zero,
-              leading: CupertinoButton(
-                child: Icon(CupertinoIcons.back),
-                padding: EdgeInsets.zero,
-                onPressed: () => Navigator.of(context).pop(),
-              ),*/
-              middle: Text('关于'),
-              /*trailing: CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: Text('测试入口'),
-                onPressed: () => UserSpacePage.push(context),
-              ),*/
-            )
-          ],
+              CupertinoNavigationBar(
+                /*padding: EdgeInsetsDirectional.zero,
+                leading: CupertinoButton(
+                  child: Icon(CupertinoIcons.back),
+                  padding: EdgeInsets.zero,
+                  onPressed: () => Navigator.of(context).pop(),
+                ),*/
+                middle: Text('关于'),
+                /*trailing: CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  child: Text('测试入口'),
+                  onPressed: () => UserSpacePage.push(context),
+                ),*/
+              )
+            ],
+          ),
         ),
       ),
-    );
-  }
-
-  Widget _buildList() {
-    final String prefix = 'res/avatars/';
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        _buildAppInfo(),
-        Divider(),
-        Padding(
-          padding: EdgeInsets.only(left: 16, top: 8, bottom: 8),
-          child: Text(
-            '团队信息',
-            style: TextStyle(fontSize: 22),
-          ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: List<Widget>.generate(contributors != null ? 3 : 0, (i) {
-            Contributor member = contributors[i];
-            return Padding(
-              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              child: GestureDetector(
-                onTap: member.url == null ? null : () => launch(member.url),
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(6, 12, 6, 12),
-                      child: CircleAvatar(
-                        radius: 26,
-                        backgroundImage: AssetImage(prefix + member.assetName),
-                      ),
-                    ),
-                    Text(member.name),
-                    Text(
-                      member.position,
-                      style: TextStyle(fontSize: 14, color: Colors.black54),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }),
-        ),
-        Divider(color: Colors.transparent, height: 16),
-        Column(
-          children: List<Widget>.generate(
-            contributors != null ? contributors.length - 3 : 0,
-            (index) {
-              Contributor member = contributors[index + 3];
-              return ListTile(
-                onTap: member.url == null ? null : () => launch(member.url),
-                title: Text(member.name),
-                subtitle: Text(member.position),
-                leading: CircleAvatar(
-                  backgroundImage: AssetImage(prefix + member.assetName),
-                ),
-              );
-            },
-          ),
-        )
-      ],
     );
   }
 
@@ -149,6 +90,10 @@ class _AboutPageState extends State<AboutPage> {
     final String appName = packageInfo?.appName ?? '';
     final String version = packageInfo?.version ?? '';
     final String buildNumber = packageInfo?.buildNumber ?? '';
+    Color textColor = CupertinoDynamicColor.withBrightness(
+      color: Colors.black54,
+      darkColor: Colors.white70,
+    ).resolveFrom(context);
     return Padding(
       padding: EdgeInsets.all(8),
       child: Column(
@@ -164,13 +109,13 @@ class _AboutPageState extends State<AboutPage> {
           Text(appName, style: TextStyle(fontSize: 18)),
           Text(
             '版本号 $version($buildNumber)',
-            style: TextStyle(fontSize: 14, color: Colors.black54),
+            style: TextStyle(fontSize: 14, color: textColor),
           ),
           Padding(
             padding: EdgeInsets.only(top: 8),
             child: Text(
               '无人为孤岛，一图一世界',
-              style: TextStyle(fontSize: 14, color: Colors.black54),
+              style: TextStyle(fontSize: 14, color: textColor),
             ),
           ),
           Padding(
@@ -216,6 +161,74 @@ class _AboutPageState extends State<AboutPage> {
           Text(title, style: TextStyle(fontWeight: FontWeight.w500)),
         ],
       ),
+    );
+  }
+
+  Widget _buildList() {
+    final String prefix = 'res/avatars/';
+    bool isDark = CupertinoTheme.of(context).brightness == Brightness.dark;
+    Color textColor = isDark ? Colors.white70 : Colors.black54;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        _buildAppInfo(),
+        Divider(),
+        Padding(
+          padding: EdgeInsets.only(left: 16, top: 8, bottom: 8),
+          child: Text(
+            '团队信息',
+            style: TextStyle(fontSize: 22),
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: List<Widget>.generate(contributors != null ? 3 : 0, (i) {
+            Contributor member = contributors[i];
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              child: GestureDetector(
+                onTap: member.url == null ? null : () => launch(member.url),
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(6, 12, 6, 12),
+                      child: CircleAvatar(
+                        radius: 26,
+                        backgroundImage: AssetImage(prefix + member.assetName),
+                      ),
+                    ),
+                    Text(member.name),
+                    Text(
+                      member.position,
+                      style: TextStyle(fontSize: 14, color: textColor),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }),
+        ),
+        Divider(color: Colors.transparent, height: 16),
+        Column(
+          children: List<Widget>.generate(
+            contributors != null ? contributors.length - 3 : 0,
+            (index) {
+              Contributor member = contributors[index + 3];
+              return Theme(
+                data: isDark ? ThemeData.dark() : ThemeData.light(),
+                child: ListTile(
+                  onTap: member.url == null ? null : () => launch(member.url),
+                  title: Text(member.name),
+                  subtitle: Text(member.position),
+                  leading: CircleAvatar(
+                    backgroundImage: AssetImage(prefix + member.assetName),
+                  ),
+                ),
+              );
+            },
+          ),
+        )
+      ],
     );
   }
 }

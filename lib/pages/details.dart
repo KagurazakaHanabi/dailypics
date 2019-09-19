@@ -108,6 +108,7 @@ class _DetailsPageState extends State<DetailsPage> {
         ),
       );
     }
+    CupertinoThemeData theme = CupertinoTheme.of(context);
     Radius radius = Radius.circular(Device.isIPad(context) ? 16 : 0);
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: Utils.isDarkColor(data.color) && !Device.isIPad(context)
@@ -130,7 +131,7 @@ class _DetailsPageState extends State<DetailsPage> {
             Container(
               margin: EdgeInsets.only(top: 80),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: theme.scaffoldBackgroundColor,
                 borderRadius: BorderRadius.vertical(top: radius),
               ),
             ),
@@ -148,7 +149,7 @@ class _DetailsPageState extends State<DetailsPage> {
                     ),
                   ),
                   Container(
-                    color: Colors.white,
+                    color: theme.scaffoldBackgroundColor,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -203,7 +204,10 @@ class _DetailsPageState extends State<DetailsPage> {
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
-                              color: Color(0xFFF2F2F7),
+                              color: CupertinoDynamicColor.withBrightness(
+                                color: Color(0xFFF2F2F7),
+                                darkColor: Color(0xFF313135),
+                              ).resolveFrom(context),
                             ),
                             child: CupertinoButton(
                               pressedOpacity: 0.4,
@@ -242,10 +246,17 @@ class _DetailsPageState extends State<DetailsPage> {
     return Highlight(
       text: data.content,
       style: TextStyle(color: CupertinoTheme.of(context).primaryColor),
-      defaultStyle: TextStyle(color: Colors.black54, fontSize: 15, height: 1.2),
+      defaultStyle: TextStyle(
+        color: CupertinoDynamicColor.withBrightness(
+          color: Colors.black54,
+          darkColor: Colors.white70,
+        ).resolveFrom(context),
+        fontSize: 15,
+        height: 1.2,
+      ),
       patterns: {
         RegExp(
-          r"(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+",
+          r"^(https?:\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$",
         ): HighlightedText(
           recognizer: (RegExpMatch e, int i) {
             return TapGestureRecognizer()
@@ -363,6 +374,10 @@ class _SaveButtonState extends State<_SaveButton> {
 
   @override
   Widget build(BuildContext context) {
+    Color backgroundColor = CupertinoDynamicColor.withBrightness(
+      color: Color(0xFFF2F2F7),
+      darkColor: Color(0xFF313135),
+    ).resolveFrom(context);
     Color primaryColor = CupertinoTheme.of(context).primaryColor;
     return GestureDetector(
       onTap: () async {
@@ -392,7 +407,7 @@ class _SaveButtonState extends State<_SaveButton> {
                 ? CupertinoColors.destructiveRed
                 : progress == 1 && Platform.isAndroid
                     ? primaryColor
-                    : Color(0xFFF2F2F7),
+                    : backgroundColor,
             borderRadius: BorderRadius.circular(18),
           ),
           child: Text(
@@ -403,9 +418,9 @@ class _SaveButtonState extends State<_SaveButton> {
               fontSize: 15,
               fontWeight: FontWeight.w500,
               color: denied
-                  ? Color(0xFFF2F2F7)
+                  ? backgroundColor
                   : progress == 1 && Platform.isAndroid
-                      ? Color(0xFFF2F2F7)
+                      ? backgroundColor
                       : primaryColor,
             ),
           ),

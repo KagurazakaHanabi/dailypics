@@ -30,3 +30,9 @@ class OverlayStyles {
     statusBarColor: Color(0x00000000),
   );
 }
+
+class Themes {
+  static const light = CupertinoThemeData(brightness: Brightness.light);
+
+  static const dark = CupertinoThemeData(brightness: Brightness.dark);
+}

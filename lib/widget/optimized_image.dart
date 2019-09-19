@@ -33,6 +33,7 @@ class OptimizedImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = CupertinoTheme.of(context).brightness == Brightness.dark;
     Widget result = ClipRRect(
       borderRadius: borderRadius,
       child: CachedNetworkImage(
@@ -45,9 +46,9 @@ class OptimizedImage extends StatelessWidget {
         fadeOutCurve: Curves.easeOut,
         placeholder: (_, __) {
           return Container(
-            color: Color(0xFFE0E0E0),
             alignment: Alignment.center,
-            child: Image.asset('res/placeholder.jpg'),
+            color: isDark ? Color(0xFF1F1F1F) : Color(0xFFE0E0E0),
+            child: Image.asset('res/placeholder${isDark ? '-night' : ''}.jpg'),
           );
         },
       ),

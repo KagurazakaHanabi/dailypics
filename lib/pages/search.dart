@@ -222,7 +222,10 @@ class _SearchBarState extends State<SearchBar> {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            color: Color(0xDDE3E3E8),
+            color: CupertinoDynamicColor.withBrightness(
+              color: Color(0xDDE3E3E8),
+              darkColor: Color(0xFF303030),
+            ).resolveFrom(context),
           ),
           child: AnimatedOpacity(
             opacity: widget.shrinkOffset < 0.9 ? 0 : 1,

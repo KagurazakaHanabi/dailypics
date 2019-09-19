@@ -49,7 +49,6 @@ class _TodayComponentState extends State<TodayComponent>
         child: CupertinoActivityIndicator(),
       );
     }
-    bool isDark = CupertinoTheme.of(context).brightness == Brightness.dark;
     return Stack(
       children: <Widget>[
         CupertinoScrollbar(
@@ -75,7 +74,7 @@ class _TodayComponentState extends State<TodayComponent>
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
               height: MediaQuery.of(context).padding.top,
-              color: isDark ? Color(0xB7000000) : Color(0xCCFFFFFF),
+              color: CupertinoTheme.of(context).barBackgroundColor,
             ),
           ),
         ),

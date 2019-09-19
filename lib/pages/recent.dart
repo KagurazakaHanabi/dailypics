@@ -26,7 +26,6 @@ import 'package:daily_pics/widget/optimized_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show Colors;
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:http/http.dart' as http;
@@ -57,7 +56,7 @@ class _RecentPageState extends State<RecentPage>
   final List<String> types = [C.type_photo, C.type_illus, C.type_deskt];
 
   ScrollController controller;
-  //Map<int, List<Picture>> data = {0: [], 1: [], 2: []};
+
   bool doing = false;
   int index = 0;
   Map<int, int> cur = {0: 1, 1: 1, 2: 1};
@@ -227,82 +226,77 @@ class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
     bool canPop = Navigator.of(context).canPop();
     CupertinoThemeData theme = CupertinoTheme.of(context);
     TextStyle navTitleTextStyle = theme.textTheme.navTitleTextStyle;
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: Utils.isDarkColor(theme.barBackgroundColor)
-          ? OverlayStyles.light
-          : OverlayStyles.dark,
-      child: OverflowBox(
-        minHeight: 0,
-        maxHeight: double.infinity,
-        alignment: Alignment.topCenter,
-        child: ClipRect(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.only(top: padding.top, bottom: 8),
-              decoration: BoxDecoration(
-                color: CupertinoTheme.of(context).barBackgroundColor,
-                border: Border(
-                  bottom: BorderSide(
-                    color: Color(0x4C000000),
-                    width: 0,
-                  ),
+    return OverflowBox(
+      minHeight: 0,
+      maxHeight: double.infinity,
+      alignment: Alignment.topCenter,
+      child: ClipRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.only(top: padding.top, bottom: 8),
+            decoration: BoxDecoration(
+              color: theme.barBackgroundColor,
+              border: Border(
+                bottom: BorderSide(
+                  color: Color(0x4C000000),
+                  width: 0,
                 ),
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    height: 44,
-                    padding: EdgeInsets.only(left: canPop ? 0 : 44, right: 44),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Offstage(
-                          offstage: !canPop,
-                          child: CupertinoButton(
-                            child: Icon(CupertinoIcons.back),
-                            padding: EdgeInsets.zero,
-                            onPressed: () => Navigator.of(context).pop(),
-                          ),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  height: 44,
+                  padding: EdgeInsets.only(left: canPop ? 0 : 44, right: 44),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Offstage(
+                        offstage: !canPop,
+                        child: CupertinoButton(
+                          child: Icon(CupertinoIcons.back),
+                          padding: EdgeInsets.zero,
+                          onPressed: () => Navigator.of(context).pop(),
                         ),
-                        Expanded(
-                          child: Text(
-                            '往期精选',
-                            textAlign: TextAlign.center,
-                            style: navTitleTextStyle,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    width: 500,
-                    height: barHeight,
-                    child: SearchBar(
-                      shrinkOffset: barHeight / kSearchBarHeight,
-                      onTap: () => SearchPage.push(context),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 500,
-                    child: DefaultTextStyle(
-                      style: TextStyle(fontWeight: FontWeight.w500),
-                      child: CupertinoSegmentedControl<int>(
-                        onValueChanged: onValueChanged,
-                        groupValue: index,
-                        children: {
-                          0: Text('杂烩'),
-                          1: Text('插画'),
-                          2: Text('桌面'),
-                        },
                       ),
+                      Expanded(
+                        child: Text(
+                          '往期精选',
+                          textAlign: TextAlign.center,
+                          style: navTitleTextStyle,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: 500,
+                  height: barHeight,
+                  child: SearchBar(
+                    shrinkOffset: barHeight / kSearchBarHeight,
+                    onTap: () => SearchPage.push(context),
+                  ),
+                ),
+                SizedBox(
+                  width: 500,
+                  child: DefaultTextStyle(
+                    style: TextStyle(fontWeight: FontWeight.w500),
+                    child: CupertinoSegmentedControl<int>(
+                      onValueChanged: onValueChanged,
+                      groupValue: index,
+                      children: {
+                        0: Text('杂烩'),
+                        1: Text('插画'),
+                        2: Text('桌面'),
+                      },
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
@@ -349,11 +343,14 @@ class _TileState extends State<_Tile> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: CupertinoDynamicColor.withBrightness(
+            color: Colors.white,
+            darkColor: Color(0xFF1C1C1E),
+          ).resolveFrom(context),
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Color(0xFFD9D9D9),
+              color: Colors.black26,
               offset: Offset(0, 12),
               blurRadius: 24,
             )
