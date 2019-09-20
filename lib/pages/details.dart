@@ -102,7 +102,7 @@ class _DetailsPageState extends State<DetailsPage> {
             result,
             Align(
               alignment: Alignment.topRight,
-              child: _CloseButton(),
+              child: _buildCloseButton(),
             ),
           ],
         ),
@@ -175,6 +175,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                     data.marked
                                         ? Ionicons.ios_star
                                         : Ionicons.ios_star_outline,
+                                    color: CupertinoColors.activeBlue,
                                     size: 22,
                                   ),
                                 ),
@@ -190,39 +191,7 @@ class _DetailsPageState extends State<DetailsPage> {
                           padding: EdgeInsets.fromLTRB(18, 0, 18, 48),
                           child: _buildContent(),
                         ),
-                        Container(
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.symmetric(vertical: 29),
-                          decoration: BoxDecoration(
-                            border: Border(
-                              top: BorderSide(
-                                color: Color(0x4C000000),
-                                width: 0,
-                              ),
-                            ),
-                          ),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: CupertinoDynamicColor.withBrightness(
-                                color: Color(0xFFF2F2F7),
-                                darkColor: Color(0xFF313135),
-                              ).resolveFrom(context),
-                            ),
-                            child: CupertinoButton(
-                              pressedOpacity: 0.4,
-                              padding: EdgeInsets.fromLTRB(30, 12, 30, 12),
-                              onPressed: _share,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  Icon(CupertinoIcons.share),
-                                  Text('分享'),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
+                        _buildShareButton(),
                       ],
                     ),
                   )
@@ -233,7 +202,7 @@ class _DetailsPageState extends State<DetailsPage> {
               offstage: Device.isIPad(context),
               child: Align(
                 alignment: Alignment.topRight,
-                child: _CloseButton(),
+                child: _buildCloseButton(),
               ),
             ),
           ],
@@ -245,7 +214,7 @@ class _DetailsPageState extends State<DetailsPage> {
   Widget _buildContent() {
     return Highlight(
       text: data.content,
-      style: TextStyle(color: CupertinoTheme.of(context).primaryColor),
+      style: TextStyle(color: CupertinoColors.activeBlue),
       defaultStyle: TextStyle(
         color: CupertinoDynamicColor.withBrightness(
           color: Colors.black54,
@@ -256,7 +225,7 @@ class _DetailsPageState extends State<DetailsPage> {
       ),
       patterns: {
         RegExp(
-          r"^(https?:\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$",
+          r"(https?:\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?",
         ): HighlightedText(
           recognizer: (RegExpMatch e, int i) {
             return TapGestureRecognizer()
@@ -278,6 +247,64 @@ class _DetailsPageState extends State<DetailsPage> {
           },
         ),
       },
+    );
+  }
+
+  Widget _buildShareButton() {
+    Color dividerColor = CupertinoDynamicColor.withBrightness(
+      color: Color(0x1F000000),
+      darkColor: Color(0x1FFFFFFF),
+    ).resolveFrom(context);
+    Color color = CupertinoDynamicColor.withBrightness(
+      color: CupertinoColors.activeBlue,
+      darkColor: Colors.white,
+    ).resolveFrom(context);
+    return Container(
+      alignment: Alignment.center,
+      padding: EdgeInsets.symmetric(vertical: 29),
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(color: dividerColor, width: 0),
+        ),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: CupertinoDynamicColor.withBrightness(
+            color: Color(0xFFF2F2F7),
+            darkColor: Color(0xFF313135),
+          ).resolveFrom(context),
+        ),
+        child: CupertinoButton(
+          pressedOpacity: 0.4,
+          padding: EdgeInsets.fromLTRB(30, 12, 30, 12),
+          onPressed: _share,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Icon(CupertinoIcons.share, color: color),
+              Text(
+                '分享',
+                style: TextStyle(color: color),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCloseButton() {
+    return GestureDetector(
+      onTap: () => Navigator.of(context).pop(),
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Icon(
+          CupertinoIcons.clear_circled_solid,
+          color: Colors.black38,
+          size: 32,
+        ),
+      ),
     );
   }
 
@@ -332,23 +359,6 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 }
 
-class _CloseButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => Navigator.of(context).pop(),
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Icon(
-          CupertinoIcons.clear_circled_solid,
-          color: Colors.black38,
-          size: 32,
-        ),
-      ),
-    );
-  }
-}
-
 class _SaveButton extends StatefulWidget {
   final Picture data;
 
@@ -378,7 +388,7 @@ class _SaveButtonState extends State<_SaveButton> {
       color: Color(0xFFF2F2F7),
       darkColor: Color(0xFF313135),
     ).resolveFrom(context);
-    Color primaryColor = CupertinoTheme.of(context).primaryColor;
+    Color primaryColor = CupertinoColors.activeBlue;
     return GestureDetector(
       onTap: () async {
         if (denied) {
@@ -403,11 +413,7 @@ class _SaveButtonState extends State<_SaveButton> {
           alignment: Alignment.center,
           padding: EdgeInsets.symmetric(vertical: 3, horizontal: 20),
           decoration: BoxDecoration(
-            color: denied
-                ? CupertinoColors.destructiveRed
-                : progress == 1 && Platform.isAndroid
-                    ? primaryColor
-                    : backgroundColor,
+            color: denied ? CupertinoColors.destructiveRed : backgroundColor,
             borderRadius: BorderRadius.circular(18),
           ),
           child: Text(
@@ -417,11 +423,7 @@ class _SaveButtonState extends State<_SaveButton> {
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w500,
-              color: denied
-                  ? backgroundColor
-                  : progress == 1 && Platform.isAndroid
-                      ? backgroundColor
-                      : primaryColor,
+              color: denied ? backgroundColor : primaryColor,
             ),
           ),
         ),
@@ -433,10 +435,10 @@ class _SaveButtonState extends State<_SaveButton> {
           child: CircularProgressIndicator(
             strokeWidth: 2,
             value: progress,
-            backgroundColor: progress != null ? Color(0xFFDADADE) : null,
+            backgroundColor: progress != null ? backgroundColor : null,
             valueColor: progress == null
-                ? AlwaysStoppedAnimation(Color(0xFFDADADE))
-                : null,
+                ? AlwaysStoppedAnimation(backgroundColor)
+                : AlwaysStoppedAnimation(primaryColor),
           ),
         ),
         crossFadeState: progress == null && !started || progress == 1
