@@ -86,10 +86,94 @@ class _AboutPageState extends State<AboutPage> {
     );
   }
 
+  Widget _buildList() {
+    final String prefix = 'res/avatars/';
+    bool isDark = CupertinoTheme.of(context).brightness == Brightness.dark;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        _buildAppInfo(),
+        Divider(),
+        Padding(
+          padding: EdgeInsets.only(left: 16, top: 8, bottom: 8),
+          child: Text(
+            '团队信息',
+            style: TextStyle(fontSize: 22),
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: List<Widget>.generate(contributors != null ? 3 : 0, (i) {
+            Contributor member = contributors[i];
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              child: GestureDetector(
+                onTap: member.url == null ? null : () => launch(member.url),
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(6, 12, 6, 12),
+                      child: CircleAvatar(
+                        radius: 26,
+                        backgroundImage: AssetImage(prefix + member.assetName),
+                      ),
+                    ),
+                    Text(member.name),
+                    Text(
+                      member.position,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: CupertinoDynamicColor.withBrightness(
+                          color: Colors.black54,
+                          darkColor: Colors.white70,
+                        ).resolveFrom(context),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }),
+        ),
+        Divider(color: Colors.transparent, height: 16),
+        Theme(
+          data: isDark ? ThemeData.dark() : ThemeData.light(),
+          child: Column(
+            children: <Widget>[
+              ...List<Widget>.generate(
+                contributors != null ? contributors.length - 3 : 0,
+                (index) {
+                  Contributor member = contributors[index + 3];
+                  return ListTile(
+                    onTap: member.url == null ? null : () => launch(member.url),
+                    title: Text(member.name),
+                    subtitle: Text(member.position),
+                    leading: CircleAvatar(
+                      backgroundImage: AssetImage(prefix + member.assetName),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                title: Text('「图鉴日图」用户协议'),
+                onTap: () => launch('https://www.dailypics.cn/doc/1'),
+                trailing: _buildTrailing(true),
+              ),
+              ListTile(
+                title: Text('「图鉴日图」隐私政策'),
+                onTap: () => launch('https://www.dailypics.cn/doc/2'),
+                trailing: _buildTrailing(true),
+              )
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
   Widget _buildAppInfo() {
-    final String appName = packageInfo?.appName ?? '';
-    final String version = packageInfo?.version ?? '';
-    final String buildNumber = packageInfo?.buildNumber ?? '';
+    final String version = packageInfo?.version ?? '0.0.0';
+    final String buildNumber = packageInfo?.buildNumber ?? '190000';
     Color textColor = CupertinoDynamicColor.withBrightness(
       color: Colors.black54,
       darkColor: Colors.white70,
@@ -106,7 +190,7 @@ class _AboutPageState extends State<AboutPage> {
               backgroundImage: AssetImage('res/ic_launcher.png'),
             ),
           ),
-          Text(appName, style: TextStyle(fontSize: 18)),
+          Text('图鉴日图', style: TextStyle(fontSize: 18)),
           Text(
             '版本号 $version($buildNumber)',
             style: TextStyle(fontSize: 14, color: textColor),
@@ -164,70 +248,18 @@ class _AboutPageState extends State<AboutPage> {
     );
   }
 
-  Widget _buildList() {
-    final String prefix = 'res/avatars/';
-    bool isDark = CupertinoTheme.of(context).brightness == Brightness.dark;
-    Color textColor = isDark ? Colors.white70 : Colors.black54;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildTrailing(bool accepted) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        _buildAppInfo(),
-        Divider(),
-        Padding(
-          padding: EdgeInsets.only(left: 16, top: 8, bottom: 8),
+        Offstage(
+          offstage: accepted,
           child: Text(
-            '团队信息',
-            style: TextStyle(fontSize: 22),
+            '请阅读并同意',
+            style: TextStyle(color: CupertinoColors.destructiveRed),
           ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: List<Widget>.generate(contributors != null ? 3 : 0, (i) {
-            Contributor member = contributors[i];
-            return Padding(
-              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              child: GestureDetector(
-                onTap: member.url == null ? null : () => launch(member.url),
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(6, 12, 6, 12),
-                      child: CircleAvatar(
-                        radius: 26,
-                        backgroundImage: AssetImage(prefix + member.assetName),
-                      ),
-                    ),
-                    Text(member.name),
-                    Text(
-                      member.position,
-                      style: TextStyle(fontSize: 14, color: textColor),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }),
-        ),
-        Divider(color: Colors.transparent, height: 16),
-        Column(
-          children: List<Widget>.generate(
-            contributors != null ? contributors.length - 3 : 0,
-            (index) {
-              Contributor member = contributors[index + 3];
-              return Theme(
-                data: isDark ? ThemeData.dark() : ThemeData.light(),
-                child: ListTile(
-                  onTap: member.url == null ? null : () => launch(member.url),
-                  title: Text(member.name),
-                  subtitle: Text(member.position),
-                  leading: CircleAvatar(
-                    backgroundImage: AssetImage(prefix + member.assetName),
-                  ),
-                ),
-              );
-            },
-          ),
-        )
+        Icon(CupertinoIcons.right_chevron),
       ],
     );
   }
