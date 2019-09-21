@@ -28,7 +28,8 @@ import 'package:daily_pics/widget/image_card.dart';
 import 'package:daily_pics/widget/optimized_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart' show CircularProgressIndicator, Colors;
+import 'package:flutter/material.dart'
+    show CircularProgressIndicator, Colors, Divider;
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
@@ -154,43 +155,14 @@ class _DetailsPageState extends State<DetailsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Padding(
-                          padding: EdgeInsets.fromLTRB(18, 16, 18, 8),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Expanded(
-                                child: Text(
-                                  data.title,
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: _mark,
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: 12),
-                                  child: Icon(
-                                    data.marked
-                                        ? Ionicons.ios_star
-                                        : Ionicons.ios_star_outline,
-                                    color: CupertinoColors.activeBlue,
-                                    size: 22,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 16),
-                                child: _SaveButton(data),
-                              ),
-                            ],
-                          ),
+                          padding: EdgeInsets.fromLTRB(16, 16, 16, 12),
+                          child: _buildTitle(),
                         ),
                         Padding(
-                          padding: EdgeInsets.fromLTRB(18, 0, 18, 48),
+                          padding: EdgeInsets.fromLTRB(16, 0, 16, 32),
                           child: _buildContent(),
                         ),
+                        _buildDivider(),
                         _buildShareButton(),
                       ],
                     ),
@@ -208,6 +180,38 @@ class _DetailsPageState extends State<DetailsPage> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildTitle() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Expanded(
+          child: Text(
+            data.title,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+        GestureDetector(
+          onTap: _mark,
+          child: Padding(
+            padding: EdgeInsets.only(left: 12),
+            child: Icon(
+              data.marked ? Ionicons.ios_star : Ionicons.ios_star_outline,
+              color: CupertinoColors.activeBlue,
+              size: 22,
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 16),
+          child: _SaveButton(data),
+        ),
+      ],
     );
   }
 
@@ -250,11 +254,41 @@ class _DetailsPageState extends State<DetailsPage> {
     );
   }
 
+  Widget _buildDivider() {
+    String username = '@${data.user}';
+    String date = ' · ${_parseDate(data.date)}';
+    TextPainter painter = TextPainter(
+      text: TextSpan(text: username + date),
+      textDirection: TextDirection.ltr,
+      maxLines: 1,
+    )..layout();
+    double width = painter.width / (username.length + date.length);
+    Size size = MediaQuery.of(context).size;
+    if (painter.width >= size.width) {
+      int count = (painter.width - size.width) ~/ width + 2;
+      int start = username.length - count;
+      username = username.replaceRange(start, username.length, '…');
+    }
+    return DefaultTextStyle(
+      style: TextStyle(fontSize: 14, color: Colors.black45),
+      child: Row(
+        children: <Widget>[
+          Expanded(child: Divider()),
+          Padding(
+            padding: EdgeInsets.only(left: 8),
+            child: Text(username),
+          ),
+          Padding(
+            padding: EdgeInsets.only(right: 8),
+            child: Text(date),
+          ),
+          Expanded(child: Divider()),
+        ],
+      ),
+    );
+  }
+
   Widget _buildShareButton() {
-    Color dividerColor = CupertinoDynamicColor.withBrightness(
-      color: Color(0x1F000000),
-      darkColor: Color(0x1FFFFFFF),
-    ).resolveFrom(context);
     Color color = CupertinoDynamicColor.withBrightness(
       color: CupertinoColors.activeBlue,
       darkColor: Colors.white,
@@ -262,12 +296,7 @@ class _DetailsPageState extends State<DetailsPage> {
     return Container(
       alignment: Alignment.center,
       padding: EdgeInsets.symmetric(vertical: 29),
-      decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(color: dividerColor, width: 0),
-        ),
-      ),
-      child: Container(
+      child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           color: CupertinoDynamicColor.withBrightness(
@@ -326,20 +355,13 @@ class _DetailsPageState extends State<DetailsPage> {
     }
   }
 
-  Future<ui.Image> _screenshot() async {
-    double pixelRatio = ui.window.devicePixelRatio;
-    RenderRepaintBoundary render = repaintKey.currentContext.findRenderObject();
-    return await render.toImage(pixelRatio: pixelRatio);
-  }
-
-  void _share() async {
-    ui.Image image = await _screenshot();
-    ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-    Uint8List bytes = byteData.buffer.asUint8List();
-    String temp = (await getTemporaryDirectory()).path;
-    File file = File('$temp/${DateTime.now().millisecondsSinceEpoch}.png');
-    file.writeAsBytesSync(bytes);
-    await Utils.share(file);
+  String _parseDate(String s) {
+    DateTime date = DateTime.parse(s);
+    String result = '${date.month} 月 ${date.day} 日';
+    if (date.year != DateTime.now().year) {
+      result = '${date.year} 年 $result';
+    }
+    return result;
   }
 
   void _mark() async {
@@ -356,6 +378,18 @@ class _DetailsPageState extends State<DetailsPage> {
     }
     Settings.marked = hashSet.toList();
     setState(() {});
+  }
+
+  void _share() async {
+    double pixelRatio = ui.window.devicePixelRatio;
+    RenderRepaintBoundary render = repaintKey.currentContext.findRenderObject();
+    ui.Image image = await render.toImage(pixelRatio: pixelRatio);
+    ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    Uint8List bytes = byteData.buffer.asUint8List();
+    String temp = (await getTemporaryDirectory()).path;
+    File file = File('$temp/${DateTime.now().millisecondsSinceEpoch}.png');
+    file.writeAsBytesSync(bytes);
+    await Utils.share(file);
   }
 }
 
@@ -414,7 +448,7 @@ class _SaveButtonState extends State<_SaveButton> {
           padding: EdgeInsets.symmetric(vertical: 3, horizontal: 20),
           decoration: BoxDecoration(
             color: denied ? CupertinoColors.destructiveRed : backgroundColor,
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(16),
           ),
           child: Text(
             denied
