@@ -64,13 +64,13 @@ class _UploadPageState extends State<UploadPage> {
                 padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
                 children: <Widget>[
                   _buildImageCard(),
-                  TextField(
+                  _TextField(
                     minLines: 2,
                     controller: title,
                     placeholder: '标题*',
                     textInputAction: TextInputAction.next,
                   ),
-                  TextField(
+                  _TextField(
                     minLines: 4,
                     controller: content,
                     placeholder: '描述*',
@@ -91,13 +91,13 @@ class _UploadPageState extends State<UploadPage> {
                       setState(() => type = newValue);
                     },
                   ),
-                  TextField(
+                  _TextField(
                     minLines: 2,
                     controller: username,
                     placeholder: '用户名*',
                     textInputAction: TextInputAction.next,
                   ),
-                  TextField(
+                  _TextField(
                     minLines: 2,
                     controller: email,
                     placeholder: '邮箱地址',
@@ -340,7 +340,7 @@ class _UploadPageState extends State<UploadPage> {
   }
 }
 
-class TextField extends StatelessWidget {
+class _TextField extends StatelessWidget {
   final TextEditingController controller;
 
   final String placeholder;
@@ -351,7 +351,7 @@ class TextField extends StatelessWidget {
 
   final ValueChanged<String> onSubmitted;
 
-  TextField({
+  _TextField({
     this.controller,
     this.placeholder,
     this.minLines,

@@ -188,7 +188,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 }
 
-class SearchBar extends StatefulWidget {
+class SearchBar extends StatelessWidget {
   final bool autofocus;
 
   final double shrinkOffset;
@@ -209,11 +209,6 @@ class SearchBar extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _SearchBarState();
-}
-
-class _SearchBarState extends State<SearchBar> {
-  @override
   Widget build(BuildContext context) {
     return Hero(
       tag: 'SearchBar',
@@ -228,15 +223,15 @@ class _SearchBarState extends State<SearchBar> {
             ).resolveFrom(context),
           ),
           child: AnimatedOpacity(
-            opacity: widget.shrinkOffset < 0.9 ? 0 : 1,
+            opacity: shrinkOffset < 0.9 ? 0 : 1,
             duration: Duration(milliseconds: 100),
             child: CupertinoTextField(
-              autofocus: widget.autofocus,
+              autofocus: autofocus,
               placeholder: '搜索',
               decoration: null,
-              onTap: widget.onTap,
-              onChanged: widget.onChanged,
-              onSubmitted: widget.onSubmitted,
+              onTap: onTap,
+              onChanged: onChanged,
+              onSubmitted: onSubmitted,
               textInputAction: TextInputAction.search,
               style: TextStyle(fontSize: 18),
               placeholderStyle: TextStyle(

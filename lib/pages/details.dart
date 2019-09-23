@@ -255,8 +255,12 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 
   Widget _buildDivider() {
-    String username = '@${data.user}';
-    String date = ' · ${_parseDate(data.date)}';
+    CupertinoDynamicColor dividerColor = CupertinoDynamicColor.withBrightness(
+      color: Colors.black38,
+      darkColor: Colors.white54,
+    ).resolveFrom(context);
+    String username = data.user.isNotEmpty ? '@${data.user} · ' : '';
+    String date = _parseDate(data.date);
     TextPainter painter = TextPainter(
       text: TextSpan(text: username + date),
       textDirection: TextDirection.ltr,
@@ -270,10 +274,16 @@ class _DetailsPageState extends State<DetailsPage> {
       username = username.replaceRange(start, username.length, '…');
     }
     return DefaultTextStyle(
-      style: TextStyle(fontSize: 14, color: Colors.black45),
+      style: TextStyle(
+        fontSize: 14,
+        color: CupertinoDynamicColor.withBrightness(
+          color: Colors.black45,
+          darkColor: Colors.white60,
+        ).resolveFrom(context),
+      ),
       child: Row(
         children: <Widget>[
-          Expanded(child: Divider()),
+          Expanded(child: Divider(color: dividerColor)),
           Padding(
             padding: EdgeInsets.only(left: 8),
             child: Text(username),
@@ -282,7 +292,7 @@ class _DetailsPageState extends State<DetailsPage> {
             padding: EdgeInsets.only(right: 8),
             child: Text(date),
           ),
-          Expanded(child: Divider()),
+          Expanded(child: Divider(color: dividerColor)),
         ],
       ),
     );

@@ -32,7 +32,13 @@ class OverlayStyles {
 }
 
 class Themes {
-  static const light = CupertinoThemeData(brightness: Brightness.light);
+  static const light = CupertinoThemeData(
+    brightness: Brightness.light,
+    primaryColor: CupertinoColors.activeBlue,
+  );
 
-  static const dark = CupertinoThemeData(brightness: Brightness.dark);
+  static const dark = CupertinoThemeData(
+    brightness: Brightness.dark,
+    primaryColor: CupertinoColors.activeBlue,
+  );
 }

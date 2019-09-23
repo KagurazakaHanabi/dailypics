@@ -26,12 +26,17 @@ class CustomErrorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color: CupertinoTheme.of(context).scaffoldBackgroundColor,
       alignment: Alignment.center,
       padding: EdgeInsets.all(16),
       child: Text(
         details.exceptionAsString(),
-        style: TextStyle(color: Colors.black54),
+        style: TextStyle(
+          color: CupertinoDynamicColor.withBrightness(
+            color: Colors.black54,
+            darkColor: Colors.white70,
+          ).resolveFrom(context),
+        ),
       ),
     );
   }
