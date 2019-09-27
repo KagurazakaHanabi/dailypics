@@ -364,8 +364,8 @@ class _TileState extends State<_Tile> {
               AspectRatio(
                 aspectRatio: aspectRatio,
                 child: OptimizedImage(
+                  Utils.getCompressed(widget.data),
                   heroTag: '${widget.index}-${widget.data.id}',
-                  imageUrl: Utils.getCompressed(widget.data),
                 ),
               ),
               Padding(

@@ -144,7 +144,7 @@ class _DetailsPageState extends State<DetailsPage> {
                   AspectRatio(
                     aspectRatio: data.width / data.height,
                     child: OptimizedImage(
-                      imageUrl: Utils.getCompressed(data),
+                      Utils.getCompressed(data),
                       heroTag: widget.heroTag ?? DateTime.now(),
                       borderRadius: BorderRadius.vertical(top: radius),
                     ),

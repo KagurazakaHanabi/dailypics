@@ -22,9 +22,9 @@ class OptimizedImage extends StatelessWidget {
 
   final Object heroTag;
 
-  OptimizedImage({
+  OptimizedImage(
+    this.imageUrl, {
     Key key,
-    this.imageUrl,
     this.borderRadius = BorderRadius.zero,
     this.heroTag,
   })  : assert(imageUrl != null),

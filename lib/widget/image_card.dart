@@ -96,9 +96,9 @@ class _ImageCardState extends State<ImageCard> {
                   AspectRatio(
                     aspectRatio: widget.aspectRatio,
                     child: OptimizedImage(
+                      Utils.getCompressed(widget.data),
                       heroTag: widget.heroTag,
                       borderRadius: BorderRadius.circular(16),
-                      imageUrl: Utils.getCompressed(widget.data),
                     ),
                   ),
                   Padding(
