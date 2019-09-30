@@ -18,7 +18,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/misc/local_storage.dart';
+import 'package:daily_pics/utils/local_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -186,16 +186,4 @@ class Settings {
   static List<String> get marked => _prefs['marked'] ?? [];
 
   static set marked(List<String> value) => _prefs['marked'] = value;
-
-  /// App 启动次数
-  ///
-  /// 示例：'[1, 2, 2, 0, 1]'
-  static String get launchTimes => _prefs['launch_times'] ?? '[0]';
-
-  static set launchTimes(String value) => _prefs['launch_times'] = value;
-
-  /// 最后启动时间
-  static String get lastLaunch => _prefs['last_launch'];
-
-  static set lastLaunch(String value) => _prefs['last_launch'] = value;
 }

@@ -20,21 +20,6 @@ import 'package:json_annotation/json_annotation.dart';
 part 'bean.g.dart';
 
 @JsonSerializable()
-class Response {
-  List<Picture> data;
-
-  String status;
-
-  Response({this.data, this.status});
-
-  factory Response.fromJson(Map<String, dynamic> json) {
-    return _$ResponseFromJson(json);
-  }
-
-  String toJson() => jsonEncode(_$ResponseToJson(this));
-}
-
-@JsonSerializable()
 class Picture {
   @JsonKey(name: 'PID')
   String id;
@@ -85,6 +70,12 @@ class Picture {
     return _$PictureFromJson(json);
   }
 
+  static List<Picture> parseList(List<dynamic> json) {
+    return json.map((e) {
+      return e == null ? null : Picture.fromJson(e as Map<String, dynamic>);
+    })?.toList();
+  }
+
   String toJson() => jsonEncode(_$PictureToJson(this));
 
   static _replaceHost(String url) {
@@ -104,6 +95,54 @@ class Picture {
   static _colorToHex(Color color) {
     return '#' + color.value.toRadixString(16);
   }
+}
+
+@JsonSerializable()
+class Recents {
+  @JsonKey(name: 'page')
+  int current;
+
+  @JsonKey(name: 'maxpage')
+  int maximum;
+
+  @JsonKey(name: 'op')
+  String option;
+
+  @JsonKey(name: 'result')
+  List<Picture> data;
+
+  Recents({this.current, this.maximum, this.option, this.data});
+
+  factory Recents.fromJson(Map<String, dynamic> json) {
+    return _$RecentsFromJson(json);
+  }
+
+  String toJson() => jsonEncode(_$RecentsToJson(this));
+}
+
+@JsonSerializable()
+class Splash {
+  @JsonKey(name: 'splash_title')
+  String title;
+
+  @JsonKey(name: 'splash_image')
+  String imageUrl;
+
+  @JsonKey(name: 'effective_at', fromJson: _parseDateTime)
+  DateTime effectiveAt;
+
+  @JsonKey(name: 'expires_at', fromJson: _parseDateTime)
+  DateTime expiresAt;
+
+  Splash({this.title, this.imageUrl, this.effectiveAt, this.expiresAt});
+
+  factory Splash.fromJson(Map<String, dynamic> json) {
+    return _$SplashFromJson(json);
+  }
+
+  String toJson() => jsonEncode(_$SplashToJson(this));
+
+  static DateTime _parseDateTime(String s) => DateTime.parse(s);
 }
 
 @JsonSerializable()

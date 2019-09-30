@@ -13,17 +13,21 @@
 // limitations under the License.
 
 import 'dart:async';
-import 'dart:convert';
+import 'dart:io';
 
 import 'package:daily_pics/components/suggest.dart';
 import 'package:daily_pics/components/today.dart';
+import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/constants.dart';
-import 'package:daily_pics/misc/utils.dart';
+import 'package:daily_pics/pages/splash.dart';
+import 'package:daily_pics/utils/api.dart';
+import 'package:daily_pics/utils/utils.dart';
 import 'package:daily_pics/pages/about.dart';
 import 'package:daily_pics/pages/details.dart';
 import 'package:daily_pics/pages/recent.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:uni_links/uni_links.dart';
 
@@ -45,27 +49,14 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    // 处理 App 内打开
-    getInitialUri().then(_handleUniLink);
     _subscription = getUriLinksStream().listen(_handleUniLink);
-
-    // 记录五天内启动次数，大于十次则允许展示 App 内评分
-    List<int> times = List.from(jsonDecode(Settings.launchTimes)).cast<int>();
-    DateTime lastLaunch;
-    if (Settings.lastLaunch == null) {
-      lastLaunch = DateTime.now();
-      Settings.lastLaunch = DateTime.now().toString();
-    } else {
-      lastLaunch = DateTime.parse(Settings.lastLaunch);
-    }
-    if (lastLaunch.day == DateTime.now().day) {
-      times[times.length - 1] += 1;
-    } else {
-      if (times.length == 5) times.removeAt(0);
-      times.add(1);
-      Settings.lastLaunch = DateTime.now().toString();
-    }
-    Settings.launchTimes = jsonEncode(times);
+    getInitialUri().then((Uri uri) {
+      if (uri != null) {
+        _handleUniLink(uri);
+      } else {
+        _fetchOrShowSplash();
+      }
+    });
   }
 
   @override
@@ -102,7 +93,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _handleUniLink(Uri uri) {
-    if (uri == null) return;
     String uuid = uri.path.substring(1);
     switch (uri.host) {
       case 'p':
@@ -112,6 +102,20 @@ class _HomePageState extends State<HomePage> {
       case 't':
         RecentPage.push(context, tid: uuid);
         break;
+    }
+  }
+
+  Future<void> _fetchOrShowSplash() async {
+    Splash splash = await TujianApi.getSplash();
+    DateTime now = DateTime.now();
+    if (now.isAfter(splash.effectiveAt) && now.isBefore(splash.expiresAt)) {
+      DefaultCacheManager manager = DefaultCacheManager();
+      FileInfo info = await manager.getFileFromCache(splash.imageUrl);
+      if (info != null) {
+        SplashPage.push(context, info.file);
+      } else {
+        await manager.downloadFile(splash.imageUrl);
+      }
     }
   }
 }

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/misc/utils.dart';
+import 'package:daily_pics/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart'
     show CircleAvatar, Colors, Divider, ListTile, Scaffold, Theme, ThemeData;

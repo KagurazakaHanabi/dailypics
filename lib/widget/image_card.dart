@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/misc/utils.dart';
+import 'package:daily_pics/utils/utils.dart';
 import 'package:daily_pics/pages/details.dart';
 import 'package:daily_pics/widget/animated_transform.dart';
 import 'package:daily_pics/widget/optimized_image.dart';

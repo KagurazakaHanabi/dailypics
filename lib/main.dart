@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import 'package:daily_pics/misc/constants.dart';
-import 'package:daily_pics/misc/utils.dart';
+import 'package:daily_pics/utils/utils.dart';
 import 'package:daily_pics/model/app.dart';
 import 'package:daily_pics/pages/home.dart';
 import 'package:daily_pics/widget/error.dart';

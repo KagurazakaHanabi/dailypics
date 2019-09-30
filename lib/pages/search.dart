@@ -17,7 +17,8 @@ import 'dart:convert';
 import 'dart:ui' show ImageFilter, window;
 
 import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/misc/utils.dart';
+import 'package:daily_pics/utils/api.dart';
+import 'package:daily_pics/utils/utils.dart';
 import 'package:daily_pics/widget/image_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show LinearProgressIndicator;
@@ -157,24 +158,18 @@ class _SearchPageState extends State<SearchPage> {
 
   Future<void> _fetchData([String uuid]) async {
     setState(() => doing = true);
-    Response response;
+    List<Picture> result = [];
     if (uuid != null) {
-      String url = 'https://v2.api.dailypics.cn/member?id=$uuid';
-      Map<String, dynamic> json = jsonDecode((await http.get(url)).body);
-      if (json['error_code'] != null) {
-        response = Response(data: []);
-      } else {
-        response = Response(data: [Picture.fromJson(json)]);
+      Picture detail = await TujianApi.getDetails(uuid);
+      if (detail.id != null) {
+        result = [detail];
       }
     } else {
-      String encodedQuery = Uri.encodeQueryComponent(query);
-      String url = 'https://v2.api.dailypics.cn/search/s/$encodedQuery';
-      dynamic json = jsonDecode((await http.get(url)).body);
-      response = Response.fromJson({'data': json['result']});
+      result = await TujianApi.search(query);
     }
     setState(() {
       doing = false;
-      data = response.data;
+      data = result;
     });
     if (controller.position.pixels > 320) {
       controller.jumpTo(0);

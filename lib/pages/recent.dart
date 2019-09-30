@@ -12,23 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/misc/constants.dart';
-import 'package:daily_pics/misc/utils.dart';
 import 'package:daily_pics/model/app.dart';
 import 'package:daily_pics/pages/details.dart';
 import 'package:daily_pics/pages/search.dart';
+import 'package:daily_pics/utils/api.dart';
+import 'package:daily_pics/utils/utils.dart';
 import 'package:daily_pics/widget/optimized_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show Colors;
 import 'package:flutter/rendering.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:http/http.dart' as http;
 import 'package:scoped_model/scoped_model.dart';
 
 class RecentPage extends StatefulWidget {
@@ -143,17 +142,17 @@ class _RecentPageState extends State<RecentPage>
   Future<void> _fetchData() async {
     doing = true;
     List<String> types = [C.type_photo, C.type_illus, C.type_deskt];
-    String uri =
-        'https://v2.api.dailypics.cn/list?page=${cur[index]}&size=20&op=desc&sor'
-        't=${types[index]}';
-    dynamic json = jsonDecode((await http.get(uri)).body);
-    Response res = Response.fromJson({'data': json['result']});
-    List<Picture> data = res.data ?? [];
+    Recents recents = await TujianApi.getRecents(
+      sort: types[index],
+      page: cur[index],
+      size: 20,
+    );
+    List<Picture> data = recents.data;
     List<String> list = Settings.marked;
     for (int i = 0; i < data.length; i++) {
       data[i].marked = list.contains(data[i].id);
     }
-    max[index] = json['maxpage'];
+    max[index] = recents.maximum;
     doing = false;
     AppModel model = AppModel.of(context);
     model.recent.addAll(data);

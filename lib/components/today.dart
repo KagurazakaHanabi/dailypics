@@ -16,7 +16,8 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/misc/utils.dart';
+import 'package:daily_pics/utils/api.dart';
+import 'package:daily_pics/utils/utils.dart';
 import 'package:daily_pics/model/app.dart';
 import 'package:daily_pics/pages/recent.dart';
 import 'package:daily_pics/widget/slivers.dart';
@@ -74,7 +75,10 @@ class _TodayComponentState extends State<TodayComponent>
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
               height: MediaQuery.of(context).padding.top,
-              color: CupertinoTheme.of(context).barBackgroundColor,
+              color: CupertinoDynamicColor.withBrightness(
+                color: Color(0xCCFFFFFF),
+                darkColor: Color(0xB7000000),
+              ).resolveFrom(context),
             ),
           ),
         ),
@@ -168,9 +172,7 @@ class _TodayComponentState extends State<TodayComponent>
 
   Future<void> _fetchData() async {
     _fetchText();
-    String source = (await http.get('https://v2.api.dailypics.cn/today')).body;
-    Response res = Response.fromJson({'data': jsonDecode(source)});
-    List<Picture> data = res.data ?? [];
+    List<Picture> data = await TujianApi.getToday();
     data.add(await _fetchBing());
     List<String> list = Settings.marked;
     for (int i = 0; i < data.length; i++) {

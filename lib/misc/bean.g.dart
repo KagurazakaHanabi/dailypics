@@ -6,21 +6,6 @@ part of 'bean.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Response _$ResponseFromJson(Map<String, dynamic> json) {
-  return Response(
-    data: (json['data'] as List)
-        ?.map((e) =>
-            e == null ? null : Picture.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
-    status: json['status'] as String,
-  );
-}
-
-Map<String, dynamic> _$ResponseToJson(Response instance) => <String, dynamic>{
-      'data': instance.data,
-      'status': instance.status,
-    };
-
 Picture _$PictureFromJson(Map<String, dynamic> json) {
   return Picture(
     id: json['PID'] as String,
@@ -49,6 +34,45 @@ Map<String, dynamic> _$PictureToJson(Picture instance) => <String, dynamic>{
       'theme_color': Picture._colorToHex(instance.color),
       'p_date': instance.date,
       'marked': instance.marked,
+    };
+
+Recents _$RecentsFromJson(Map<String, dynamic> json) {
+  return Recents(
+    current: json['page'] as int,
+    maximum: json['maxpage'] as int,
+    option: json['op'] as String,
+    data: (json['result'] as List)
+        ?.map((e) =>
+            e == null ? null : Picture.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
+  );
+}
+
+Map<String, dynamic> _$RecentsToJson(Recents instance) => <String, dynamic>{
+      'page': instance.current,
+      'maxpage': instance.maximum,
+      'op': instance.option,
+      'result': instance.data,
+    };
+
+Splash _$SplashFromJson(Map<String, dynamic> json) {
+  return Splash(
+    title: json['splash_title'] as String,
+    imageUrl: json['splash_image'] as String,
+    effectiveAt: json['effective_at'] == null
+        ? null
+        : DateTime.parse(json['effective_at'] as String),
+    expiresAt: json['expires_at'] == null
+        ? null
+        : DateTime.parse(json['expires_at'] as String),
+  );
+}
+
+Map<String, dynamic> _$SplashToJson(Splash instance) => <String, dynamic>{
+      'splash_title': instance.title,
+      'splash_image': instance.imageUrl,
+      'effective_at': instance.effectiveAt?.toIso8601String(),
+      'expires_at': instance.expiresAt?.toIso8601String(),
     };
 
 Contributor _$ContributorFromJson(Map<String, dynamic> json) {
