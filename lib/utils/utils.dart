@@ -25,9 +25,9 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Utils {
-  static MethodChannel _channel = MethodChannel('ml.cerasus.pics');
+const MethodChannel _channel = MethodChannel('ml.cerasus.pics');
 
+class SystemUtils {
   static Future<void> share(File file) async {
     await _channel.invokeMethod('share', file.path);
   }
@@ -48,6 +48,21 @@ class Utils {
     await _channel.invokeMethod('openAppSettings');
   }
 
+  static bool isIPad(BuildContext context, [bool strict = false]) {
+    Size size = MediaQuery.of(context).size;
+    if (strict) {
+      return size.shortestSide >= 600;
+    }
+    return size.width >= 600;
+  }
+
+  static bool isPortrait(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    return size.width < size.height;
+  }
+}
+
+class Utils {
   static Future<File> download(
     Picture data,
     void Function(int count, int total) cb,
@@ -158,21 +173,6 @@ class Utils {
       caseSensitive: false,
     );
     return regExp.hasMatch(input);
-  }
-}
-
-class Device {
-  static bool isIPad(BuildContext context, [bool strict = false]) {
-    Size size = MediaQuery.of(context).size;
-    if (strict) {
-      return size.shortestSide >= 600;
-    }
-    return size.width >= 600;
-  }
-
-  static bool isPortrait(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    return size.width < size.height;
   }
 }
 

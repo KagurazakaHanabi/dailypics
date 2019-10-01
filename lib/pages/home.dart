@@ -13,27 +13,33 @@
 // limitations under the License.
 
 import 'dart:async';
-import 'dart:io';
 
 import 'package:daily_pics/components/suggest.dart';
 import 'package:daily_pics/components/today.dart';
-import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/misc/constants.dart';
-import 'package:daily_pics/pages/splash.dart';
-import 'package:daily_pics/utils/api.dart';
-import 'package:daily_pics/utils/utils.dart';
 import 'package:daily_pics/pages/about.dart';
 import 'package:daily_pics/pages/details.dart';
 import 'package:daily_pics/pages/recent.dart';
+import 'package:daily_pics/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:uni_links/uni_links.dart';
 
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
+
+  static void push(BuildContext context) {
+    Navigator.of(context).pushAndRemoveUntil(
+      PageRouteBuilder(pageBuilder: (_, Animation<double> animation, __) {
+        return FadeTransition(
+          opacity: animation,
+          child: HomePage(),
+        );
+      }),
+      (route) => route == null,
+    );
+  }
 }
 
 class _HomePageState extends State<HomePage> {
@@ -50,21 +56,15 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _subscription = getUriLinksStream().listen(_handleUniLink);
-    getInitialUri().then((Uri uri) {
-      if (uri != null) {
-        _handleUniLink(uri);
-      } else {
-        _fetchOrShowSplash();
-      }
-    });
+    getInitialUri().then(_handleUniLink);
   }
 
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: Utils.isDarkColor(CupertinoTheme.of(context).barBackgroundColor)
-          ? OverlayStyles.light
-          : OverlayStyles.dark,
+          ? SystemUiOverlayStyle.light
+          : SystemUiOverlayStyle.dark,
       child: CupertinoTabScaffold(
         resizeToAvoidBottomInset: false,
         tabBar: CupertinoTabBar(
@@ -93,6 +93,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _handleUniLink(Uri uri) {
+    if (uri == null) return;
     String uuid = uri.path.substring(1);
     switch (uri.host) {
       case 'p':
@@ -102,20 +103,6 @@ class _HomePageState extends State<HomePage> {
       case 't':
         RecentPage.push(context, tid: uuid);
         break;
-    }
-  }
-
-  Future<void> _fetchOrShowSplash() async {
-    Splash splash = await TujianApi.getSplash();
-    DateTime now = DateTime.now();
-    if (now.isAfter(splash.effectiveAt) && now.isBefore(splash.expiresAt)) {
-      DefaultCacheManager manager = DefaultCacheManager();
-      FileInfo info = await manager.getFileFromCache(splash.imageUrl);
-      if (info != null) {
-        SplashPage.push(context, info.file);
-      } else {
-        await manager.downloadFile(splash.imageUrl);
-      }
     }
   }
 }

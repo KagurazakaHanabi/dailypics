@@ -16,10 +16,10 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/utils/api.dart';
-import 'package:daily_pics/utils/utils.dart';
 import 'package:daily_pics/model/app.dart';
 import 'package:daily_pics/pages/recent.dart';
+import 'package:daily_pics/utils/api.dart';
+import 'package:daily_pics/utils/utils.dart';
 import 'package:daily_pics/widget/slivers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show Colors;
@@ -87,6 +87,10 @@ class _TodayComponentState extends State<TodayComponent>
   }
 
   Widget _buildHeader() {
+    Color textColor = CupertinoDynamicColor.withBrightness(
+      color: Colors.black54,
+      darkColor: Colors.white70,
+    ).resolveFrom(context);
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
       child: Column(
@@ -94,10 +98,7 @@ class _TodayComponentState extends State<TodayComponent>
         children: <Widget>[
           Text(
             _getDate(),
-            style: TextStyle(
-              color: CupertinoColors.inactiveGray,
-              fontSize: 12,
-            ),
+            style: TextStyle(color: textColor, fontSize: 12),
           ),
           Padding(
             padding: EdgeInsets.symmetric(vertical: 5),
@@ -120,10 +121,7 @@ class _TodayComponentState extends State<TodayComponent>
           ),
           Text(
             text ?? ' ',
-            style: TextStyle(
-              color: CupertinoColors.inactiveGray,
-              fontSize: 12,
-            ),
+            style: TextStyle(color: textColor, fontSize: 12),
           ),
         ],
       ),

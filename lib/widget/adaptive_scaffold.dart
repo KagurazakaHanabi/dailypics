@@ -47,14 +47,14 @@ class AdaptiveScaffold extends StatelessWidget {
       backgroundColor: backgroundColor,
       resizeToAvoidBottomInset: resizeToAvoidBottomInset,
     );
-    if (Device.isIPad(context)) {
+    if (SystemUtils.isIPad(context)) {
       Size size = MediaQuery.of(context).size;
       double left = padding.left, right = padding.right;
-      if (!Device.isPortrait(context)) {
+      if (!SystemUtils.isPortrait(context)) {
         left = (size.width - size.height) / 2;
         right = (size.width - size.height) / 2;
       }
-      if (Device.isIPad(context, true)) {
+      if (SystemUtils.isIPad(context, true)) {
         left += left / 3;
         right += right / 3;
       }

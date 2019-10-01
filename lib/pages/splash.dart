@@ -1,53 +1,75 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:daily_pics/widget/adaptive_scaffold.dart';
+import 'package:daily_pics/misc/bean.dart';
+import 'package:daily_pics/pages/home.dart';
+import 'package:daily_pics/utils/api.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class SplashPage extends StatefulWidget {
-  final File data;
-
-  const SplashPage(this.data, {Key key}) : super(key: key);
-
   @override
   _SplashPageState createState() => _SplashPageState();
-
-  static void push(BuildContext context, File data) {
-    Navigator.of(context, rootNavigator: true).push(
-      PageRouteBuilder(
-        pageBuilder: (_, Animation<double> animation, __) {
-          return FadeTransition(
-            opacity: animation,
-            child: SplashPage(data),
-          );
-        },
-      ),
-    );
-  }
 }
 
 class _SplashPageState extends State<SplashPage> {
+  File _file;
   Timer _timer;
 
   @override
   void initState() {
     super.initState();
-    _timer = Timer(Duration(seconds: 3), () => Navigator.of(context).pop());
+    _fetchOrShowSplash();
   }
 
   @override
   Widget build(BuildContext context) {
-    return AdaptiveScaffold(
+    if (_file == null) {
+      return CupertinoPageScaffold(
+        child: Container(),
+      );
+    }
+    return CupertinoPageScaffold(
       child: ConstrainedBox(
         constraints: BoxConstraints.expand(),
-        child: Image.file(widget.data, fit: BoxFit.cover),
+        child: Image.file(
+          _file,
+          fit: BoxFit.cover,
+          frameBuilder: (_, Widget child, int frame, bool synchronouslyLoaded) {
+            if (synchronouslyLoaded) return child;
+            return AnimatedOpacity(
+              child: child,
+              curve: Curves.easeOut,
+              opacity: frame == null ? 0 : 1,
+              duration: Duration(milliseconds: 300),
+            );
+          },
+        ),
       ),
     );
   }
 
+  Future<void> _fetchOrShowSplash() async {
+    Splash splash = await TujianApi.getSplash();
+    String url = splash.imageUrl;
+    DateTime now = DateTime.now();
+    if (now.isAfter(splash.effectiveAt) && now.isBefore(splash.expiresAt)) {
+      DefaultCacheManager manager = DefaultCacheManager();
+      FileInfo info = await manager.getFileFromCache(url);
+      if (info != null) {
+        setState(() => _file = info.file);
+        _timer = Timer(Duration(seconds: 3), () => HomePage.push(context));
+        return;
+      } else {
+        manager.downloadFile(url);
+      }
+    }
+    HomePage.push(context);
+  }
+
   @override
   void dispose() {
-    _timer.cancel();
+    _timer?.cancel();
     super.dispose();
   }
 }

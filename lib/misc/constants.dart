@@ -21,16 +21,6 @@ class C {
   static const String type_deskt = 'e5771003-b4ed-11e8-a8ea-0202761b0892';
 }
 
-class OverlayStyles {
-  static final SystemUiOverlayStyle light = SystemUiOverlayStyle.light.copyWith(
-    statusBarColor: Color(0x00000000),
-  );
-
-  static final SystemUiOverlayStyle dark = SystemUiOverlayStyle.dark.copyWith(
-    statusBarColor: Color(0x00000000),
-  );
-}
-
 class Themes {
   static const light = CupertinoThemeData(
     brightness: Brightness.light,

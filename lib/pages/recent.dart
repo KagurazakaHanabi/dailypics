@@ -121,7 +121,7 @@ class _RecentPageState extends State<RecentPage>
                   SliverPadding(
                     padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
                     sliver: SliverStaggeredGrid.countBuilder(
-                      crossAxisCount: Device.isIPad(context) ? 3 : 2,
+                      crossAxisCount: SystemUtils.isIPad(context) ? 3 : 2,
                       itemCount: data.length,
                       itemBuilder: (_, i) => _Tile(data[i], i),
                       staggeredTileBuilder: (_) => StaggeredTile.fit(1),
@@ -328,7 +328,7 @@ class _TileState extends State<_Tile> {
   @override
   Widget build(BuildContext context) {
     double aspectRatio = widget.data.width / widget.data.height;
-    if (aspectRatio > 4 / 5 && !Device.isIPad(context)) {
+    if (aspectRatio > 4 / 5 && !SystemUtils.isIPad(context)) {
       aspectRatio = 4 / 5;
     }
     return GestureDetector(

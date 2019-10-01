@@ -46,9 +46,9 @@ class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    double padding = Device.isIPad(context) && !Device.isPortrait(context)
-        ? (size.width - size.height) / 2
-        : 0;
+    double padding = SystemUtils.isIPad(context) && !SystemUtils.isPortrait(context)
+            ? (size.width - size.height) / 2
+            : 0;
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: DefaultTextStyle(
@@ -222,7 +222,7 @@ class _AboutPageState extends State<AboutPage> {
                 _buildAction(
                   Ionicons.ios_star_half,
                   '评分',
-                  () => Utils.requestReview(false),
+                  () => SystemUtils.requestReview(false),
                 ),
               ],
             ),

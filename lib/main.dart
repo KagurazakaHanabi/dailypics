@@ -13,9 +13,9 @@
 // limitations under the License.
 
 import 'package:daily_pics/misc/constants.dart';
-import 'package:daily_pics/utils/utils.dart';
 import 'package:daily_pics/model/app.dart';
-import 'package:daily_pics/pages/home.dart';
+import 'package:daily_pics/pages/splash.dart';
+import 'package:daily_pics/utils/utils.dart';
 import 'package:daily_pics/widget/error.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
       model: model,
       child: CupertinoApp(
         title: '图鉴日图',
-        home: HomePage(),
+        home: SplashPage(),
         // FIXME: 2019/9/19 等待 CupertinoApp 加入 darkTheme 字段
         builder: (BuildContext context, Widget child) {
           Brightness brightness = MediaQuery.platformBrightnessOf(context);

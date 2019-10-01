@@ -13,7 +13,6 @@
 // limitations under the License.
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:ui' show ImageFilter, window;
 
 import 'package:daily_pics/misc/bean.dart';
@@ -23,7 +22,6 @@ import 'package:daily_pics/widget/image_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show LinearProgressIndicator;
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:http/http.dart' as http;
 
 const double kSearchBarHeight = 49;
 
@@ -65,10 +63,10 @@ class _SearchPageState extends State<SearchPage> {
               controller: controller,
               child: StaggeredGridView.countBuilder(
                 controller: controller,
-                padding: Device.isIPad(context)
+                padding: SystemUtils.isIPad(context)
                     ? EdgeInsets.fromLTRB(12, 12, 12, 0) + windowPadding
                     : EdgeInsets.fromLTRB(4, 0, 4, 0) + windowPadding,
-                crossAxisCount: Device.isIPad(context) ? 2 : 1,
+                crossAxisCount: SystemUtils.isIPad(context) ? 2 : 1,
                 staggeredTileBuilder: (_) => StaggeredTile.fit(1),
                 itemCount: data.length == 0 ? 1 : data.length,
                 itemBuilder: (_, i) {

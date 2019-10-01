@@ -20,7 +20,6 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/misc/constants.dart';
 import 'package:daily_pics/utils/utils.dart';
 import 'package:daily_pics/widget/adaptive_scaffold.dart';
 import 'package:daily_pics/widget/hightlight.dart';
@@ -62,7 +61,7 @@ class DetailsPage extends StatefulWidget {
   }) {
     return Navigator.of(context, rootNavigator: true).push(
       _PageRouteBuilder(
-        enableSwipeBack: !Device.isIPad(context),
+        enableSwipeBack: !SystemUtils.isIPad(context),
         builder: (_, animation, __) {
           return DetailsPage(heroTag: heroTag, data: data, pid: pid);
         },
@@ -110,11 +109,11 @@ class _DetailsPageState extends State<DetailsPage> {
       );
     }
     CupertinoThemeData theme = CupertinoTheme.of(context);
-    Radius radius = Radius.circular(Device.isIPad(context) ? 16 : 0);
+    Radius radius = Radius.circular(SystemUtils.isIPad(context) ? 16 : 0);
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: Utils.isDarkColor(data.color) && !Device.isIPad(context)
-          ? OverlayStyles.light
-          : OverlayStyles.dark,
+      value: Utils.isDarkColor(data.color) && !SystemUtils.isIPad(context)
+          ? SystemUiOverlayStyle.light
+          : SystemUiOverlayStyle.dark,
       child: AdaptiveScaffold(
         backgroundColor: Colors.transparent,
         child: Stack(
@@ -171,7 +170,7 @@ class _DetailsPageState extends State<DetailsPage> {
               ),
             ),
             Offstage(
-              offstage: Device.isIPad(context),
+              offstage: SystemUtils.isIPad(context),
               child: Align(
                 alignment: Alignment.topRight,
                 child: _buildCloseButton(),
@@ -399,7 +398,7 @@ class _DetailsPageState extends State<DetailsPage> {
     String temp = (await getTemporaryDirectory()).path;
     File file = File('$temp/${DateTime.now().millisecondsSinceEpoch}.png');
     file.writeAsBytesSync(bytes);
-    await Utils.share(file);
+    await SystemUtils.share(file);
   }
 }
 
@@ -421,7 +420,7 @@ class _SaveButtonState extends State<_SaveButton> {
   @override
   void initState() {
     super.initState();
-    Utils.isAlbumAuthorized().then((granted) {
+    SystemUtils.isAlbumAuthorized().then((granted) {
       setState(() => denied = !granted);
     });
   }
@@ -436,7 +435,7 @@ class _SaveButtonState extends State<_SaveButton> {
     return GestureDetector(
       onTap: () async {
         if (denied) {
-          Utils.openAppSettings();
+          SystemUtils.openAppSettings();
         } else if (!started) {
           setState(() => started = true);
           try {
@@ -449,7 +448,7 @@ class _SaveButtonState extends State<_SaveButton> {
             if (e.code == '-1') setState(() => denied = true);
           }
         } else if (progress == 1 && Platform.isAndroid) {
-          Utils.useAsWallpaper(file);
+          SystemUtils.useAsWallpaper(file);
         }
       },
       child: AnimatedCrossFade(

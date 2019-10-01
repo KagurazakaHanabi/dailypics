@@ -66,13 +66,13 @@ class _UserSpacePageState extends State<UserSpacePage> {
   Widget _buildHeaderImage() {
     MediaQueryData queryData = MediaQuery.of(context);
     double pixels = position?.pixels ?? 0;
-    bool landscape = !Device.isPortrait(context);
+    bool landscape = !SystemUtils.isPortrait(context);
     return Stack(
       children: <Widget>[
         CachedNetworkImage(
           imageUrl: 'https://via.placeholder.com/750x500',
           height: pixels < -76 ? 162 - pixels : pixels > 162 ? 0 : 162 - pixels,
-          fit: pixels < -76 && !(Device.isIPad(context) && landscape)
+          fit: pixels < -76 && !(SystemUtils.isIPad(context) && landscape)
               ? BoxFit.fill
               : BoxFit.fitWidth,
           width: queryData.size.width,
