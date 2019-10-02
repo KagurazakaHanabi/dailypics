@@ -15,7 +15,16 @@ class AppDelegate: FlutterAppDelegate {
             (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
             switch call.method {
             case "share":
-                self.share(file: call.arguments as! String, result: result)
+                let arguments = call.arguments as! Dictionary<String, Any>;
+                let originX = arguments["originX"], originY = arguments["originY"];
+                let originWidth = arguments["originWidth"], originHeight = arguments["originHeight"];
+                var originRect: CGRect? = nil;
+                if originX != nil && originY != nil && originWidth != nil && originHeight != nil {
+                    originRect = CGRect.init(
+                        x: originX as! Double, y: originY as! Double,
+                        width: originWidth as! Double, height: originHeight as! Double)
+                }
+                self.share(file: arguments["file"]! as! String, atSource: originRect, result: result)
             case "useAsWallpaper":
                 self.useAsWallpaper(file: call.arguments as! String, result: result)
             case "requestReview":
@@ -34,10 +43,14 @@ class AppDelegate: FlutterAppDelegate {
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 
-    private func share(file: String, result: FlutterResult) {
+    private func share(file: String, atSource: CGRect?, result: FlutterResult) {
         do {
             let data = try Data(contentsOf: URL.init(string: "file://" + file)!)
             let controller = UIActivityViewController.init(activityItems: [UIImage(data: data) as Any], applicationActivities: nil)
+            controller.popoverPresentationController?.sourceView = controller.view;
+            if atSource != nil {
+                controller.popoverPresentationController?.sourceRect = atSource!;
+            }
             window.rootViewController!.present(controller, animated: true, completion: nil)
             result(nil)
         } catch let error {

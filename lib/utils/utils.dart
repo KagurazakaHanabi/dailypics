@@ -28,8 +28,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 const MethodChannel _channel = MethodChannel('ml.cerasus.pics');
 
 class SystemUtils {
-  static Future<void> share(File file) async {
-    await _channel.invokeMethod('share', file.path);
+  static Future<void> share(File file, [Rect originRect]) async {
+    Map<String, dynamic> params = {'file': file.path};
+    if (originRect != null) {
+      params['originX'] = originRect.left;
+      params['originY'] = originRect.top;
+      params['originWidth'] = originRect.width;
+      params['originHeight'] = originRect.height;
+    }
+    await _channel.invokeMethod('share', params);
   }
 
   static Future<void> useAsWallpaper(File file) async {

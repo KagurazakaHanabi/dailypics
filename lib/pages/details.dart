@@ -72,6 +72,7 @@ class DetailsPage extends StatefulWidget {
 
 class _DetailsPageState extends State<DetailsPage> {
   GlobalKey repaintKey = GlobalKey();
+  GlobalKey shareBtnKey = GlobalKey();
   bool popped = false;
   Picture data;
   String error;
@@ -303,6 +304,7 @@ class _DetailsPageState extends State<DetailsPage> {
       darkColor: Colors.white,
     ).resolveFrom(context);
     return Container(
+      key: shareBtnKey,
       alignment: Alignment.center,
       padding: EdgeInsets.symmetric(vertical: 29),
       child: DecoratedBox(
@@ -398,7 +400,12 @@ class _DetailsPageState extends State<DetailsPage> {
     String temp = (await getTemporaryDirectory()).path;
     File file = File('$temp/${DateTime.now().millisecondsSinceEpoch}.png');
     file.writeAsBytesSync(bytes);
-    await SystemUtils.share(file);
+
+    RenderBox renderBox = shareBtnKey.currentContext.findRenderObject();
+    Offset offset = renderBox.localToGlobal(Offset.zero);
+    Size size = renderBox.size;
+    Rect rect = Rect.fromLTWH(offset.dx, offset.dy, size.width, size.height);
+    await SystemUtils.share(file, rect);
   }
 }
 
