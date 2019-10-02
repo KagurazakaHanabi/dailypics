@@ -66,7 +66,7 @@ class TujianApi {
     String encodedQuery = Uri.encodeQueryComponent(keyword);
     Uri uri = Uri.parse('$_kBaseUrl/search/s/$encodedQuery');
     String source = await _client.read(uri, headers: _kHeaders);
-    return Picture.parseList(jsonDecode(source));
+    return Picture.parseList(jsonDecode(source)['result']);
   }
 
   static Future<Splash> getSplash() async {
