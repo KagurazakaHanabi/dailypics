@@ -12,6 +12,6 @@
 *.properties  text
 
 # iOS/Xcode related
-*.pbxproj     text   -merge=union
+*.pbxproj     binary -merge=union
 *.m           text   diff=objc
 *.swift       text   diff=swift
