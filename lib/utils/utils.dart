@@ -174,7 +174,7 @@ class Utils {
     return (c.red * 299 + c.green * 587 + c.blue * 114) / 1000 < 128;
   }
 
-  static bool isUUID(String input) {
+  static bool isUuid(String input) {
     RegExp regExp = RegExp(
       r'^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$',
       caseSensitive: false,

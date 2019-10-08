@@ -123,7 +123,7 @@ class _SearchPageState extends State<SearchPage> {
                     child: SearchBar(
                       autofocus: true,
                       onSubmitted: (value) {
-                        if (Utils.isUUID(value)) {
+                        if (Utils.isUuid(value)) {
                           _fetchData(value);
                         } else if (value.isNotEmpty) {
                           query = value;

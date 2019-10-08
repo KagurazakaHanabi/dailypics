@@ -30,14 +30,13 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 
   static void push(BuildContext context) {
-    Navigator.of(context).pushAndRemoveUntil(
+    Navigator.of(context).pushReplacement(
       PageRouteBuilder(pageBuilder: (_, Animation<double> animation, __) {
         return FadeTransition(
           opacity: animation,
           child: HomePage(),
         );
       }),
-      (route) => route == null,
     );
   }
 }
