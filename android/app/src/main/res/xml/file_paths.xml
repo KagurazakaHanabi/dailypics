@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <paths>
-        <cache-path name="cache-files" path="." />
-    </paths>
-</resources>
+<paths>
+    <cache-path name="cache-files" path="." />
+</paths>
