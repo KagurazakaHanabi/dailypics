@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 KagurazakaHanabi<i@yaerin.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +28,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
-public class PlatformPlugin implements MethodCallHandler {
+class PlatformPlugin implements MethodCallHandler {
     private final PlatformPluginImpl IMPL;
 
     private PlatformPlugin(Registrar registrar) {
@@ -51,7 +51,7 @@ public class PlatformPlugin implements MethodCallHandler {
                 try {
                     IMPL.share(call.argument("file"), result);
                 } catch (IOException e) {
-                    result.error("0", e.getLocalizedMessage(), null);
+                    result.error(e.getClass().getName(), e.getLocalizedMessage(), null);
                 }
                 break;
 
@@ -75,7 +75,7 @@ public class PlatformPlugin implements MethodCallHandler {
                 try {
                     IMPL.syncAlbum(call, result);
                 } catch (IOException e) {
-                    result.error("0", e.getLocalizedMessage(), null);
+                    result.error(e.getClass().getName(), e.getLocalizedMessage(), null);
                 }
                 break;
 

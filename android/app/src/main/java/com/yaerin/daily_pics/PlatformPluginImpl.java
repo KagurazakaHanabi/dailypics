@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 KagurazakaHanabi<i@yaerin.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@ import java.io.IOException;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel.Result;
 
-public interface PlatformPluginImpl {
+interface PlatformPluginImpl {
     String PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + ".file_provider";
 
     void share(String path, Result result) throws IOException;

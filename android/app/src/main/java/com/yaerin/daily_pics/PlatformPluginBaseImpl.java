@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 KagurazakaHanabi<i@yaerin.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -58,7 +58,7 @@ class PlatformPluginBaseImpl implements PlatformPluginImpl {
     }
 
     @Override
-    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressWarnings({"ResultOfMethodCallIgnored"})
     public void share(String path, Result result) throws IOException {
         File file = new File(path);
         File dir = new File(getExternalStoragePublicDirectory(DIRECTORY_PICTURES), "/图鉴日图");
@@ -97,7 +97,7 @@ class PlatformPluginBaseImpl implements PlatformPluginImpl {
                 wm.setStream(new FileInputStream(new File(file)));
                 result.success(null);
             } catch (IOException ex) {
-                result.error("0", ex.getLocalizedMessage(), null);
+                result.error(ex.getClass().getName(), ex.getLocalizedMessage(), null);
             }
         }
     }
@@ -152,7 +152,7 @@ class PlatformPluginBaseImpl implements PlatformPluginImpl {
             if (uri != null) {
                 os = cr.openOutputStream(uri);
             } else {
-                result.error("0", "The image failed to be stored", null);
+                result.error("0", "Image URI must not be null", null);
                 return;
             }
         } else {
@@ -173,7 +173,7 @@ class PlatformPluginBaseImpl implements PlatformPluginImpl {
             bis.close();
             bos.close();
         } else {
-            result.error("0", "The image failed to be stored", null);
+            result.error("0", "An I/O error occurs", null);
             return;
         }
 
