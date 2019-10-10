@@ -15,7 +15,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 
-typedef RecognizerBuilder = GestureRecognizer Function(RegExpMatch e, int i);
+typedef RecognizerBuilder = GestureRecognizer Function(String match);
 
 class HighlightedText {
   final RecognizerBuilder recognizer;
@@ -81,7 +81,7 @@ class Highlight extends StatelessWidget {
           bool last = i == links.length - 1;
           return TextSpan(
             text: e.text,
-            recognizer: p.recognizer != null ? p.recognizer(e.origin, i) : null,
+            recognizer: p.recognizer != null ? p.recognizer(e.text) : null,
             style: p.style ?? style,
             children: [
               TextSpan(

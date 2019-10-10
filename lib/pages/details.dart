@@ -231,23 +231,24 @@ class _DetailsPageState extends State<DetailsPage> {
         RegExp(
           r"(https?:\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?",
         ): HighlightedText(
-          recognizer: (RegExpMatch e, int i) {
-            return TapGestureRecognizer()
-              ..onTap = () {
-                launch(e.input.substring(e.start, e.end));
-              };
+          recognizer: (String match) {
+            return TapGestureRecognizer()..onTap = () => launch(match);
           },
         ),
         RegExp('Pixiv#[^0][0-9]+', caseSensitive: false): HighlightedText(
-          recognizer: (RegExpMatch e, int i) {
-            RegExp number = RegExp('[0-9]+');
-            int start = e.start, end = e.end;
-            String match = e.input.substring(start, end);
-            String id = number.stringMatch(match);
+          recognizer: (String match) {
+            String id = RegExp('[0-9]+').stringMatch(match);
             return TapGestureRecognizer()
               ..onTap = () {
                 launch('https://www.pixiv.net/member_illust.php?illust_id=$id');
               };
+          },
+        ),
+        RegExp('av[^0][0-9]+', caseSensitive: false): HighlightedText(
+          recognizer: (String match) {
+            String id = RegExp('[0-9]+').stringMatch(match);
+            String url = 'https://www.bilibili.com/video/av$id';
+            return TapGestureRecognizer()..onTap = () => launch(url);
           },
         ),
       },
@@ -255,7 +256,7 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 
   Widget _buildDivider() {
-    CupertinoDynamicColor dividerColor = CupertinoDynamicColor.withBrightness(
+    Color dividerColor = CupertinoDynamicColor.withBrightness(
       color: Colors.black38,
       darkColor: Colors.white54,
     ).resolveFrom(context);

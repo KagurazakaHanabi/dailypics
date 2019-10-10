@@ -13,8 +13,8 @@
 // limitations under the License.
 
 import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/utils/utils.dart';
 import 'package:daily_pics/pages/details.dart';
+import 'package:daily_pics/utils/utils.dart';
 import 'package:daily_pics/widget/animated_transform.dart';
 import 'package:daily_pics/widget/optimized_image.dart';
 import 'package:daily_pics/widget/qrcode.dart';
@@ -52,6 +52,9 @@ class _ImageCardState extends State<ImageCard> {
 
   @override
   Widget build(BuildContext context) {
+    Color textColor = Utils.isDarkColor(widget.data.color)
+        ? Colors.white
+        : Colors.black;
     return AnimatedTransform.scale(
       scale: scale,
       duration: duration,
@@ -109,9 +112,7 @@ class _ImageCardState extends State<ImageCard> {
                         Text(
                           widget.data.title,
                           style: TextStyle(
-                            color: Utils.isDarkColor(widget.data.color)
-                                ? Colors.white
-                                : Colors.black,
+                            color: textColor,
                             fontWeight: FontWeight.w500,
                             fontSize: 28,
                           ),
@@ -123,9 +124,7 @@ class _ImageCardState extends State<ImageCard> {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              color: Utils.isDarkColor(widget.data.color)
-                                  ? Color(0xB3FFFFFF)
-                                  : Color(0xB3000000),
+                              color: textColor.withAlpha(0xB3),
                               fontSize: 13,
                             ),
                           ),
@@ -133,9 +132,8 @@ class _ImageCardState extends State<ImageCard> {
                       ],
                     ),
                   ),
-                  Offstage(
-                    offstage: !widget.showQrCode,
-                    child: AspectRatio(
+                  if (widget.showQrCode)
+                    AspectRatio(
                       aspectRatio: widget.aspectRatio,
                       child: Container(
                         alignment: Alignment.bottomRight,
@@ -147,7 +145,6 @@ class _ImageCardState extends State<ImageCard> {
                         ),
                       ),
                     ),
-                  ),
                 ],
               ),
             ),
