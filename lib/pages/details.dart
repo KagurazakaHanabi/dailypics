@@ -22,7 +22,6 @@ import 'dart:ui' as ui;
 import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/utils/utils.dart';
 import 'package:daily_pics/widget/adaptive_scaffold.dart';
-import 'package:daily_pics/widget/hightlight.dart';
 import 'package:daily_pics/widget/image_card.dart';
 import 'package:daily_pics/widget/optimized_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -32,6 +31,7 @@ import 'package:flutter/material.dart'
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -170,13 +170,6 @@ class _DetailsPageState extends State<DetailsPage> {
                 ],
               ),
             ),
-            Offstage(
-              offstage: SystemUtils.isIPad(context),
-              child: Align(
-                alignment: Alignment.topRight,
-                child: _buildCloseButton(),
-              ),
-            ),
           ],
         ),
       ),
@@ -216,42 +209,78 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 
   Widget _buildContent() {
-    return Highlight(
-      text: data.content,
-      style: TextStyle(color: CupertinoColors.activeBlue),
-      defaultStyle: TextStyle(
-        color: CupertinoDynamicColor.withBrightness(
-          color: Colors.black54,
-          darkColor: Colors.white70,
-        ).resolveFrom(context),
-        fontSize: 15,
-        height: 1.2,
+    CupertinoThemeData theme = CupertinoTheme.of(context);
+    TextStyle textStyle = theme.textTheme.textStyle.copyWith(
+      fontSize: 15,
+      height: 1.2,
+    );
+    return MarkdownBody(
+      data: data.content,
+      onTapLink: (String href) => launch(href),
+      styleSheet: MarkdownStyleSheet(
+        a: TextStyle(color: CupertinoColors.link),
+        p: textStyle.copyWith(
+          color: CupertinoDynamicColor.withBrightness(
+            color: Colors.black54,
+            darkColor: Colors.white70,
+          ).resolveFrom(context),
+        ),
+        code: TextStyle(
+          color: CupertinoColors.label,
+          fontFamily: "monospace",
+          fontSize: textStyle.fontSize * 0.85,
+        ),
+        h1: textStyle.copyWith(
+          fontSize: textStyle.fontSize + 10,
+        ),
+        h2: textStyle.copyWith(
+          fontSize: textStyle.fontSize + 8,
+        ),
+        h3: textStyle.copyWith(
+          fontWeight: FontWeight.w500,
+          fontSize: textStyle.fontSize + 6,
+        ),
+        h4: textStyle.copyWith(
+          fontWeight: FontWeight.w500,
+          fontSize: textStyle.fontSize + 4,
+        ),
+        h5: textStyle.copyWith(
+          fontWeight: FontWeight.w500,
+          fontSize: textStyle.fontSize + 2,
+        ),
+        h6: textStyle.copyWith(
+          fontWeight: FontWeight.w500,
+          fontSize: textStyle.fontSize,
+        ),
+        em: TextStyle(fontStyle: FontStyle.italic),
+        strong: TextStyle(fontWeight: FontWeight.bold),
+        blockquote: textStyle,
+        img: textStyle,
+        blockSpacing: 8,
+        listIndent: 24,
+        blockquotePadding: 16,
+        blockquoteDecoration: BoxDecoration(
+          color: CupertinoColors.systemGrey6,
+          border: Border(
+            left: BorderSide(
+              color: CupertinoColors.systemGrey4,
+              width: 4,
+            ),
+          ),
+        ),
+        codeblockPadding: 8,
+        codeblockDecoration: BoxDecoration(
+          color: CupertinoColors.systemGrey6,
+        ),
+        horizontalRuleDecoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              color: CupertinoColors.systemGrey4,
+              width: 1,
+            ),
+          ),
+        ),
       ),
-      patterns: {
-        RegExp(
-          r"(https?:\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?",
-        ): HighlightedText(
-          recognizer: (String match) {
-            return TapGestureRecognizer()..onTap = () => launch(match);
-          },
-        ),
-        RegExp('Pixiv#[^0][0-9]+', caseSensitive: false): HighlightedText(
-          recognizer: (String match) {
-            String id = RegExp('[0-9]+').stringMatch(match);
-            return TapGestureRecognizer()
-              ..onTap = () {
-                launch('https://www.pixiv.net/member_illust.php?illust_id=$id');
-              };
-          },
-        ),
-        RegExp('av[^0][0-9]+', caseSensitive: false): HighlightedText(
-          recognizer: (String match) {
-            String id = RegExp('[0-9]+').stringMatch(match);
-            String url = 'https://www.bilibili.com/video/av$id';
-            return TapGestureRecognizer()..onTap = () => launch(url);
-          },
-        ),
-      },
     );
   }
 
