@@ -301,7 +301,7 @@ class _DetailsPageState extends State<DetailsPage> {
     if (painter.width >= size.width) {
       int count = (painter.width - size.width) ~/ width + 2;
       int start = username.length - count;
-      username = username.replaceRange(start, username.length, '…');
+      username = username.replaceRange(start, username.length, '\u2026');
     }
     return DefaultTextStyle(
       style: TextStyle(

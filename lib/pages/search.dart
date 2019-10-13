@@ -19,11 +19,12 @@ import 'package:daily_pics/misc/bean.dart';
 import 'package:daily_pics/utils/api.dart';
 import 'package:daily_pics/utils/utils.dart';
 import 'package:daily_pics/widget/image_card.dart';
+import 'package:daily_pics/widget/search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show LinearProgressIndicator;
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-const double kSearchBarHeight = 49;
+const double kSearchBarHeight = 44;
 
 class SearchPage extends StatefulWidget {
   @override
@@ -108,38 +109,20 @@ class _SearchPageState extends State<SearchPage> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        Container(
-          alignment: Alignment.center,
-          padding: EdgeInsets.only(top: padding.top),
-          color: barBackgroundColor,
-          child: SizedBox(
-            width: 500,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 16),
-                    child: SearchBar(
-                      autofocus: true,
-                      onSubmitted: (value) {
-                        if (Utils.isUuid(value)) {
-                          _fetchData(value);
-                        } else if (value.isNotEmpty) {
-                          query = value;
-                          _fetchData();
-                        }
-                      },
-                    ),
-                  ),
-                ),
-                CupertinoButton(
-                  padding: EdgeInsets.fromLTRB(0, 16, 16, 16),
-                  child: Text('取消'),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ],
-            ),
+        SizedBox(
+          width: 500,
+          child: CupertinoSearchBar(
+            padding: EdgeInsets.fromLTRB(16, padding.top + 10, 16, 10),
+            showCancelButton: true,
+            autofocus: true,
+            onSubmitted: (value) {
+              if (Utils.isUuid(value)) {
+                _fetchData(value);
+              } else if (value.isNotEmpty) {
+                query = value;
+                _fetchData();
+              }
+            },
           ),
         ),
         SizedBox(
@@ -178,71 +161,5 @@ class _SearchPageState extends State<SearchPage> {
   void dispose() {
     controller.dispose();
     super.dispose();
-  }
-}
-
-class SearchBar extends StatelessWidget {
-  final bool autofocus;
-
-  final double shrinkOffset;
-
-  final VoidCallback onTap;
-
-  final ValueChanged<String> onChanged;
-
-  final ValueChanged<String> onSubmitted;
-
-  const SearchBar({
-    Key key,
-    this.autofocus = false,
-    this.shrinkOffset = 1,
-    this.onTap,
-    this.onChanged,
-    this.onSubmitted,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Hero(
-      tag: 'SearchBar',
-      child: Container(
-        padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: CupertinoDynamicColor.withBrightness(
-              color: Color(0xDDE3E3E8),
-              darkColor: Color(0xFF303030),
-            ).resolveFrom(context),
-          ),
-          child: AnimatedOpacity(
-            opacity: shrinkOffset < 0.9 ? 0 : 1,
-            duration: Duration(milliseconds: 100),
-            child: CupertinoTextField(
-              autofocus: autofocus,
-              placeholder: '搜索',
-              decoration: null,
-              onTap: onTap,
-              onChanged: onChanged,
-              onSubmitted: onSubmitted,
-              textInputAction: TextInputAction.search,
-              style: TextStyle(fontSize: 18),
-              placeholderStyle: TextStyle(
-                color: CupertinoColors.inactiveGray,
-                fontSize: 16,
-              ),
-              prefix: Padding(
-                padding: EdgeInsets.only(left: 8),
-                child: Icon(
-                  CupertinoIcons.search,
-                  color: CupertinoColors.inactiveGray,
-                  size: 21,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }

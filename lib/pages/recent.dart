@@ -23,6 +23,7 @@ import 'package:daily_pics/pages/search.dart';
 import 'package:daily_pics/utils/api.dart';
 import 'package:daily_pics/utils/utils.dart';
 import 'package:daily_pics/widget/optimized_image.dart';
+import 'package:daily_pics/widget/search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show Colors;
 import 'package:flutter/rendering.dart';
@@ -132,7 +133,7 @@ class _RecentPageState extends State<RecentPage>
                 ],
               ),
             ),
-            data.length == 0 ? CupertinoActivityIndicator() : Container(),
+            if (data.length == 0) CupertinoActivityIndicator()
           ],
         );
       }),
@@ -275,9 +276,14 @@ class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
                 SizedBox(
                   width: 500,
                   height: barHeight,
-                  child: SearchBar(
-                    shrinkOffset: barHeight / kSearchBarHeight,
-                    onTap: () => SearchPage.push(context),
+                  child: AnimatedOpacity(
+                    opacity: barHeight / kSearchBarHeight < 0.9 ? 0 : 1,
+                    duration: Duration(milliseconds: 100),
+                    child: CupertinoSearchBar(
+                      padding: EdgeInsets.fromLTRB(16, 0, 16, 10),
+                      onTap: () => SearchPage.push(context),
+                      readOnly: true,
+                    ),
                   ),
                 ),
                 SizedBox(
