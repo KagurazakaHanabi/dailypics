@@ -54,7 +54,7 @@ class PlatformPluginBaseImpl implements PlatformPluginImpl {
     final Context mContext;
 
     PlatformPluginBaseImpl(Registrar registrar) {
-        this.mContext = registrar.activity();
+        this.mContext = registrar.activeContext();
     }
 
     @Override
@@ -113,8 +113,7 @@ class PlatformPluginBaseImpl implements PlatformPluginImpl {
 
     @Override
     public void isAlbumAuthorized(Result result) {
-        int status = checkSelfPermission(mContext, WRITE_EXTERNAL_STORAGE);
-        result.success(status == PackageManager.PERMISSION_GRANTED);
+        result.success(true);
     }
 
     @Override
