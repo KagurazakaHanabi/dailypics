@@ -24,6 +24,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 const MethodChannel _channel = MethodChannel('ml.cerasus.pics');
 
@@ -53,6 +54,10 @@ class SystemUtils {
 
   static Future<void> openAppSettings() async {
     await _channel.invokeMethod('openAppSettings');
+  }
+
+  static Future<void> openUrl(String url) {
+    return launch(url, forceSafariVC: false, forceWebView: false);
   }
 
   static bool isIPad(BuildContext context, [bool strict = false]) {

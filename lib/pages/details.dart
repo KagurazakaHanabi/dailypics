@@ -34,7 +34,6 @@ import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 const double _kBackGestureWidth = 20.0;
 const double _kMinFlingVelocity = 1.0; // Screen widths per second.
@@ -216,7 +215,7 @@ class _DetailsPageState extends State<DetailsPage> {
     );
     return MarkdownBody(
       data: data.content,
-      onTapLink: (String href) => launch(href),
+      onTapLink: (String href) => SystemUtils.openUrl(href),
       styleSheet: MarkdownStyleSheet(
         a: TextStyle(color: CupertinoColors.link),
         p: textStyle.copyWith(
