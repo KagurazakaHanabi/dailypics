@@ -20,6 +20,7 @@ import 'package:daily_pics/widget/optimized_image.dart';
 import 'package:daily_pics/widget/qrcode.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show Colors;
+import 'package:markdown/markdown.dart' hide Text;
 
 class ImageCard extends StatefulWidget {
   final Picture data;
@@ -53,8 +54,8 @@ class _ImageCardState extends State<ImageCard> {
   @override
   Widget build(BuildContext context) {
     Color textColor = Utils.isDarkColor(widget.data.color)
-        ? Colors.white
-        : Colors.black;
+        ? CupertinoColors.white
+        : CupertinoColors.black;
     return AnimatedTransform.scale(
       scale: scale,
       duration: duration,
@@ -120,7 +121,8 @@ class _ImageCardState extends State<ImageCard> {
                         Padding(
                           padding: EdgeInsets.only(top: 4),
                           child: Text(
-                            widget.data.content,
+                            markdownToHtml(widget.data.content)
+                                .replaceAll(RegExp(r'<[^>]+>'), ''),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
