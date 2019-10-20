@@ -15,12 +15,12 @@
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/model/app.dart';
-import 'package:daily_pics/pages/recent.dart';
-import 'package:daily_pics/utils/api.dart';
-import 'package:daily_pics/utils/utils.dart';
-import 'package:daily_pics/widget/slivers.dart';
+import 'package:dailypics/misc/bean.dart';
+import 'package:dailypics/model/app.dart';
+import 'package:dailypics/pages/recent.dart';
+import 'package:dailypics/utils/api.dart';
+import 'package:dailypics/utils/utils.dart';
+import 'package:dailypics/widget/slivers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show Colors;
 import 'package:http/http.dart' as http;

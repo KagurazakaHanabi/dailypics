@@ -16,10 +16,10 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/pages/home.dart';
-import 'package:daily_pics/utils/api.dart';
-import 'package:daily_pics/utils/utils.dart';
+import 'package:dailypics/misc/bean.dart';
+import 'package:dailypics/pages/home.dart';
+import 'package:dailypics/utils/api.dart';
+import 'package:dailypics/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 

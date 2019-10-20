@@ -17,8 +17,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/utils/local_storage.dart';
+import 'package:dailypics/misc/bean.dart';
+import 'package:dailypics/utils/local_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;

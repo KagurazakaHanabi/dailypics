@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/utils/api.dart';
-import 'package:daily_pics/widget/slivers.dart';
+import 'package:dailypics/misc/bean.dart';
+import 'package:dailypics/utils/api.dart';
+import 'package:dailypics/widget/slivers.dart';
 import 'package:flutter/cupertino.dart';
 
 class SuggestComponent extends StatefulWidget {

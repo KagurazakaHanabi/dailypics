@@ -15,10 +15,10 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/utils/utils.dart';
-import 'package:daily_pics/widget/buttons.dart';
-import 'package:daily_pics/widget/hightlight.dart';
+import 'package:dailypics/misc/bean.dart';
+import 'package:dailypics/utils/utils.dart';
+import 'package:dailypics/widget/buttons.dart';
+import 'package:dailypics/widget/hightlight.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show CircleAvatar, Colors, Divider;
 import 'package:image_picker/image_picker.dart';

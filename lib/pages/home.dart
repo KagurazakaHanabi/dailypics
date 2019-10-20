@@ -14,12 +14,12 @@
 
 import 'dart:async';
 
-import 'package:daily_pics/components/suggest.dart';
-import 'package:daily_pics/components/today.dart';
-import 'package:daily_pics/pages/about.dart';
-import 'package:daily_pics/pages/details.dart';
-import 'package:daily_pics/pages/recent.dart';
-import 'package:daily_pics/utils/utils.dart';
+import 'package:dailypics/components/suggest.dart';
+import 'package:dailypics/components/today.dart';
+import 'package:dailypics/pages/about.dart';
+import 'package:dailypics/pages/details.dart';
+import 'package:dailypics/pages/recent.dart';
+import 'package:dailypics/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';

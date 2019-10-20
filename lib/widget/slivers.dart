@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/utils/utils.dart';
+import 'package:dailypics/misc/bean.dart';
+import 'package:dailypics/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 

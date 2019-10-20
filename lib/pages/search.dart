@@ -15,11 +15,11 @@
 import 'dart:async';
 import 'dart:ui' show ImageFilter, window;
 
-import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/utils/api.dart';
-import 'package:daily_pics/utils/utils.dart';
-import 'package:daily_pics/widget/image_card.dart';
-import 'package:daily_pics/widget/search.dart';
+import 'package:dailypics/misc/bean.dart';
+import 'package:dailypics/utils/api.dart';
+import 'package:dailypics/utils/utils.dart';
+import 'package:dailypics/widget/image_card.dart';
+import 'package:dailypics/widget/search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show LinearProgressIndicator;
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';

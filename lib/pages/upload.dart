@@ -16,8 +16,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:daily_pics/misc/constants.dart';
-import 'package:daily_pics/utils/utils.dart';
+import 'package:dailypics/misc/constants.dart';
+import 'package:dailypics/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show LinearProgressIndicator;
 import 'package:flutter_ionicons/flutter_ionicons.dart';

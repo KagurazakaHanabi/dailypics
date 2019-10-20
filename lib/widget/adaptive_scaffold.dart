@@ -14,7 +14,7 @@
 
 import 'dart:ui';
 
-import 'package:daily_pics/utils/utils.dart';
+import 'package:dailypics/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 
 class AdaptiveScaffold extends StatelessWidget {

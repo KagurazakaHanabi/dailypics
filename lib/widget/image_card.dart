@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/pages/details.dart';
-import 'package:daily_pics/utils/utils.dart';
-import 'package:daily_pics/widget/animated_transform.dart';
-import 'package:daily_pics/widget/optimized_image.dart';
-import 'package:daily_pics/widget/qrcode.dart';
+import 'package:dailypics/misc/bean.dart';
+import 'package:dailypics/pages/details.dart';
+import 'package:dailypics/utils/utils.dart';
+import 'package:dailypics/widget/animated_transform.dart';
+import 'package:dailypics/widget/optimized_image.dart';
+import 'package:dailypics/widget/qrcode.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show Colors;
 import 'package:markdown/markdown.dart' hide Text;

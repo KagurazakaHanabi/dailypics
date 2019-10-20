@@ -86,9 +86,11 @@ packages:
   flutter_markdown:
     dependency: "direct main"
     description:
-      name: flutter_markdown
-      url: "https://pub.flutter-io.cn"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: f30838a7f0abfd3ea61ecdbcce7ba0d37578c3ca
+      url: "https://github.com/KagurazakaHanabi/flutter_markdown.git"
+    source: git
     version: "0.2.0"
   flutter_staggered_grid_view:
     dependency: "direct main"

@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'package:daily_pics/misc/constants.dart';
-import 'package:daily_pics/model/app.dart';
-import 'package:daily_pics/pages/splash.dart';
-import 'package:daily_pics/utils/utils.dart';
-import 'package:daily_pics/widget/error.dart';
+import 'package:dailypics/misc/constants.dart';
+import 'package:dailypics/model/app.dart';
+import 'package:dailypics/pages/splash.dart';
+import 'package:dailypics/utils/utils.dart';
+import 'package:dailypics/widget/error.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:scoped_model/scoped_model.dart';

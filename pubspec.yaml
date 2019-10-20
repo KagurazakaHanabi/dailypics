@@ -1,4 +1,4 @@
-name: daily_pics
+name: dailypics
 description: A new Flutter application.
 version: 2.0.2+191010
 
@@ -13,9 +13,10 @@ dependencies:
     sdk: flutter
   flutter_ionicons:
     git: https://github.com/KagurazakaHanabi/flutter_ionicons.git
+  flutter_markdown:
+    git: https://github.com/KagurazakaHanabi/flutter_markdown.git
   cached_network_image: ^1.1.1
   cupertino_icons: ^0.1.2
-  flutter_markdown: ^0.2.0
   flutter_staggered_grid_view: ^0.3.0
   http: ^0.12.0+2
   image_picker: ^0.6.1+4

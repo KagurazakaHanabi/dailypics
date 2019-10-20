@@ -15,15 +15,15 @@
 import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
-import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/misc/constants.dart';
-import 'package:daily_pics/model/app.dart';
-import 'package:daily_pics/pages/details.dart';
-import 'package:daily_pics/pages/search.dart';
-import 'package:daily_pics/utils/api.dart';
-import 'package:daily_pics/utils/utils.dart';
-import 'package:daily_pics/widget/optimized_image.dart';
-import 'package:daily_pics/widget/search.dart';
+import 'package:dailypics/misc/bean.dart';
+import 'package:dailypics/misc/constants.dart';
+import 'package:dailypics/model/app.dart';
+import 'package:dailypics/pages/details.dart';
+import 'package:dailypics/pages/search.dart';
+import 'package:dailypics/utils/api.dart';
+import 'package:dailypics/utils/utils.dart';
+import 'package:dailypics/widget/optimized_image.dart';
+import 'package:dailypics/widget/search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show Colors;
 import 'package:flutter/rendering.dart';

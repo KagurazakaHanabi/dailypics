@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'package:daily_pics/pages/upload.dart';
+import 'package:dailypics/pages/upload.dart';
 import 'package:flutter/cupertino.dart';
 
 class SettingsComponent extends StatefulWidget {

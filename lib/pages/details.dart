@@ -19,11 +19,11 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:daily_pics/misc/bean.dart';
-import 'package:daily_pics/utils/utils.dart';
-import 'package:daily_pics/widget/adaptive_scaffold.dart';
-import 'package:daily_pics/widget/image_card.dart';
-import 'package:daily_pics/widget/optimized_image.dart';
+import 'package:dailypics/misc/bean.dart';
+import 'package:dailypics/utils/utils.dart';
+import 'package:dailypics/widget/adaptive_scaffold.dart';
+import 'package:dailypics/widget/image_card.dart';
+import 'package:dailypics/widget/optimized_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart'
@@ -254,11 +254,12 @@ class _DetailsPageState extends State<DetailsPage> {
         ),
         em: TextStyle(fontStyle: FontStyle.italic),
         strong: TextStyle(fontWeight: FontWeight.bold),
+        del: TextStyle(decoration: TextDecoration.lineThrough),
         blockquote: textStyle,
         img: textStyle,
         blockSpacing: 8,
         listIndent: 24,
-        blockquotePadding: 16,
+        blockquotePadding: EdgeInsets.all(16),
         blockquoteDecoration: BoxDecoration(
           color: CupertinoColors.systemGrey6,
           border: Border(
@@ -268,7 +269,7 @@ class _DetailsPageState extends State<DetailsPage> {
             ),
           ),
         ),
-        codeblockPadding: 8,
+        codeblockPadding: EdgeInsets.all(8),
         codeblockDecoration: BoxDecoration(
           color: CupertinoColors.systemGrey6,
         ),
