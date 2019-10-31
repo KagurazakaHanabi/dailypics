@@ -45,7 +45,7 @@ class _TodayComponentState extends State<TodayComponent>
   Widget build(BuildContext context) {
     super.build(context);
     if (AppModel.of(context).today.length == 0) {
-      return Center(
+      return const Center(
         child: CupertinoActivityIndicator(),
       );
     }
@@ -55,7 +55,7 @@ class _TodayComponentState extends State<TodayComponent>
           controller: controller,
           child: CustomScrollView(
             controller: controller,
-            physics: AlwaysScrollableScrollPhysics(),
+            physics: const AlwaysScrollableScrollPhysics(),
             slivers: <Widget>[
               CupertinoSliverRefreshControl(onRefresh: _fetchData),
               SliverSafeArea(
@@ -90,7 +90,7 @@ class _TodayComponentState extends State<TodayComponent>
       darkColor: Colors.white70,
     ).resolveFrom(context);
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -99,18 +99,18 @@ class _TodayComponentState extends State<TodayComponent>
             style: TextStyle(color: textColor, fontSize: 12),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 5),
+            padding: const EdgeInsets.symmetric(vertical: 5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text(
+                const Text(
                   'Today',
                   style: TextStyle(
                     fontSize: 34,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Offstage(
+                const Offstage(
                   offstage: true,
                   child: Icon(CupertinoIcons.profile_circled, size: 42),
                 ),

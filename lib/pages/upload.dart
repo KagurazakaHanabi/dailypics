@@ -51,18 +51,18 @@ class _UploadPageState extends State<UploadPage> {
       navigationBar: CupertinoNavigationBar(
         padding: EdgeInsetsDirectional.zero,
         leading: CupertinoButton(
-          child: Icon(CupertinoIcons.back),
+          child: const Icon(CupertinoIcons.back),
           padding: EdgeInsets.zero,
           onPressed: () => Navigator.of(context).pop(),
         ),
-        middle: Text('投稿'),
+        middle: const Text('投稿'),
       ),
       child: SafeArea(
         child: Column(
           children: <Widget>[
             Flexible(
               child: ListView(
-                padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
                 children: <Widget>[
                   _buildImageCard(),
                   _TextField(
@@ -79,10 +79,10 @@ class _UploadPageState extends State<UploadPage> {
                   ),
                   ScopedModelDescendant<AppModel>(builder: (_, __, model) {
                     return CupertinoSegmentedControl<String>(
-                      selectedColor: Color(0xFF9C9C9C),
-                      borderColor: Color(0xFF9C9C9C),
-                      pressedColor: Color(0xFF9C9C9C).withOpacity(0.2),
-                      padding: EdgeInsets.symmetric(vertical: 8),
+                      selectedColor: const Color(0xFF9C9C9C),
+                      borderColor: const Color(0xFF9C9C9C),
+                      pressedColor: const Color(0xFF9C9C9C).withOpacity(0.2),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
                       groupValue: type,
                       children: model.types.map<String, Widget>((key, value) {
                         return MapEntry(key, Text(value));
@@ -108,22 +108,24 @@ class _UploadPageState extends State<UploadPage> {
                     padding: EdgeInsets.only(top: 8),
                     child: CupertinoButton(
                       pressedOpacity: 0.7,
-                      padding: EdgeInsets.symmetric(vertical: 8),
-                      color: Color(0xFF353A40),
-                      child: Text('提交'),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      color: const Color(0xFF353A40),
+                      child: const Text('提交'),
                       onPressed: _onSubmitted,
                     ),
                   ),
                   Opacity(
                     opacity: progress != null ? 1 : 0,
                     child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(4),
                         child: LinearProgressIndicator(
                           value: progress,
-                          backgroundColor: Color(0xFF9C9C9C),
-                          valueColor: AlwaysStoppedAnimation(Color(0xFF353A40)),
+                          backgroundColor: const Color(0xFF9C9C9C),
+                          valueColor: const AlwaysStoppedAnimation(
+                            Color(0xFF353A40),
+                          ),
                         ),
                       ),
                     ),
@@ -159,12 +161,12 @@ class _UploadPageState extends State<UploadPage> {
       child: AspectRatio(
         aspectRatio: 16 / 9,
         child: Container(
-          margin: EdgeInsets.symmetric(vertical: 16),
+          margin: const EdgeInsets.symmetric(vertical: 16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            color: Color(0xFFE0E0E0),
+            color: const Color(0xFFE0E0E0),
             image: image,
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
                 color: Color(0xFFD9D9D9),
                 blurRadius: 12,
@@ -176,15 +178,15 @@ class _UploadPageState extends State<UploadPage> {
             child: Stack(
               children: <Widget>[
                 Container(
-                  margin: EdgeInsets.all(8),
+                  margin: const EdgeInsets.all(8),
                   alignment: Alignment.topRight,
                   child: GestureDetector(
                     onTap: () {
                       showCupertinoDialog(
                         context: context,
                         builder: (_) => CupertinoAlertDialog(
-                          title: Text('上传须知'),
-                          content: Text(
+                          title: const Text('上传须知'),
+                          content: const Text(
                             '1. 图片分辨率不小于 1080P，需备注出处\n'
                             '2. 禁止上传含年龄限制、暴力倾向、宗教性质、政治相关等图片\n'
                             '3. 不得有侵犯他人合法版权的行为',
@@ -192,20 +194,20 @@ class _UploadPageState extends State<UploadPage> {
                           ),
                           actions: <Widget>[
                             CupertinoDialogAction(
-                              child: Text('好'),
+                              child: const Text('好'),
                               onPressed: () => Navigator.of(context).pop(),
                             ),
                           ],
                         ),
                       );
                     },
-                    child: Icon(
+                    child: const Icon(
                       Ionicons.ios_informat_circle_outline,
                       color: Color(0xFF919191),
                     ),
                   ),
                 ),
-                Align(
+                const Align(
                   alignment: Alignment.center,
                   child: Icon(
                     Ionicons.ios_add_circle_outline,
@@ -225,7 +227,7 @@ class _UploadPageState extends State<UploadPage> {
     return Container(
       decoration: BoxDecoration(
         color: CupertinoTheme.of(context).barBackgroundColor,
-        border: Border(
+        border: const Border(
           top: BorderSide(
             color: Color(0x4C000000),
             width: 0,

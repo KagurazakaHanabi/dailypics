@@ -93,9 +93,7 @@ class _RecentPageState extends State<RecentPage>
               },
               child: CustomScrollView(
                 controller: controller,
-                physics: BouncingScrollPhysics(
-                  parent: AlwaysScrollableScrollPhysics(),
-                ),
+                physics: const AlwaysScrollableScrollPhysics(),
                 slivers: <Widget>[
                   SliverPersistentHeader(
                     pinned: true,
@@ -125,7 +123,7 @@ class _RecentPageState extends State<RecentPage>
                 ],
               ),
             ),
-            if (data.length == 0) CupertinoActivityIndicator()
+            if (data.length == 0) const CupertinoActivityIndicator()
           ],
         );
       }),
@@ -237,7 +235,7 @@ class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
             padding: EdgeInsets.only(top: padding.top, bottom: 8),
             decoration: BoxDecoration(
               color: theme.barBackgroundColor,
-              border: Border(
+              border: const Border(
                 bottom: BorderSide(
                   color: Color(0x4C000000),
                   width: 0,
@@ -257,7 +255,7 @@ class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
                       Offstage(
                         offstage: !canPop,
                         child: CupertinoButton(
-                          child: Icon(CupertinoIcons.back),
+                          child: const Icon(CupertinoIcons.back),
                           padding: EdgeInsets.zero,
                           onPressed: () => Navigator.of(context).pop(),
                         ),
@@ -277,9 +275,9 @@ class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
                   height: barHeight,
                   child: AnimatedOpacity(
                     opacity: barHeight / kSearchBarHeight < 0.9 ? 0 : 1,
-                    duration: Duration(milliseconds: 100),
+                    duration: const Duration(milliseconds: 100),
                     child: CupertinoSearchBar(
-                      padding: EdgeInsets.fromLTRB(16, 0, 16, 10),
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
                       onTap: () => SearchPage.push(context),
                       readOnly: true,
                     ),
@@ -287,7 +285,7 @@ class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
                 ),
                 Container(
                   width: 500,
-                  padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
                   child: CupertinoSlidingSegmentedControl<String>(
                     controller: controller,
                     children: types.map<String, Widget>((key, value) {
@@ -344,10 +342,10 @@ class _TileState extends State<_Tile> {
         decoration: BoxDecoration(
           color: CupertinoDynamicColor.withBrightness(
             color: Colors.white,
-            darkColor: Color(0xFF1C1C1E),
+            darkColor: const Color(0xFF1C1C1E),
           ).resolveFrom(context),
           borderRadius: BorderRadius.circular(12),
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
               color: Color(0x1F000000),
               offset: Offset(0, 3),
@@ -373,19 +371,19 @@ class _TileState extends State<_Tile> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Expanded(
                       child: Text(
                         widget.data.title,
-                        style: TextStyle(fontSize: 15),
+                        style: const TextStyle(fontSize: 15),
                       ),
                     ),
                     Offstage(
                       offstage: !widget.data.marked,
-                      child: Padding(
+                      child: const Padding(
                         padding: EdgeInsets.only(left: 8),
                         child: Icon(Ionicons.ios_star, size: 18),
                       ),
@@ -394,8 +392,11 @@ class _TileState extends State<_Tile> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(left: 8, bottom: 8),
-                child: Text(widget.data.date, style: TextStyle(fontSize: 12)),
+                padding: const EdgeInsets.only(left: 8, bottom: 8),
+                child: Text(
+                  widget.data.date,
+                  style: const TextStyle(fontSize: 12),
+                ),
               ),
             ],
           ),

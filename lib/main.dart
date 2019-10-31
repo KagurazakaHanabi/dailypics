@@ -46,8 +46,9 @@ class MyApp extends StatelessWidget {
             ),
           );
         },
-        supportedLocales: [
+        supportedLocales: const [
           Locale('zh'),
+          Locale('ja'),
           Locale('en'),
         ],
         localizationsDelegates: [

@@ -38,7 +38,7 @@ class _SuggestComponentState extends State<SuggestComponent>
   Widget build(BuildContext context) {
     super.build(context);
     if (data == null) {
-      return Center(
+      return const Center(
         child: CupertinoActivityIndicator(),
       );
     } else {
@@ -46,10 +46,10 @@ class _SuggestComponentState extends State<SuggestComponent>
         controller: controller,
         child: CustomScrollView(
           controller: controller,
-          physics: AlwaysScrollableScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(),
           slivers: <Widget>[
             CupertinoSliverNavigationBar(
-              largeTitle: Text('推荐'),
+              largeTitle: const Text('推荐'),
             ),
             CupertinoSliverRefreshControl(onRefresh: _fetchData),
             SliverSafeArea(

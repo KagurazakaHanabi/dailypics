@@ -64,10 +64,10 @@ class _ImageCardState extends State<ImageCard> {
       child: AspectRatio(
         aspectRatio: widget.aspectRatio ?? 4 / 5,
         child: Container(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
                 color: Colors.black26,
                 offset: Offset(0, 4),
@@ -106,7 +106,7 @@ class _ImageCardState extends State<ImageCard> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(left: 16, top: 32, right: 24),
+                    padding: const EdgeInsets.fromLTRB(16, 32, 24, 0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -119,7 +119,7 @@ class _ImageCardState extends State<ImageCard> {
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(top: 4),
+                          padding: const EdgeInsets.only(top: 4),
                           child: Text(
                             markdownToHtml(widget.data.content.split('\n')[0])
                                 .replaceAll(RegExp(r'<[^>]+>'), ''),
@@ -139,7 +139,7 @@ class _ImageCardState extends State<ImageCard> {
                       aspectRatio: widget.aspectRatio,
                       child: Container(
                         alignment: Alignment.bottomRight,
-                        padding: EdgeInsets.only(right: 8, bottom: 8),
+                        padding: const EdgeInsets.only(right: 8, bottom: 8),
                         child: QrCodeView(
                           widget.data.url.contains('bing.com/')
                               ? 'https://cn.bing.com/'

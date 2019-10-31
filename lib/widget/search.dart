@@ -65,7 +65,7 @@ class CupertinoSearchBar extends StatelessWidget {
                   color: _kBarColor.resolveFrom(context),
                 ),
                 prefix: Padding(
-                  padding: EdgeInsets.only(left: 8),
+                  padding: const EdgeInsets.only(left: 8),
                   child: Icon(
                     CupertinoIcons.search,
                     color: _kClearColor.resolveFrom(context),
@@ -80,8 +80,8 @@ class CupertinoSearchBar extends StatelessWidget {
             child: Offstage(
               offstage: !showCancelButton,
               child: CupertinoButton(
-                padding: EdgeInsets.only(left: 16),
-                child: Text('取消', softWrap: false,),
+                padding: const EdgeInsets.only(left: 16),
+                child: const Text('取消', softWrap: false),
                 onPressed: () => Navigator.of(context).pop(),
               ),
             ),

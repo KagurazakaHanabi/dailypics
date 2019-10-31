@@ -18,7 +18,7 @@ import 'package:qr/qr.dart';
 class QrCodeView extends StatefulWidget {
   final String data;
 
-  QrCodeView(this.data);
+  const QrCodeView(this.data);
 
   @override
   _QrCodeViewState createState() => _QrCodeViewState();

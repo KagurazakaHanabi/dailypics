@@ -50,8 +50,8 @@ class SliverImageCardList extends StatelessWidget {
         : 1;
     return SliverPadding(
       padding: SystemUtils.isIPad(context, true)
-          ? EdgeInsets.fromLTRB(12, 12, 12, 0)
-          : EdgeInsets.only(left: 4, top: 15, right: 4),
+          ? const EdgeInsets.fromLTRB(12, 12, 12, 0)
+          : const EdgeInsets.only(left: 4, top: 15, right: 4),
       sliver: SliverStaggeredGrid.countBuilder(
         crossAxisCount: cnt,
         itemCount: data.length + 2,
@@ -60,12 +60,12 @@ class SliverImageCardList extends StatelessWidget {
             return StaggeredTile.fit(cnt);
           } else if (iPad && !portrait && adaptiveTablet) {
             if (_needWiden(i)) {
-              return StaggeredTile.count(4, 3);
+              return const StaggeredTile.count(4, 3);
             } else {
-              return StaggeredTile.count(2, 3);
+              return const StaggeredTile.count(2, 3);
             }
           } else {
-            return StaggeredTile.fit(1);
+            return const StaggeredTile.fit(1);
           }
         },
         itemBuilder: (_, int i) {

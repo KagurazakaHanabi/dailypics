@@ -87,7 +87,7 @@ class _AboutPageState extends State<AboutPage> {
                   padding: EdgeInsets.zero,
                   onPressed: () => Navigator.of(context).pop(),
                 ),*/
-                middle: Text('关于'),
+                middle: const Text('关于'),
                 /*trailing: CupertinoButton(
                   padding: EdgeInsets.zero,
                   child: Text('测试入口'),
@@ -107,8 +107,8 @@ class _AboutPageState extends State<AboutPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         _buildAppInfo(),
-        Divider(),
-        Padding(
+        const Divider(),
+        const Padding(
           padding: EdgeInsets.only(left: 16, top: 8, bottom: 8),
           child: Text(
             '团队信息',
@@ -120,13 +120,13 @@ class _AboutPageState extends State<AboutPage> {
           children: List<Widget>.generate(contributors != null ? 3 : 0, (i) {
             Contributor member = contributors[i];
             return Padding(
-              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: GestureDetector(
                 onTap: member.url == null ? null : () => launch(member.url),
                 child: Column(
                   children: <Widget>[
                     Padding(
-                      padding: EdgeInsets.fromLTRB(6, 12, 6, 12),
+                      padding: const EdgeInsets.fromLTRB(6, 12, 6, 12),
                       child: CircleAvatar(
                         radius: 28,
                         backgroundImage: CachedNetworkImageProvider(
@@ -151,7 +151,7 @@ class _AboutPageState extends State<AboutPage> {
             );
           }),
         ),
-        Divider(color: Colors.transparent, height: 16),
+        const Divider(color: Colors.transparent, height: 16),
         Theme(
           data: isDark ? ThemeData.dark() : ThemeData.light(),
           child: Column(
@@ -171,12 +171,12 @@ class _AboutPageState extends State<AboutPage> {
                 },
               ),
               ListTile(
-                title: Text('「图鉴日图」用户协议'),
+                title: const Text('「图鉴日图」用户协议'),
                 onTap: () => launch('https://www.dailypics.cn/doc/1'),
                 trailing: _buildTrailing(true),
               ),
               ListTile(
-                title: Text('「图鉴日图」隐私政策'),
+                title: const Text('「图鉴日图」隐私政策'),
                 onTap: () => launch('https://www.dailypics.cn/doc/2'),
                 trailing: _buildTrailing(true),
               )
@@ -195,31 +195,31 @@ class _AboutPageState extends State<AboutPage> {
       darkColor: Colors.white70,
     ).resolveFrom(context);
     return Padding(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: Column(
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.fromLTRB(8, 8, 8, 16),
+            padding: const EdgeInsets.fromLTRB(8, 8, 8, 16),
             child: CircleAvatar(
               radius: 32,
               backgroundColor: Colors.transparent,
               backgroundImage: AssetImage('res/ic_launcher.png'),
             ),
           ),
-          Text('图鉴日图', style: TextStyle(fontSize: 18)),
+          const Text('图鉴日图', style: TextStyle(fontSize: 18)),
           Text(
             '版本号 $version($buildNumber)',
             style: TextStyle(fontSize: 14, color: textColor),
           ),
           Padding(
-            padding: EdgeInsets.only(top: 8),
+            padding: const EdgeInsets.only(top: 8),
             child: Text(
               '无人为孤岛，一图一世界',
               style: TextStyle(fontSize: 14, color: textColor),
             ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
@@ -255,10 +255,10 @@ class _AboutPageState extends State<AboutPage> {
       child: Row(
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.all(4),
+            padding: const EdgeInsets.all(4),
             child: Icon(icon),
           ),
-          Text(title, style: TextStyle(fontWeight: FontWeight.w500)),
+          Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
         ],
       ),
     );
@@ -270,12 +270,12 @@ class _AboutPageState extends State<AboutPage> {
       children: <Widget>[
         Offstage(
           offstage: accepted,
-          child: Text(
+          child: const Text(
             '请阅读并同意',
             style: TextStyle(color: CupertinoColors.destructiveRed),
           ),
         ),
-        Icon(CupertinoIcons.right_chevron),
+        const Icon(CupertinoIcons.right_chevron),
       ],
     );
   }

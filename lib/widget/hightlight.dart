@@ -22,7 +22,7 @@ class HighlightedText {
 
   final TextStyle style;
 
-  HighlightedText({this.recognizer, this.style});
+  const HighlightedText({this.recognizer, this.style});
 }
 
 class _LinkSpec {

@@ -36,7 +36,7 @@ class _SplashPageState extends State<SplashPage> {
       child: child,
       curve: Curves.easeOut,
       opacity: frame == null ? 0 : 1,
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
     );
   };
 

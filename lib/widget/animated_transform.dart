@@ -15,7 +15,7 @@
 import 'package:flutter/cupertino.dart';
 
 class AnimatedTransform extends ImplicitlyAnimatedWidget {
-  AnimatedTransform({
+  const AnimatedTransform({
     Key key,
     this.child,
     @required this.transform,

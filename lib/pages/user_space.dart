@@ -79,7 +79,7 @@ class _UserSpacePageState extends State<UserSpacePage> {
         ),
         Container(
           height: queryData.padding.top + 44,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
@@ -98,7 +98,7 @@ class _UserSpacePageState extends State<UserSpacePage> {
       child: ListView(
         controller: controller,
         padding: EdgeInsets.zero,
-        physics: AlwaysScrollableScrollPhysics(),
+        physics: const AlwaysScrollableScrollPhysics(),
         children: <Widget>[
           Stack(
             children: <Widget>[
@@ -106,7 +106,9 @@ class _UserSpacePageState extends State<UserSpacePage> {
                 margin: EdgeInsets.only(top: 154),
                 decoration: BoxDecoration(
                   color: backgroundColor,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(8),
+                  ),
                 ),
                 child: Column(
                   children: <Widget>[
@@ -121,10 +123,10 @@ class _UserSpacePageState extends State<UserSpacePage> {
                 child: Container(height: 154),
               ),
               Container(
-                margin: EdgeInsets.only(left: 12, top: 106),
+                margin: const EdgeInsets.only(left: 12, top: 106),
                 child: GestureDetector(
                   onTap: () => _showActionSheet('设置头像'),
-                  child: CircleAvatar(
+                  child: const CircleAvatar(
                     radius: 48,
                     backgroundImage: CachedNetworkImageProvider(
                       'https://via.placeholder.com/128x128',
@@ -149,35 +151,35 @@ class _UserSpacePageState extends State<UserSpacePage> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               Button(
-                child: Text('编辑资料'),
+                child: const Text('编辑资料'),
                 onPressed: () {},
               )
             ],
           ),
           Text(
             'Nickname',
-            style: TextStyle(fontSize: 22),
+            style: const TextStyle(fontSize: 22),
           ),
           Text(
             '@Username',
-            style: TextStyle(fontSize: 14, color: Colors.black54),
+            style: const TextStyle(fontSize: 14, color: Colors.black54),
           ),
           Padding(
-            padding: EdgeInsets.only(top: 8, bottom: 16),
+            padding: const EdgeInsets.only(top: 8, bottom: 16),
             child: Text(
               '这里是个人简介，签名什么的',
-              style: TextStyle(fontSize: 14, color: Colors.black87),
+              style: const TextStyle(fontSize: 14, color: Colors.black87),
             ),
           ),
           Highlight(
             text: '132 正在关注  67 关注我的',
-            defaultStyle: TextStyle(color: Colors.black54, fontSize: 13),
+            defaultStyle: const TextStyle(color: Colors.black54, fontSize: 13),
             style: TextStyle(
               color: CupertinoTheme.of(context).primaryColor,
               fontSize: 17,
             ),
             patterns: {
-              RegExp('[0-9]+'): HighlightedText(),
+              RegExp('[0-9]+'): const HighlightedText(),
             },
           ),
         ],
@@ -213,7 +215,7 @@ class _UserSpacePageState extends State<UserSpacePage> {
           Expanded(
             child: Opacity(
               opacity: offset,
-              child: Text('Nickname'),
+              child: const Text('Nickname'),
             ),
           ),
           CupertinoButton(
@@ -238,18 +240,18 @@ class _UserSpacePageState extends State<UserSpacePage> {
           title: Text(title),
           actions: <Widget>[
             CupertinoActionSheetAction(
-              child: Text('查看大图'),
+              child: const Text('查看大图'),
               onPressed: () {},
             ),
             CupertinoActionSheetAction(
-              child: Text('从相册选择'),
+              child: const Text('从相册选择'),
               onPressed: () async => Navigator.of(context).pop(
                 await ImagePicker.pickImage(source: ImageSource.gallery),
               ),
             ),
           ],
           cancelButton: CupertinoActionSheetAction(
-            child: Text('取消'),
+            child: const Text('取消'),
             onPressed: () => Navigator.of(context).pop(),
           ),
         );

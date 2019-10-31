@@ -25,10 +25,10 @@ class _SettingsComponentState extends State<SettingsComponent> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: Text('更多'),
+        middle: const Text('更多'),
         trailing: CupertinoButton(
           padding: EdgeInsets.zero,
-          child: Text('投稿'),
+          child: const Text('投稿'),
           onPressed: () {
             Navigator.of(context, rootNavigator: true).push(
               CupertinoPageRoute(builder: (_) => UploadPage()),

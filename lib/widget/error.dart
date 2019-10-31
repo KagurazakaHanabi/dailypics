@@ -28,7 +28,7 @@ class CustomErrorWidget extends StatelessWidget {
     return Container(
       color: CupertinoTheme.of(context).scaffoldBackgroundColor,
       alignment: Alignment.center,
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Text(
         details.exceptionAsString(),
         style: TextStyle(

@@ -56,14 +56,14 @@ class Toast extends StatelessWidget {
         style: Theme.of(context).textTheme.subhead.merge(textStyle),
         child: AnimatedOpacity(
           opacity: _toasts.contains(this) ? 1 : 0,
-          duration: Duration(milliseconds: 500),
+          duration: const Duration(milliseconds: 500),
           curve: Curves.easeInOut,
           child: Container(
-            margin: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(22),
-              color: Color(0xE6EEEEEE),
+              color: const Color(0xE6EEEEEE),
             ),
             child: Text(text ?? 'null'),
           ),

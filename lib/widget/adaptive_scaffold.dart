@@ -75,7 +75,9 @@ class AdaptiveScaffold extends StatelessWidget {
                 bottom: padding.bottom,
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(16),
+                ),
                 child: result,
               ),
             )

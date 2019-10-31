@@ -81,14 +81,14 @@ class _DetailsPageState extends State<DetailsPage> {
     Widget result;
     if (widget.data == null && data == null && error == null) {
       _fetchData();
-      result = Center(
+      result = const Center(
         child: CupertinoActivityIndicator(),
       );
     } else if (error != null) {
       result = Center(
         child: Text(
           error,
-          style: TextStyle(color: Colors.black54, fontSize: 14),
+          style: const TextStyle(color: Colors.black54, fontSize: 14),
         ),
       );
     } else if (widget.data != null) {
@@ -120,7 +120,7 @@ class _DetailsPageState extends State<DetailsPage> {
           children: <Widget>[
             Container(
               alignment: Alignment.center,
-              padding: EdgeInsets.only(top: 64),
+              padding: const EdgeInsets.only(top: 64),
               child: ImageCard(
                 data,
                 null,
@@ -129,7 +129,7 @@ class _DetailsPageState extends State<DetailsPage> {
               ),
             ),
             Container(
-              margin: EdgeInsets.only(top: 80),
+              margin: const EdgeInsets.only(top: 80),
               decoration: BoxDecoration(
                 color: theme.scaffoldBackgroundColor,
                 borderRadius: BorderRadius.vertical(top: radius),
@@ -154,11 +154,11 @@ class _DetailsPageState extends State<DetailsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Padding(
-                          padding: EdgeInsets.fromLTRB(16, 16, 16, 12),
+                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
                           child: _buildTitle(),
                         ),
                         Padding(
-                          padding: EdgeInsets.fromLTRB(16, 0, 16, 32),
+                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
                           child: _buildContent(),
                         ),
                         _buildDivider(),
@@ -182,7 +182,7 @@ class _DetailsPageState extends State<DetailsPage> {
         Expanded(
           child: Text(
             data.title,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w500,
             ),
@@ -191,7 +191,7 @@ class _DetailsPageState extends State<DetailsPage> {
         GestureDetector(
           onTap: _mark,
           child: Padding(
-            padding: EdgeInsets.only(left: 12),
+            padding: const EdgeInsets.only(left: 12),
             child: Icon(
               data.marked ? Ionicons.ios_star : Ionicons.ios_star_outline,
               color: CupertinoColors.activeBlue,
@@ -200,7 +200,7 @@ class _DetailsPageState extends State<DetailsPage> {
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(left: 16),
+          padding: const EdgeInsets.only(left: 16),
           child: _SaveButton(data),
         ),
       ],
@@ -218,7 +218,7 @@ class _DetailsPageState extends State<DetailsPage> {
       onTapLink: (String href) => SystemUtils.openUrl(href),
       imageBuilder: (Uri uri) => OptimizedImage(uri.toString()),
       styleSheet: MarkdownStyleSheet(
-        a: TextStyle(color: CupertinoColors.link),
+        a: const TextStyle(color: CupertinoColors.link),
         p: textStyle.copyWith(
           color: CupertinoDynamicColor.withBrightness(
             color: Colors.black54,
@@ -254,28 +254,28 @@ class _DetailsPageState extends State<DetailsPage> {
           fontWeight: FontWeight.w500,
           fontSize: textStyle.fontSize,
         ),
-        em: TextStyle(fontStyle: FontStyle.italic),
-        strong: TextStyle(fontWeight: FontWeight.bold),
-        del: TextStyle(decoration: TextDecoration.lineThrough),
+        em: const TextStyle(fontStyle: FontStyle.italic),
+        strong: const TextStyle(fontWeight: FontWeight.bold),
+        del: const TextStyle(decoration: TextDecoration.lineThrough),
         blockquote: textStyle,
         img: textStyle,
         blockSpacing: 8,
         listIndent: 24,
-        blockquotePadding: EdgeInsets.all(16),
-        blockquoteDecoration: BoxDecoration(
+        blockquotePadding: const EdgeInsets.all(16),
+        blockquoteDecoration: const BoxDecoration(
           color: CupertinoColors.systemGrey6,
-          border: Border(
-            left: BorderSide(
+          border: const Border(
+            left: const BorderSide(
               color: CupertinoColors.systemGrey4,
               width: 4,
             ),
           ),
         ),
-        codeblockPadding: EdgeInsets.all(8),
-        codeblockDecoration: BoxDecoration(
+        codeblockPadding: const EdgeInsets.all(8),
+        codeblockDecoration: const BoxDecoration(
           color: CupertinoColors.systemGrey6,
         ),
-        horizontalRuleDecoration: BoxDecoration(
+        horizontalRuleDecoration: const BoxDecoration(
           border: Border(
             top: BorderSide(
               color: CupertinoColors.systemGrey4,
@@ -318,11 +318,11 @@ class _DetailsPageState extends State<DetailsPage> {
         children: <Widget>[
           Expanded(child: Divider(color: dividerColor)),
           Padding(
-            padding: EdgeInsets.only(left: 8),
+            padding: const EdgeInsets.only(left: 8),
             child: Text(username),
           ),
           Padding(
-            padding: EdgeInsets.only(right: 8),
+            padding: const EdgeInsets.only(right: 8),
             child: Text(date),
           ),
           Expanded(child: Divider(color: dividerColor)),
@@ -339,18 +339,18 @@ class _DetailsPageState extends State<DetailsPage> {
     return Container(
       key: shareBtnKey,
       alignment: Alignment.center,
-      padding: EdgeInsets.symmetric(vertical: 29),
+      padding: const EdgeInsets.symmetric(vertical: 29),
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           color: CupertinoDynamicColor.withBrightness(
-            color: Color(0xFFF2F2F7),
-            darkColor: Color(0xFF313135),
+            color: const Color(0xFFF2F2F7),
+            darkColor: const Color(0xFF313135),
           ).resolveFrom(context),
         ),
         child: CupertinoButton(
           pressedOpacity: 0.4,
-          padding: EdgeInsets.fromLTRB(30, 12, 30, 12),
+          padding: const EdgeInsets.fromLTRB(30, 12, 30, 12),
           onPressed: _share,
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -370,7 +370,7 @@ class _DetailsPageState extends State<DetailsPage> {
   Widget _buildCloseButton() {
     return GestureDetector(
       onTap: () => Navigator.of(context).pop(),
-      child: Padding(
+      child: const Padding(
         padding: EdgeInsets.all(16),
         child: Icon(
           CupertinoIcons.clear_circled_solid,

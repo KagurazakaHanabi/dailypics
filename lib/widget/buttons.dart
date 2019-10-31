@@ -33,8 +33,8 @@ class Button extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        margin: EdgeInsets.all(8),
-        padding: EdgeInsets.symmetric(vertical: 6, horizontal: 20),
+        margin: const EdgeInsets.all(8),
+        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 20),
         decoration: BoxDecoration(
           color: color ?? CupertinoTheme.of(context).primaryColor,
           borderRadius: BorderRadius.circular(46),

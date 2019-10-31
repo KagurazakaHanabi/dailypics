@@ -40,14 +40,14 @@ class OptimizedImage extends StatelessWidget {
         imageUrl: imageUrl,
         fit: BoxFit.cover,
         placeholderFadeInDuration: Duration.zero,
-        fadeInDuration: Duration(milliseconds: 700),
+        fadeInDuration: const Duration(milliseconds: 700),
         fadeInCurve: Curves.easeIn,
-        fadeOutDuration: Duration(milliseconds: 300),
+        fadeOutDuration: const Duration(milliseconds: 300),
         fadeOutCurve: Curves.easeOut,
         placeholder: (_, __) {
           return Container(
             alignment: Alignment.center,
-            color: isDark ? Color(0xFF1F1F1F) : Color(0xFFE0E0E0),
+            color: isDark ? const Color(0xFF1F1F1F) : const Color(0xFFE0E0E0),
             child: Image.asset('res/placeholder${isDark ? '-night' : ''}.jpg'),
           );
         },

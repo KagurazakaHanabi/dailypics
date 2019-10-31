@@ -68,16 +68,16 @@ class _SearchPageState extends State<SearchPage> {
                     ? EdgeInsets.fromLTRB(12, 12, 12, 0) + windowPadding
                     : EdgeInsets.fromLTRB(4, 0, 4, 0) + windowPadding,
                 crossAxisCount: SystemUtils.isIPad(context) ? 2 : 1,
-                staggeredTileBuilder: (_) => StaggeredTile.fit(1),
+                staggeredTileBuilder: (_) => const StaggeredTile.fit(1),
                 itemCount: data.length == 0 ? 1 : data.length,
                 itemBuilder: (_, i) {
                   if (data.length != 0) {
                     return ImageCard(data[i], '$query-${data[i].id}');
                   } else if (query.isNotEmpty && !doing) {
                     return Container(
-                      padding: EdgeInsets.only(top: 16),
+                      padding: const EdgeInsets.only(top: 16),
                       alignment: Alignment.center,
-                      child: Text(
+                      child: const Text(
                         '未找到相关内容',
                         style: TextStyle(
                           fontSize: 14,
@@ -129,7 +129,7 @@ class _SearchPageState extends State<SearchPage> {
           height: doing ? 2 : 1 / window.devicePixelRatio,
           child: LinearProgressIndicator(
             backgroundColor: barBackgroundColor,
-            valueColor: AlwaysStoppedAnimation(Color(0x4C000000)),
+            valueColor: const AlwaysStoppedAnimation(Color(0x4C000000)),
             value: (doing ?? false) ? null : 1,
           ),
         ),
