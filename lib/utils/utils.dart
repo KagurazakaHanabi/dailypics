@@ -76,9 +76,9 @@ class SystemUtils {
 
 class Utils {
   static Future<File> download(
-    Picture data,
+    Picture data, [
     void Function(int count, int total) cb,
-  ) async {
+  ]) async {
     Completer<File> completer = Completer();
     String url = data.url;
     String dest = (await getTemporaryDirectory()).path;

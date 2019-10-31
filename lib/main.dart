@@ -12,18 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'package:dailypics/misc/constants.dart';
 import 'package:dailypics/model/app.dart';
 import 'package:dailypics/pages/splash.dart';
-import 'package:dailypics/utils/utils.dart';
 import 'package:dailypics/widget/error.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Settings.initial();
   ErrorWidget.builder = (details) {
     return CustomErrorWidget(details);
   };
@@ -42,14 +38,11 @@ class MyApp extends StatelessWidget {
         home: SplashPage(),
         // FIXME: 2019/9/19 等待 CupertinoApp 加入 darkTheme 字段
         builder: (BuildContext context, Widget child) {
-          Brightness brightness = MediaQuery.platformBrightnessOf(context);
-          bool isDark = brightness == Brightness.dark;
-          CupertinoThemeData theme = isDark ? Themes.dark : Themes.light;
           return CupertinoTheme(
-            data: theme,
-            child: DefaultTextStyle(
-              style: theme.textTheme.textStyle,
-              child: child,
+            child: child,
+            data: CupertinoThemeData(
+              brightness: MediaQuery.platformBrightnessOf(context),
+              primaryColor: CupertinoColors.systemBlue,
             ),
           );
         },

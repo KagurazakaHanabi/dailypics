@@ -16,6 +16,7 @@ import 'dart:async';
 
 import 'package:dailypics/components/suggest.dart';
 import 'package:dailypics/components/today.dart';
+import 'package:dailypics/model/app.dart';
 import 'package:dailypics/pages/about.dart';
 import 'package:dailypics/pages/details.dart';
 import 'package:dailypics/pages/recent.dart';
@@ -42,13 +43,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final List<Widget> _tabs = [
-    TodayComponent(),
-    RecentPage(),
-    SuggestComponent(),
-    AboutPage(),
-  ];
-
   StreamSubscription _subscription;
 
   @override
@@ -74,8 +68,21 @@ class _HomePageState extends State<HomePage> {
             _buildNavigationItem(Ionicons.ios_settings, '更多'),
           ],
         ),
-        tabBuilder: (_, i) {
-          return CupertinoTabView(builder: (_) => _tabs[i]);
+        tabBuilder: (_, index) {
+          switch (index) {
+            case 0:
+              return CupertinoTabView(builder: (_) => TodayComponent());
+            case 1:
+              return CupertinoTabView(
+                builder: (_) => RecentPage(types: AppModel.of(context).types),
+              );
+            case 2:
+              return CupertinoTabView(builder: (_) => SuggestComponent());
+            case 3:
+              return CupertinoTabView(builder: (_) => AboutPage());
+            default:
+              return null;
+          }
         },
       ),
     );
@@ -94,14 +101,8 @@ class _HomePageState extends State<HomePage> {
   void _handleUniLink(Uri uri) {
     if (uri == null) return;
     String uuid = uri.path.substring(1);
-    switch (uri.host) {
-      case 'p':
-        DetailsPage.push(context, pid: uuid);
-        break;
-
-      case 't':
-        RecentPage.push(context, tid: uuid);
-        break;
+    if (uri.host == 'p') {
+      DetailsPage.push(context, pid: uuid);
     }
   }
 }

@@ -147,7 +147,7 @@ class Splash {
 
 @JsonSerializable()
 class Contributor {
-  String assetName;
+  String avatar;
 
   String name;
 
@@ -155,7 +155,7 @@ class Contributor {
 
   String url;
 
-  Contributor({this.assetName, this.name, this.position, this.url});
+  Contributor({this.avatar, this.name, this.position, this.url});
 
   factory Contributor.fromJson(Map<String, dynamic> json) {
     return _$ContributorFromJson(json);

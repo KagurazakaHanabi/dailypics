@@ -16,12 +16,13 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:dailypics/misc/constants.dart';
+import 'package:dailypics/model/app.dart';
 import 'package:dailypics/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show LinearProgressIndicator;
 import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class UploadPage extends StatefulWidget {
   @override
@@ -76,21 +77,21 @@ class _UploadPageState extends State<UploadPage> {
                     placeholder: '描述*',
                     textInputAction: TextInputAction.next,
                   ),
-                  CupertinoSegmentedControl<String>(
-                    selectedColor: Color(0xFF9C9C9C),
-                    borderColor: Color(0xFF9C9C9C),
-                    pressedColor: Color(0xFF9C9C9C).withOpacity(0.2),
-                    padding: EdgeInsets.symmetric(vertical: 8),
-                    groupValue: type,
-                    children: {
-                      C.type_photo: Text('杂烩'),
-                      C.type_illus: Text('插画'),
-                      C.type_deskt: Text('桌面'),
-                    },
-                    onValueChanged: (String newValue) {
-                      setState(() => type = newValue);
-                    },
-                  ),
+                  ScopedModelDescendant<AppModel>(builder: (_, __, model) {
+                    return CupertinoSegmentedControl<String>(
+                      selectedColor: Color(0xFF9C9C9C),
+                      borderColor: Color(0xFF9C9C9C),
+                      pressedColor: Color(0xFF9C9C9C).withOpacity(0.2),
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      groupValue: type,
+                      children: model.types.map<String, Widget>((key, value) {
+                        return MapEntry(key, Text(value));
+                      }),
+                      onValueChanged: (String newValue) {
+                        setState(() => type = newValue);
+                      },
+                    );
+                  }),
                   _TextField(
                     minLines: 2,
                     controller: username,

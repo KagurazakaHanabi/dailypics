@@ -14,6 +14,7 @@
 
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dailypics/misc/bean.dart';
 import 'package:dailypics/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -101,7 +102,6 @@ class _AboutPageState extends State<AboutPage> {
   }
 
   Widget _buildList() {
-    final String prefix = 'res/avatars/';
     bool isDark = CupertinoTheme.of(context).brightness == Brightness.dark;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,8 +128,10 @@ class _AboutPageState extends State<AboutPage> {
                     Padding(
                       padding: EdgeInsets.fromLTRB(6, 12, 6, 12),
                       child: CircleAvatar(
-                        radius: 26,
-                        backgroundImage: AssetImage(prefix + member.assetName),
+                        radius: 28,
+                        backgroundImage: CachedNetworkImageProvider(
+                          member.avatar,
+                        ),
                       ),
                     ),
                     Text(member.name),
@@ -163,7 +165,7 @@ class _AboutPageState extends State<AboutPage> {
                     title: Text(member.name),
                     subtitle: Text(member.position),
                     leading: CircleAvatar(
-                      backgroundImage: AssetImage(prefix + member.assetName),
+                      backgroundImage: CachedNetworkImageProvider(member.avatar),
                     ),
                   );
                 },

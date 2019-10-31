@@ -16,7 +16,6 @@ import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
 import 'package:dailypics/misc/bean.dart';
-import 'package:dailypics/misc/constants.dart';
 import 'package:dailypics/model/app.dart';
 import 'package:dailypics/pages/details.dart';
 import 'package:dailypics/pages/search.dart';
@@ -32,44 +31,44 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class RecentPage extends StatefulWidget {
-  final String tid;
+  final Map<String, String> types;
 
-  const RecentPage({
-    this.tid = C.type_photo,
-  });
+  const RecentPage({Key key, this.types}) : super(key: key);
 
   @override
   _RecentPageState createState() => _RecentPageState();
 
-  static Future<void> push(
-    BuildContext context, {
-    String tid,
-  }) {
+  static Future<void> push(BuildContext context, Map<String, String> types) {
     return Navigator.of(context, rootNavigator: true).push(
-      CupertinoPageRoute(builder: (_) => RecentPage(tid: tid)),
+      CupertinoPageRoute(builder: (_) => RecentPage(types: types)),
     );
   }
 }
 
 class _RecentPageState extends State<RecentPage>
     with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
-  final List<String> types = [C.type_photo, C.type_illus, C.type_deskt];
+  List<String> types = [];
 
   ScrollController controller;
+  ValueNotifier<String> valueNotifier;
 
   bool doing = false;
-  int index = 0;
-  Map<int, int> cur = {0: 1, 1: 1, 2: 1};
-  Map<int, int> max = {0: null, 1: null, 2: null};
+  String current;
+  Map<String, int> cur = {};
+  Map<String, int> max = {};
 
   @override
   void initState() {
     super.initState();
+    types = widget.types.keys.toList();
     controller = ScrollController(
       initialScrollOffset: kSearchBarHeight,
     )..addListener(_onScrollUpdate);
-    if (types.contains(widget.tid)) {
-      index = types.indexOf(widget.tid);
+    valueNotifier = ValueNotifier(current = types.first)
+      ..addListener(_onValueChanged);
+    for (int i = 0; i < types.length; i++) {
+      cur[types[i]] = 1;
+      max[types[i]] = null;
     }
     _fetchData();
   }
@@ -77,11 +76,11 @@ class _RecentPageState extends State<RecentPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    double windowHeight = MediaQuery.of(context).size.height;
+    MediaQueryData queryData = MediaQuery.of(context);
     return CupertinoPageScaffold(
       resizeToAvoidBottomInset: false,
       child: ScopedModelDescendant<AppModel>(builder: (_, __, model) {
-        List<Picture> data = _where(types[index]);
+        List<Picture> data = _where(current);
         return Stack(
           alignment: Alignment.center,
           children: <Widget>[
@@ -101,26 +100,19 @@ class _RecentPageState extends State<RecentPage>
                   SliverPersistentHeader(
                     pinned: true,
                     delegate: _SliverHeaderDelegate(
-                      index: index,
+                      controller: valueNotifier,
                       vsync: this,
-                      onValueChanged: (newValue) {
-                        if (!doing) {
-                          setState(() => index = newValue);
-                          if (_where(types[index]).length == 0) {
-                            _fetchData();
-                          }
-                        }
-                      },
                     ),
                   ),
-                  CupertinoSliverRefreshControl(onRefresh: _fetchData),
                   SliverToBoxAdapter(
                     child: SizedBox(
-                      height: data.length == 0 ? windowHeight : 0,
+                      height: data.length == 0 ? queryData.size.height : 0,
                     ),
                   ),
                   SliverPadding(
-                    padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
+                    padding: EdgeInsets.all(12).copyWith(
+                      bottom: queryData.padding.bottom,
+                    ),
                     sliver: SliverStaggeredGrid.countBuilder(
                       crossAxisCount: SystemUtils.isIPad(context) ? 3 : 2,
                       itemCount: data.length,
@@ -142,10 +134,9 @@ class _RecentPageState extends State<RecentPage>
 
   Future<void> _fetchData() async {
     doing = true;
-    List<String> types = [C.type_photo, C.type_illus, C.type_deskt];
     Recents recents = await TujianApi.getRecents(
-      sort: types[index],
-      page: cur[index],
+      sort: current,
+      page: cur[current],
       size: 20,
     );
     List<Picture> data = recents.data;
@@ -153,11 +144,10 @@ class _RecentPageState extends State<RecentPage>
     for (int i = 0; i < data.length; i++) {
       data[i].marked = list.contains(data[i].id);
     }
-    max[index] = recents.maximum;
+    max[current] = recents.maximum;
     doing = false;
-    AppModel model = AppModel.of(context);
-    model.recent.addAll(data);
-    model.notifyListeners();
+    AppModel.of(context).recent.addAll(data);
+    setState(() {});
   }
 
   List<Picture> _where(String tid) {
@@ -168,8 +158,8 @@ class _RecentPageState extends State<RecentPage>
     ScrollPosition pos = controller.position;
 
     bool shouldFetch = pos.maxScrollExtent - pos.pixels < 256 && !doing;
-    if (shouldFetch && max[index] - cur[index] > 0) {
-      cur[index] += 1;
+    if (shouldFetch && max[current] - cur[current] > 0) {
+      cur[current] += 1;
       _fetchData();
     }
   }
@@ -194,11 +184,22 @@ class _RecentPageState extends State<RecentPage>
     }
   }
 
+  void _onValueChanged() {
+    if (!doing) {
+      setState(() => current = valueNotifier.value);
+      if (_where(current).length == 0) {
+        _fetchData();
+      }
+    }
+  }
+
   @override
   void dispose() {
-    super.dispose();
     controller.removeListener(_onScrollUpdate);
     controller.dispose();
+    valueNotifier.removeListener(_onValueChanged);
+    valueNotifier.dispose();
+    super.dispose();
   }
 
   @override
@@ -206,16 +207,13 @@ class _RecentPageState extends State<RecentPage>
 }
 
 class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final ValueChanged<int> onValueChanged;
+  final ValueNotifier<String> controller;
 
   final TickerProvider vsync;
 
-  final int index;
-
   _SliverHeaderDelegate({
-    @required this.onValueChanged,
+    @required this.controller,
     @required this.vsync,
-    @required this.index,
   });
 
   @override
@@ -226,6 +224,7 @@ class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
     bool canPop = Navigator.of(context).canPop();
     CupertinoThemeData theme = CupertinoTheme.of(context);
     TextStyle navTitleTextStyle = theme.textTheme.navTitleTextStyle;
+    Map<String, String> types = AppModel.of(context).types;
     return OverflowBox(
       minHeight: 0,
       maxHeight: double.infinity,
@@ -286,19 +285,14 @@ class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
                     ),
                   ),
                 ),
-                SizedBox(
+                Container(
                   width: 500,
-                  child: DefaultTextStyle(
-                    style: TextStyle(fontWeight: FontWeight.w500),
-                    child: CupertinoSegmentedControl<int>(
-                      onValueChanged: onValueChanged,
-                      groupValue: index,
-                      children: {
-                        0: Text('杂烩'),
-                        1: Text('插画'),
-                        2: Text('桌面'),
-                      },
-                    ),
+                  padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                  child: CupertinoSlidingSegmentedControl<String>(
+                    controller: controller,
+                    children: types.map<String, Widget>((key, value) {
+                      return MapEntry(key, Text(value));
+                    }),
                   ),
                 ),
               ],
@@ -355,10 +349,15 @@ class _TileState extends State<_Tile> {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black26,
-              offset: Offset(0, 12),
-              blurRadius: 24,
-            )
+              color: Color(0x1F000000),
+              offset: Offset(0, 3),
+              blurRadius: 8,
+            ),
+            BoxShadow(
+              color: Color(0x0A000000),
+              offset: Offset(0, 3),
+              blurRadius: 1,
+            ),
           ],
         ),
         child: ClipRRect(

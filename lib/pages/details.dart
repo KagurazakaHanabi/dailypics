@@ -123,7 +123,7 @@ class _DetailsPageState extends State<DetailsPage> {
               padding: EdgeInsets.only(top: 64),
               child: ImageCard(
                 data,
-                '#',
+                null,
                 showQrCode: true,
                 repaintKey: repaintKey,
               ),
@@ -216,6 +216,7 @@ class _DetailsPageState extends State<DetailsPage> {
     return MarkdownBody(
       data: data.content,
       onTapLink: (String href) => SystemUtils.openUrl(href),
+      imageBuilder: (Uri uri) => OptimizedImage(uri.toString()),
       styleSheet: MarkdownStyleSheet(
         a: TextStyle(color: CupertinoColors.link),
         p: textStyle.copyWith(
@@ -230,9 +231,11 @@ class _DetailsPageState extends State<DetailsPage> {
           fontSize: textStyle.fontSize * 0.85,
         ),
         h1: textStyle.copyWith(
+          fontWeight: FontWeight.w500,
           fontSize: textStyle.fontSize + 10,
         ),
         h2: textStyle.copyWith(
+          fontWeight: FontWeight.w500,
           fontSize: textStyle.fontSize + 8,
         ),
         h3: textStyle.copyWith(

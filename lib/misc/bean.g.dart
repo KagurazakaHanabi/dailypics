@@ -77,7 +77,7 @@ Map<String, dynamic> _$SplashToJson(Splash instance) => <String, dynamic>{
 
 Contributor _$ContributorFromJson(Map<String, dynamic> json) {
   return Contributor(
-    assetName: json['assetName'] as String,
+    avatar: json['avatar'] as String,
     name: json['name'] as String,
     position: json['position'] as String,
     url: json['url'] as String,
@@ -86,7 +86,7 @@ Contributor _$ContributorFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$ContributorToJson(Contributor instance) =>
     <String, dynamic>{
-      'assetName': instance.assetName,
+      'avatar': instance.avatar,
       'name': instance.name,
       'position': instance.position,
       'url': instance.url,

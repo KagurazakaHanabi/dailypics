@@ -106,7 +106,7 @@ class _ImageCardState extends State<ImageCard> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(left: 16, top: 32, right: 16),
+                    padding: EdgeInsets.only(left: 16, top: 32, right: 24),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -121,9 +121,9 @@ class _ImageCardState extends State<ImageCard> {
                         Padding(
                           padding: EdgeInsets.only(top: 4),
                           child: Text(
-                            markdownToHtml(widget.data.content)
+                            markdownToHtml(widget.data.content.split('\n')[0])
                                 .replaceAll(RegExp(r'<[^>]+>'), ''),
-                            maxLines: 1,
+                            maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               color: textColor.withAlpha(0xB3),

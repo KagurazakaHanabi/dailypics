@@ -27,6 +27,16 @@ class TujianApi {
 
   static final http.Client _client = http.Client();
 
+  static Future<Map<String, String>> getTypes() async {
+    Uri uri = Uri.parse('$_kBaseUrl/sort');
+    String source = await _client.read(uri, headers: _kHeaders);
+    Map<String, String> result = {};
+    (jsonDecode(source)['result'] as List).forEach((e) {
+      result.addAll({e['TID']: e['T_NAME']});
+    });
+    return result;
+  }
+
   static Future<List<Picture>> getToday() async {
     Uri uri = Uri.parse('$_kBaseUrl/today');
     String source = await _client.read(uri, headers: _kHeaders);

@@ -17,6 +17,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:dailypics/misc/bean.dart';
+import 'package:dailypics/model/app.dart';
 import 'package:dailypics/pages/home.dart';
 import 'package:dailypics/utils/api.dart';
 import 'package:dailypics/utils/utils.dart';
@@ -45,7 +46,36 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    _fetchOrShowSplash();
+    _initial();
+  }
+
+  Future<void> _initial() async {
+    _timer = Timer(Duration(seconds: 3), () => HomePage.push(context));
+    List<dynamic> results = await Future.wait([
+      TujianApi.getTypes(),
+      Settings.initial(),
+      _fetchOrShowSplash(),
+    ]);
+    AppModel.of(context).types = results[0];
+    if (_file == null) {
+      _timer.cancel();
+      HomePage.push(context);
+    }
+  }
+
+  Future<void> _fetchOrShowSplash() async {
+    Splash splash = await TujianApi.getSplash();
+    String url = splash.imageUrl;
+    DateTime now = DateTime.now();
+    if (now.isAfter(splash.effectiveAt) && now.isBefore(splash.expiresAt)) {
+      DefaultCacheManager manager = DefaultCacheManager();
+      FileInfo info = await manager.getFileFromCache(url);
+      if (info != null) {
+        return setState(() => _file = info.file);
+      } else {
+        manager.downloadFile(url);
+      }
+    }
   }
 
   @override
@@ -79,24 +109,6 @@ class _SplashPageState extends State<SplashPage> {
         ],
       ),
     );
-  }
-
-  Future<void> _fetchOrShowSplash() async {
-    Splash splash = await TujianApi.getSplash();
-    String url = splash.imageUrl;
-    DateTime now = DateTime.now();
-    if (now.isAfter(splash.effectiveAt) && now.isBefore(splash.expiresAt)) {
-      DefaultCacheManager manager = DefaultCacheManager();
-      FileInfo info = await manager.getFileFromCache(url);
-      if (info != null) {
-        setState(() => _file = info.file);
-        _timer = Timer(Duration(seconds: 3), () => HomePage.push(context));
-        return;
-      } else {
-        manager.downloadFile(url);
-      }
-    }
-    HomePage.push(context);
   }
 
   @override

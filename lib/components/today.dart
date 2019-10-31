@@ -17,7 +17,6 @@ import 'dart:ui';
 
 import 'package:dailypics/misc/bean.dart';
 import 'package:dailypics/model/app.dart';
-import 'package:dailypics/pages/recent.dart';
 import 'package:dailypics/utils/api.dart';
 import 'package:dailypics/utils/utils.dart';
 import 'package:dailypics/widget/slivers.dart';
@@ -62,7 +61,6 @@ class _TodayComponentState extends State<TodayComponent>
               SliverSafeArea(
                 sliver: SliverImageCardList(
                   header: _buildHeader(),
-                  //footer: _buildFooter(),
                   adaptiveTablet: true,
                   data: AppModel.of(context).today,
                 ),
@@ -124,40 +122,6 @@ class _TodayComponentState extends State<TodayComponent>
             style: TextStyle(color: textColor, fontSize: 12),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildFooter() {
-    return Container(
-      margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
-      padding: EdgeInsets.symmetric(vertical: 14),
-      decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(
-            color: Color(0x4C000000),
-            width: 0,
-          ),
-        ),
-      ),
-      child: GestureDetector(
-        onTap: () => RecentPage.push(context),
-        child: Row(
-          children: <Widget>[
-            Text(
-              '往期精选',
-              style: TextStyle(
-                color: Colors.black54,
-                fontSize: 14,
-              ),
-            ),
-            Icon(
-              CupertinoIcons.forward,
-              color: Colors.black54,
-              size: 16,
-            ),
-          ],
-        ),
       ),
     );
   }

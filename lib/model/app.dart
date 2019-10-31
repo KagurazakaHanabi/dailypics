@@ -17,6 +17,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class AppModel extends Model {
+  Map<String, String> _types;
+  Map<String, String> get types => _types;
+  set types(Map<String, String> data) {
+    _types = data;
+    notifyListeners();
+  }
+
   List<Picture> _today = [];
   List<Picture> get today => _today;
   set today(List<Picture> data) {
