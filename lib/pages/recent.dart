@@ -50,7 +50,6 @@ class _RecentPageState extends State<RecentPage>
   List<String> types = [];
 
   ScrollController controller;
-  ValueNotifier<String> valueNotifier;
 
   bool doing = false;
   String current;
@@ -64,8 +63,7 @@ class _RecentPageState extends State<RecentPage>
     controller = ScrollController(
       initialScrollOffset: kSearchBarHeight,
     )..addListener(_onScrollUpdate);
-    valueNotifier = ValueNotifier(current = types.first)
-      ..addListener(_onValueChanged);
+    current = types.first;
     for (int i = 0; i < types.length; i++) {
       cur[types[i]] = 1;
       max[types[i]] = null;
@@ -98,8 +96,16 @@ class _RecentPageState extends State<RecentPage>
                   SliverPersistentHeader(
                     pinned: true,
                     delegate: _SliverHeaderDelegate(
-                      controller: valueNotifier,
+                      groupValue: current,
                       vsync: this,
+                      onValueChanged: (String newValue) {
+                        if (!doing) {
+                          setState(() => current = newValue);
+                          if (_where(current).length == 0) {
+                            _fetchData();
+                          }
+                        }
+                      },
                     ),
                   ),
                   SliverToBoxAdapter(
@@ -115,7 +121,7 @@ class _RecentPageState extends State<RecentPage>
                       crossAxisCount: SystemUtils.isIPad(context) ? 3 : 2,
                       itemCount: data.length,
                       itemBuilder: (_, i) => _Tile(data[i], i),
-                      staggeredTileBuilder: (_) => StaggeredTile.fit(1),
+                      staggeredTileBuilder: (_) => const StaggeredTile.fit(1),
                       mainAxisSpacing: 12,
                       crossAxisSpacing: 12,
                     ),
@@ -182,21 +188,10 @@ class _RecentPageState extends State<RecentPage>
     }
   }
 
-  void _onValueChanged() {
-    if (!doing) {
-      setState(() => current = valueNotifier.value);
-      if (_where(current).length == 0) {
-        _fetchData();
-      }
-    }
-  }
-
   @override
   void dispose() {
     controller.removeListener(_onScrollUpdate);
     controller.dispose();
-    valueNotifier.removeListener(_onValueChanged);
-    valueNotifier.dispose();
     super.dispose();
   }
 
@@ -205,12 +200,15 @@ class _RecentPageState extends State<RecentPage>
 }
 
 class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final ValueNotifier<String> controller;
+  final ValueChanged<String> onValueChanged;
+
+  final String groupValue;
 
   final TickerProvider vsync;
 
   _SliverHeaderDelegate({
-    @required this.controller,
+    @required this.onValueChanged,
+    @required this.groupValue,
     @required this.vsync,
   });
 
@@ -287,7 +285,8 @@ class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
                   width: 500,
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
                   child: CupertinoSlidingSegmentedControl<String>(
-                    controller: controller,
+                    onValueChanged: onValueChanged,
+                    groupValue: groupValue,
                     children: types.map<String, Widget>((key, value) {
                       return MapEntry(key, Text(value));
                     }),
