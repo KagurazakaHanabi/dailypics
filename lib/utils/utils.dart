@@ -160,17 +160,9 @@ class Utils {
     return await response.cast<List<int>>().transform(utf8.decoder).join();
   }
 
-  static String getCompressed(Picture data) {
-    int width;
-    if (data.width > data.height) {
-      width = data.width > 1280 ? 1280 : data.width;
-    } else {
-      width = data.width > 720 ? 720 : data.width;
-    }
-    if (!data.url.contains('images.dailypics.cn/')) {
-      return data.url;
-    }
-    return data.url + '?f=jpg&q=50&w=$width';
+  static String getCompressed(Picture data, [String style = 'w720']) {
+    if (!data.url.contains('images.dailypics.cn/')) return data.url;
+    return 'https://s1.images.dailypics.cn${data.path}!$style';
   }
 
   static bool isDarkColor(Color c) {

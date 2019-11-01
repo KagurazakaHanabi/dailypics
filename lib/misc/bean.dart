@@ -40,8 +40,11 @@ class Picture {
 
   int height;
 
-  @JsonKey(name: 'local_url', fromJson: _replaceHost)
+  @JsonKey(name: 'local_url')
   String url;
+
+  @JsonKey(name: 'nativePath')
+  String path;
 
   @JsonKey(name: 'theme_color', fromJson: _colorFromHex, toJson: _colorToHex)
   Color color;
@@ -61,6 +64,7 @@ class Picture {
     this.width,
     this.height,
     this.url,
+    this.path,
     this.color,
     this.date,
     this.marked,
@@ -77,10 +81,6 @@ class Picture {
   }
 
   String toJson() => jsonEncode(_$PictureToJson(this));
-
-  static _replaceHost(String url) {
-    return url.replaceAll('://img.dpic.dev/', '://images.dailypics.cn/');
-  }
 
   static _colorFromHex(String hex) {
     hex = hex.toUpperCase().replaceAll('#', '');

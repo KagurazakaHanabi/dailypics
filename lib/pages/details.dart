@@ -85,12 +85,7 @@ class _DetailsPageState extends State<DetailsPage> {
         child: CupertinoActivityIndicator(),
       );
     } else if (error != null) {
-      result = Center(
-        child: Text(
-          error,
-          style: const TextStyle(color: Colors.black54, fontSize: 14),
-        ),
-      );
+      result = Center(child: Text(error));
     } else if (widget.data != null) {
       data = widget.data;
     }
