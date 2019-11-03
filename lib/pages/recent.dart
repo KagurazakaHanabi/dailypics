@@ -115,6 +115,7 @@ class _RecentPageState extends State<RecentPage>
                   ),
                   SliverPadding(
                     padding: EdgeInsets.all(12).copyWith(
+                      top: queryData.padding.top,
                       bottom: queryData.padding.bottom,
                     ),
                     sliver: SliverStaggeredGrid.countBuilder(
@@ -301,7 +302,7 @@ class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 154;
+  double get maxExtent => minExtent + kSearchBarHeight;
 
   @override
   double get minExtent => 105;

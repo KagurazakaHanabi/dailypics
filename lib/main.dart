@@ -38,11 +38,15 @@ class MyApp extends StatelessWidget {
         home: SplashPage(),
         // FIXME: 2019/9/19 等待 CupertinoApp 加入 darkTheme 字段
         builder: (BuildContext context, Widget child) {
+          CupertinoThemeData theme = CupertinoThemeData(
+            brightness: MediaQuery.platformBrightnessOf(context),
+            primaryColor: CupertinoColors.systemBlue,
+          );
           return CupertinoTheme(
-            child: child,
-            data: CupertinoThemeData(
-              brightness: MediaQuery.platformBrightnessOf(context),
-              primaryColor: CupertinoColors.systemBlue,
+            data: theme,
+            child: DefaultTextStyle(
+              style: theme.textTheme.textStyle,
+              child: child,
             ),
           );
         },
