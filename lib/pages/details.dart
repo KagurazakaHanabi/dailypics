@@ -13,13 +13,13 @@
 // limitations under the License.
 
 import 'dart:collection';
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:dailypics/misc/bean.dart';
+import 'package:dailypics/utils/api.dart';
 import 'package:dailypics/utils/utils.dart';
 import 'package:dailypics/widget/adaptive_scaffold.dart';
 import 'package:dailypics/widget/image_card.dart';
@@ -32,7 +32,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
 const double _kBackGestureWidth = 20.0;
@@ -104,6 +103,7 @@ class _DetailsPageState extends State<DetailsPage> {
       );
     }
     Radius radius = Radius.circular(SystemUtils.isIPad(context) ? 16 : 0);
+    CupertinoThemeData theme = CupertinoTheme.of(context);
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: Utils.isDarkColor(data.color) && !SystemUtils.isIPad(context)
           ? SystemUiOverlayStyle.light
@@ -125,7 +125,7 @@ class _DetailsPageState extends State<DetailsPage> {
             Container(
               margin: const EdgeInsets.only(top: 80),
               decoration: BoxDecoration(
-                color: CupertinoColors.systemBackground,
+                color: theme.scaffoldBackgroundColor,
                 borderRadius: BorderRadius.vertical(top: radius),
               ),
             ),
@@ -143,7 +143,7 @@ class _DetailsPageState extends State<DetailsPage> {
                     ),
                   ),
                   Container(
-                    color: CupertinoColors.systemBackground,
+                    color: theme.scaffoldBackgroundColor,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -384,12 +384,11 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 
   Future<void> _fetchData() async {
-    String url = 'https://v2.api.dailypics.cn/member?id=${widget.pid}';
-    Map<String, dynamic> json = jsonDecode((await http.get(url)).body);
-    if (json['error_code'] != null) {
-      setState(() => error = json['msg'].toString());
-    } else {
-      setState(() => data = Picture.fromJson(json));
+    try {
+      Picture result = await TujianApi.getDetails(widget.pid);
+      setState(() => data = result);
+    } catch (e) {
+      setState(() => error = e.toString());
     }
   }
 

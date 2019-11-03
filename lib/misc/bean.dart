@@ -83,6 +83,7 @@ class Picture {
   String toJson() => jsonEncode(_$PictureToJson(this));
 
   static _colorFromHex(String hex) {
+    if (hex == null) return null;
     hex = hex.toUpperCase().replaceAll('#', '');
     if (hex.length == 6) {
       hex = 'FF' + hex;
@@ -93,6 +94,7 @@ class Picture {
   }
 
   static _colorToHex(Color color) {
+    if (color == null) return null;
     return '#' + color.value.toRadixString(16);
   }
 }

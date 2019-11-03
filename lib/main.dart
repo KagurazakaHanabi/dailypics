@@ -16,6 +16,7 @@ import 'package:dailypics/model/app.dart';
 import 'package:dailypics/pages/splash.dart';
 import 'package:dailypics/widget/error.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -38,14 +39,12 @@ class MyApp extends StatelessWidget {
         home: SplashPage(),
         // FIXME: 2019/9/19 等待 CupertinoApp 加入 darkTheme 字段
         builder: (BuildContext context, Widget child) {
-          CupertinoThemeData theme = CupertinoThemeData(
-            brightness: MediaQuery.platformBrightnessOf(context),
-            primaryColor: CupertinoColors.systemBlue,
-          );
+          CupertinoThemeData theme = CupertinoTheme.of(context);
+          CupertinoTextThemeData textTheme = theme.textTheme;
           return CupertinoTheme(
             data: theme,
             child: DefaultTextStyle(
-              style: theme.textTheme.textStyle,
+              style: textTheme.textStyle,
               child: child,
             ),
           );

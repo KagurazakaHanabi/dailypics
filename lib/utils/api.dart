@@ -19,6 +19,15 @@ import 'package:dailypics/misc/config.g.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
+class TujianApiException implements Exception {
+  final String message;
+
+  const TujianApiException(this.message);
+
+  @override
+  String toString() => 'TujianApiException: $message';
+}
+
 class TujianApi {
   static const String _kBaseUrl = 'https://v2.api.dailypics.cn';
   static const Map<String, String> _kHeaders = {
@@ -69,7 +78,12 @@ class TujianApi {
   static Future<Picture> getDetails(String pid) async {
     Uri uri = Uri.parse('$_kBaseUrl/member?id=$pid');
     String source = await _client.read(uri, headers: _kHeaders);
-    return Picture.fromJson(jsonDecode(source));
+    Map<String, dynamic> json = jsonDecode(source);
+    if (json['error_code'] != null) {
+      throw TujianApiException(json['msg']);
+    } else {
+      return Picture.fromJson(json);
+    }
   }
 
   static Future<List<Picture>> search(String keyword) async {
