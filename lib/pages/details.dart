@@ -103,7 +103,6 @@ class _DetailsPageState extends State<DetailsPage> {
         ),
       );
     }
-    CupertinoThemeData theme = CupertinoTheme.of(context);
     Radius radius = Radius.circular(SystemUtils.isIPad(context) ? 16 : 0);
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: Utils.isDarkColor(data.color) && !SystemUtils.isIPad(context)
@@ -126,7 +125,7 @@ class _DetailsPageState extends State<DetailsPage> {
             Container(
               margin: const EdgeInsets.only(top: 80),
               decoration: BoxDecoration(
-                color: theme.scaffoldBackgroundColor,
+                color: CupertinoColors.systemBackground,
                 borderRadius: BorderRadius.vertical(top: radius),
               ),
             ),
@@ -139,12 +138,12 @@ class _DetailsPageState extends State<DetailsPage> {
                     aspectRatio: data.width / data.height,
                     child: OptimizedImage(
                       Utils.getCompressed(data),
-                      heroTag: widget.heroTag ?? DateTime.now(),
                       borderRadius: BorderRadius.vertical(top: radius),
+                      heroTag: widget.heroTag,
                     ),
                   ),
                   Container(
-                    color: theme.scaffoldBackgroundColor,
+                    color: CupertinoColors.systemBackground,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[

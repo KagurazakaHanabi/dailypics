@@ -1,9 +1,18 @@
-import 'package:flutter/cupertino.dart';
+// Copyright 2019 KagurazakaHanabi<i@yaerin.com>
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
-const CupertinoDynamicColor _kBarColor = CupertinoDynamicColor.withBrightness(
-  color: Color(0x1F767680),
-  darkColor: Color(0x3D767680),
-);
+import 'package:flutter/cupertino.dart';
 
 const CupertinoDynamicColor _kClearColor = CupertinoDynamicColor.withBrightness(
   color: Color(0xFF636366),
@@ -62,7 +71,7 @@ class CupertinoSearchBar extends StatelessWidget {
                 placeholder: '搜索',
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: _kBarColor.resolveFrom(context),
+                  color: CupertinoColors.tertiarySystemFill,
                 ),
                 prefix: Padding(
                   padding: const EdgeInsets.only(left: 8),

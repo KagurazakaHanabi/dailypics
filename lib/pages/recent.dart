@@ -121,7 +121,9 @@ class _RecentPageState extends State<RecentPage>
                     sliver: SliverStaggeredGrid.countBuilder(
                       crossAxisCount: SystemUtils.isIPad(context) ? 3 : 2,
                       itemCount: data.length,
-                      itemBuilder: (_, i) => _Tile(data[i], i),
+                      itemBuilder: (_, i) {
+                        return _Tile(data[i], '$i-${data[i].id}');
+                      },
                       staggeredTileBuilder: (_) => const StaggeredTile.fit(1),
                       mainAxisSpacing: 12,
                       crossAxisSpacing: 12,
@@ -218,9 +220,7 @@ class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
     double extent = math.min<double>(shrinkOffset, kSearchBarHeight);
     double barHeight = kSearchBarHeight - extent;
     EdgeInsets padding = MediaQuery.of(context).padding;
-    bool canPop = Navigator.of(context).canPop();
     CupertinoThemeData theme = CupertinoTheme.of(context);
-    TextStyle navTitleTextStyle = theme.textTheme.navTitleTextStyle;
     Map<String, String> types = AppModel.of(context).types;
     return OverflowBox(
       minHeight: 0,
@@ -247,26 +247,10 @@ class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
               children: <Widget>[
                 Container(
                   height: 44,
-                  padding: EdgeInsets.only(left: canPop ? 0 : 44, right: 44),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Offstage(
-                        offstage: !canPop,
-                        child: CupertinoButton(
-                          child: const Icon(CupertinoIcons.back),
-                          padding: EdgeInsets.zero,
-                          onPressed: () => Navigator.of(context).pop(),
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          '往期精选',
-                          textAlign: TextAlign.center,
-                          style: navTitleTextStyle,
-                        ),
-                      ),
-                    ],
+                  alignment: Alignment.center,
+                  child: Text(
+                    '往期精选',
+                    style: theme.textTheme.navTitleTextStyle,
                   ),
                 ),
                 SizedBox(
@@ -314,9 +298,9 @@ class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
 class _Tile extends StatefulWidget {
   final Picture data;
 
-  final int index;
+  final String heroTag;
 
-  _Tile(this.data, this.index);
+  _Tile(this.data, this.heroTag);
 
   @override
   State<StatefulWidget> createState() => _TileState();
@@ -334,7 +318,7 @@ class _TileState extends State<_Tile> {
         await DetailsPage.push(
           context,
           data: widget.data,
-          heroTag: '${widget.index}-${widget.data.id}',
+          heroTag: widget.heroTag,
         );
         setState(() {});
       },
@@ -367,7 +351,7 @@ class _TileState extends State<_Tile> {
                 aspectRatio: aspectRatio,
                 child: OptimizedImage(
                   Utils.getCompressed(widget.data, 'w480'),
-                  heroTag: '${widget.index}-${widget.data.id}',
+                  heroTag: widget.heroTag,
                 ),
               ),
               Padding(

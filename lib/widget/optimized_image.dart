@@ -18,6 +18,12 @@ import 'package:flutter/cupertino.dart';
 class OptimizedImage extends StatelessWidget {
   final String imageUrl;
 
+  final double width;
+
+  final double height;
+
+  final BoxFit fit;
+
   final BorderRadius borderRadius;
 
   final Object heroTag;
@@ -25,6 +31,9 @@ class OptimizedImage extends StatelessWidget {
   OptimizedImage(
     this.imageUrl, {
     Key key,
+    this.width,
+    this.height,
+    this.fit = BoxFit.cover,
     this.borderRadius = BorderRadius.zero,
     this.heroTag,
   })  : assert(imageUrl != null),
@@ -38,7 +47,9 @@ class OptimizedImage extends StatelessWidget {
       borderRadius: borderRadius,
       child: CachedNetworkImage(
         imageUrl: imageUrl,
-        fit: BoxFit.cover,
+        width: width,
+        height: height,
+        fit: fit,
         placeholderFadeInDuration: Duration.zero,
         fadeInDuration: const Duration(milliseconds: 700),
         fadeInCurve: Curves.easeIn,
