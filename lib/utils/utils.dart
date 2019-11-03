@@ -15,6 +15,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:dailypics/misc/bean.dart';
@@ -162,7 +163,8 @@ class Utils {
 
   static String getCompressed(Picture data, [String style = 'w720']) {
     if (!data.url.contains('images.dailypics.cn/')) return data.url;
-    return 'https://s1.images.dailypics.cn${data.path}!$style';
+    int width = math.min(data.width, (data.width > data.height) ? 1280 : 720);
+    return '${data.url}?f=jpg&q=50&w=$width';
   }
 
   static bool isDarkColor(Color c) {
