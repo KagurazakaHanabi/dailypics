@@ -20,6 +20,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:dailypics/misc/bean.dart';
+import 'package:dailypics/utils/api.dart';
 import 'package:dailypics/utils/utils.dart';
 import 'package:dailypics/widget/adaptive_scaffold.dart';
 import 'package:dailypics/widget/image_card.dart';
@@ -384,12 +385,11 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 
   Future<void> _fetchData() async {
-    String url = 'https://v2.api.dailypics.cn/member?id=${widget.pid}';
-    Map<String, dynamic> json = jsonDecode((await http.get(url)).body);
-    if (json['error_code'] != null) {
-      setState(() => error = json['msg'].toString());
-    } else {
-      setState(() => data = Picture.fromJson(json));
+    try {
+      Picture result = await TujianApi.getDetails(widget.pid);
+      setState(() => data = result);
+    } catch (e) {
+      setState(() => error = e.toString());
     }
   }
 
