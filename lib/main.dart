@@ -24,10 +24,10 @@ void main() async {
   ErrorWidget.builder = (details) {
     return CustomErrorWidget(details);
   };
-  runApp(MyApp());
+  runApp(TujianApp());
 }
 
-class MyApp extends StatelessWidget {
+class TujianApp extends StatelessWidget {
   final AppModel model = AppModel();
 
   @override

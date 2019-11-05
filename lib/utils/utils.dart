@@ -18,7 +18,6 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dailypics/misc/bean.dart';
-import 'package:dailypics/utils/local_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -181,13 +180,13 @@ class Utils {
 }
 
 class Settings {
-  static LocalStorage _prefs;
+  static SharedPreferences _prefs;
 
-  static Future<void> initial() async {
-    _prefs = LocalStorage(await SharedPreferences.getInstance());
+  static Future<void> initialize() async {
+    _prefs = await SharedPreferences.getInstance();
   }
 
-  static List<String> get marked => _prefs['marked'] ?? [];
+  static List<String> get marked => _prefs.get('marked') ?? [];
 
-  static set marked(List<String> value) => _prefs['marked'] = value;
+  static set marked(List<String> list) => _prefs.setStringList('marked', list);
 }
