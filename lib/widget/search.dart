@@ -20,6 +20,18 @@ const CupertinoDynamicColor _kClearColor = CupertinoDynamicColor.withBrightness(
 );
 
 class CupertinoSearchBar extends StatelessWidget {
+  CupertinoSearchBar({
+    Key key,
+    this.controller,
+    this.padding = const EdgeInsets.fromLTRB(16, 10, 16, 10),
+    this.readOnly = false,
+    this.autofocus = false,
+    this.showCancelButton = false,
+    this.onChanged,
+    this.onSubmitted,
+    this.onTap,
+  }) : super(key: key);
+
   final TextEditingController controller;
 
   final EdgeInsets padding;
@@ -35,18 +47,6 @@ class CupertinoSearchBar extends StatelessWidget {
   final ValueChanged<String> onSubmitted;
 
   final GestureTapCallback onTap;
-
-  CupertinoSearchBar({
-    Key key,
-    this.controller,
-    this.padding = const EdgeInsets.fromLTRB(16, 10, 16, 10),
-    this.readOnly = false,
-    this.autofocus = false,
-    this.showCancelButton = false,
-    this.onChanged,
-    this.onSubmitted,
-    this.onTap,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

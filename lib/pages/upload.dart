@@ -105,7 +105,7 @@ class _UploadPageState extends State<UploadPage> {
                     textInputAction: TextInputAction.done,
                   ),
                   Padding(
-                    padding: EdgeInsets.only(top: 8),
+                    padding: const EdgeInsets.only(top: 8),
                     child: CupertinoButton(
                       pressedOpacity: 0.7,
                       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -248,8 +248,8 @@ class _UploadPageState extends State<UploadPage> {
           ),
           Expanded(child: Container()),
           CupertinoButton(
-            padding: EdgeInsets.only(right: 16),
-            child: Text('完成'),
+            padding: const EdgeInsets.only(right: 16),
+            child: const Text('完成'),
             onPressed: () => FocusScope.of(context).unfocus(),
           ),
         ],
@@ -265,7 +265,7 @@ class _UploadPageState extends State<UploadPage> {
           title: Text(title),
           actions: <Widget>[
             CupertinoDialogAction(
-              child: Text('好'),
+              child: const Text('好'),
               onPressed: () => Navigator.of(context).pop(),
             )
           ],
@@ -292,7 +292,7 @@ class _UploadPageState extends State<UploadPage> {
     if (type == null) {
       errors.add('分类');
     }
-    if (errors.length > 0) {
+    if (errors.isEmpty) {
       String errorText = '';
       for (int i = 0; i < errors.length; i++) {
         if (i != 0 && i != errors.length - 1) {
@@ -311,7 +311,7 @@ class _UploadPageState extends State<UploadPage> {
             title: Text(errorText),
             actions: <Widget>[
               CupertinoDialogAction(
-                child: Text('好'),
+                child: const Text('好'),
                 onPressed: () => Navigator.of(context).pop(),
               )
             ],
@@ -344,6 +344,14 @@ class _UploadPageState extends State<UploadPage> {
 }
 
 class _TextField extends StatelessWidget {
+  _TextField({
+    this.controller,
+    this.placeholder,
+    this.minLines,
+    this.textInputAction = TextInputAction.next,
+    this.onSubmitted,
+  });
+
   final TextEditingController controller;
 
   final String placeholder;
@@ -354,18 +362,10 @@ class _TextField extends StatelessWidget {
 
   final ValueChanged<String> onSubmitted;
 
-  _TextField({
-    this.controller,
-    this.placeholder,
-    this.minLines,
-    this.textInputAction = TextInputAction.next,
-    this.onSubmitted,
-  });
-
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: CupertinoTextField(
         controller: controller,
         placeholder: placeholder,
@@ -373,10 +373,10 @@ class _TextField extends StatelessWidget {
         maxLines: null,
         textInputAction: textInputAction,
         onSubmitted: onSubmitted,
-        cursorColor: Color(0xFF353A40),
-        style: TextStyle(fontSize: 16),
+        cursorColor: const Color(0xFF353A40),
+        style: const TextStyle(fontSize: 16),
         decoration: BoxDecoration(
-          border: Border.all(color: Color(0xFF919191), width: 0),
+          border: Border.all(color: const Color(0xFF919191), width: 0),
           borderRadius: BorderRadius.circular(4),
         ),
       ),

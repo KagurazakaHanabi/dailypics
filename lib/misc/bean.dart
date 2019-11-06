@@ -21,6 +21,25 @@ part 'bean.g.dart';
 
 @JsonSerializable()
 class Picture {
+  Picture({
+    this.id,
+    this.tid,
+    this.user,
+    this.title,
+    this.content,
+    this.width,
+    this.height,
+    this.url,
+    this.path,
+    this.color,
+    this.date,
+    this.marked,
+  });
+
+  factory Picture.fromJson(Map<String, dynamic> json) {
+    return _$PictureFromJson(json);
+  }
+
   @JsonKey(name: 'PID')
   String id;
 
@@ -55,25 +74,6 @@ class Picture {
   @JsonKey(defaultValue: false)
   bool marked;
 
-  Picture({
-    this.id,
-    this.tid,
-    this.user,
-    this.title,
-    this.content,
-    this.width,
-    this.height,
-    this.url,
-    this.path,
-    this.color,
-    this.date,
-    this.marked,
-  });
-
-  factory Picture.fromJson(Map<String, dynamic> json) {
-    return _$PictureFromJson(json);
-  }
-
   static List<Picture> parseList(List<dynamic> json) {
     return json.map((e) {
       return e == null ? null : Picture.fromJson(e as Map<String, dynamic>);
@@ -101,6 +101,12 @@ class Picture {
 
 @JsonSerializable()
 class Recents {
+  Recents({this.current, this.maximum, this.option, this.data});
+
+  factory Recents.fromJson(Map<String, dynamic> json) {
+    return _$RecentsFromJson(json);
+  }
+
   @JsonKey(name: 'page')
   int current;
 
@@ -113,17 +119,17 @@ class Recents {
   @JsonKey(name: 'result')
   List<Picture> data;
 
-  Recents({this.current, this.maximum, this.option, this.data});
-
-  factory Recents.fromJson(Map<String, dynamic> json) {
-    return _$RecentsFromJson(json);
-  }
-
   String toJson() => jsonEncode(_$RecentsToJson(this));
 }
 
 @JsonSerializable()
 class Splash {
+  Splash({this.title, this.imageUrl, this.effectiveAt, this.expiresAt});
+
+  factory Splash.fromJson(Map<String, dynamic> json) {
+    return _$SplashFromJson(json);
+  }
+
   @JsonKey(name: 'splash_title')
   String title;
 
@@ -136,12 +142,6 @@ class Splash {
   @JsonKey(name: 'expires_at', fromJson: _parseDateTime)
   DateTime expiresAt;
 
-  Splash({this.title, this.imageUrl, this.effectiveAt, this.expiresAt});
-
-  factory Splash.fromJson(Map<String, dynamic> json) {
-    return _$SplashFromJson(json);
-  }
-
   String toJson() => jsonEncode(_$SplashToJson(this));
 
   static DateTime _parseDateTime(String s) => DateTime.parse(s);
@@ -149,6 +149,12 @@ class Splash {
 
 @JsonSerializable()
 class Contributor {
+  Contributor({this.avatar, this.name, this.position, this.url});
+
+  factory Contributor.fromJson(Map<String, dynamic> json) {
+    return _$ContributorFromJson(json);
+  }
+
   String avatar;
 
   String name;
@@ -157,26 +163,20 @@ class Contributor {
 
   String url;
 
-  Contributor({this.avatar, this.name, this.position, this.url});
-
-  factory Contributor.fromJson(Map<String, dynamic> json) {
-    return _$ContributorFromJson(json);
-  }
-
   String toJson() => jsonEncode(_$ContributorToJson(this));
 }
 
 @JsonSerializable()
 class User {
-  String nickname;
-
-  String username;
-
   User({this.nickname, this.username});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return _$UserFromJson(json);
   }
+
+  String nickname;
+
+  String username;
 
   String toJson() => jsonEncode(_$UserToJson(this));
 }

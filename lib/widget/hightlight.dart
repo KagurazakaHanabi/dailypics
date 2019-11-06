@@ -18,14 +18,16 @@ import 'package:flutter/gestures.dart';
 typedef RecognizerBuilder = GestureRecognizer Function(String match);
 
 class HighlightedText {
+  const HighlightedText({this.recognizer, this.style});
+
   final RecognizerBuilder recognizer;
 
   final TextStyle style;
-
-  const HighlightedText({this.recognizer, this.style});
 }
 
 class _LinkSpec {
+  _LinkSpec(this.pattern, this.origin, this.text, this.start, this.end);
+
   final HighlightedText pattern;
 
   final RegExpMatch origin;
@@ -36,8 +38,6 @@ class _LinkSpec {
 
   final int end;
 
-  _LinkSpec(this.pattern, this.origin, this.text, this.start, this.end);
-
   @override
   String toString() {
     return '_LinkSpec { text: $text, start: $start, end: $end }';
@@ -45,14 +45,6 @@ class _LinkSpec {
 }
 
 class Highlight extends StatelessWidget {
-  final String text;
-
-  final TextStyle defaultStyle;
-
-  final TextStyle style;
-
-  final Map<Pattern, HighlightedText> patterns;
-
   const Highlight({
     Key key,
     @required this.text,
@@ -60,6 +52,14 @@ class Highlight extends StatelessWidget {
     @required this.style,
     @required this.patterns,
   }) : super(key: key);
+
+  final String text;
+
+  final TextStyle defaultStyle;
+
+  final TextStyle style;
+
+  final Map<Pattern, HighlightedText> patterns;
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +73,7 @@ class Highlight extends StatelessWidget {
     links.sort((a, b) => a.start - b.start);
     return Text.rich(
       TextSpan(
-        text: links.length == 0 ? text : text.substring(0, links[0].start),
+        text: links.isEmpty ? text : text.substring(0, links[0].start),
         style: defaultStyle,
         children: links.map<InlineSpan>((_LinkSpec e) {
           HighlightedText p = e.pattern;

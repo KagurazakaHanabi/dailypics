@@ -16,12 +16,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show Colors;
 
 class CustomErrorWidget extends StatelessWidget {
-  final FlutterErrorDetails details;
-
   const CustomErrorWidget(
-    this.details, {
-    Key key,
-  }) : super(key: key);
+      this.details, {
+        Key key,
+      }) : super(key: key);
+
+  final FlutterErrorDetails details;
 
   @override
   Widget build(BuildContext context) {

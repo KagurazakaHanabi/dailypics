@@ -65,13 +65,13 @@ class _SearchPageState extends State<SearchPage> {
               child: StaggeredGridView.countBuilder(
                 controller: controller,
                 padding: SystemUtils.isIPad(context)
-                    ? EdgeInsets.fromLTRB(12, 12, 12, 0) + windowPadding
-                    : EdgeInsets.fromLTRB(4, 0, 4, 0) + windowPadding,
+                    ? const EdgeInsets.fromLTRB(12, 12, 12, 0) + windowPadding
+                    : const EdgeInsets.fromLTRB(4, 0, 4, 0) + windowPadding,
                 crossAxisCount: SystemUtils.isIPad(context) ? 2 : 1,
                 staggeredTileBuilder: (_) => const StaggeredTile.fit(1),
-                itemCount: data.length == 0 ? 1 : data.length,
+                itemCount: data.isEmpty ? 1 : data.length,
                 itemBuilder: (_, i) {
-                  if (data.length != 0) {
+                  if (data.isNotEmpty) {
                     return ImageCard(data[i], '$query-${data[i].id}');
                   } else if (query.isNotEmpty && !doing) {
                     return Container(

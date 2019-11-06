@@ -31,9 +31,9 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class RecentPage extends StatefulWidget {
-  final Map<String, String> types;
-
   const RecentPage({Key key, this.types}) : super(key: key);
+
+  final Map<String, String> types;
 
   @override
   _RecentPageState createState() => _RecentPageState();
@@ -101,7 +101,7 @@ class _RecentPageState extends State<RecentPage>
                       onValueChanged: (String newValue) {
                         if (!doing) {
                           setState(() => current = newValue);
-                          if (_where(current).length == 0) {
+                          if (_where(current).isEmpty) {
                             _fetchData();
                           }
                         }
@@ -110,11 +110,11 @@ class _RecentPageState extends State<RecentPage>
                   ),
                   SliverToBoxAdapter(
                     child: SizedBox(
-                      height: data.length == 0 ? queryData.size.height : 0,
+                      height: data.isEmpty ? queryData.size.height : 0,
                     ),
                   ),
                   SliverPadding(
-                    padding: EdgeInsets.all(12).copyWith(
+                    padding: const EdgeInsets.all(12).copyWith(
                       top: queryData.padding.top,
                       bottom: queryData.padding.bottom,
                     ),
@@ -132,7 +132,7 @@ class _RecentPageState extends State<RecentPage>
                 ],
               ),
             ),
-            if (data.length == 0) const CupertinoActivityIndicator()
+            if (data.isEmpty) const CupertinoActivityIndicator()
           ],
         );
       }),
@@ -174,7 +174,7 @@ class _RecentPageState extends State<RecentPage>
   void _onScrollEnd() {
     ScrollPosition pos = controller.position;
 
-    Duration duration = Duration(milliseconds: 300);
+    Duration duration = const Duration(milliseconds: 300);
     double half = kSearchBarHeight / 2;
     bool shouldExpand = pos.pixels > 0 && pos.pixels <= half;
     if (shouldExpand) {
@@ -203,17 +203,17 @@ class _RecentPageState extends State<RecentPage>
 }
 
 class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final ValueChanged<String> onValueChanged;
-
-  final String groupValue;
-
-  final TickerProvider vsync;
-
   _SliverHeaderDelegate({
     @required this.onValueChanged,
     @required this.groupValue,
     @required this.vsync,
   });
+
+  final ValueChanged<String> onValueChanged;
+
+  final String groupValue;
+
+  final TickerProvider vsync;
 
   @override
   Widget build(BuildContext context, double shrinkOffset, _) {
@@ -296,11 +296,11 @@ class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
 }
 
 class _Tile extends StatefulWidget {
+  _Tile(this.data, this.heroTag);
+
   final Picture data;
 
   final String heroTag;
-
-  _Tile(this.data, this.heroTag);
 
   @override
   State<StatefulWidget> createState() => _TileState();
@@ -324,9 +324,9 @@ class _TileState extends State<_Tile> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: CupertinoDynamicColor.withBrightness(
+          color: const CupertinoDynamicColor.withBrightness(
             color: Colors.white,
-            darkColor: const Color(0xFF1C1C1E),
+            darkColor: Color(0xFF1C1C1E),
           ).resolveFrom(context),
           borderRadius: BorderRadius.circular(12),
           boxShadow: const [

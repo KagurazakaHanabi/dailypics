@@ -15,18 +15,18 @@
 import 'package:flutter/cupertino.dart';
 
 class Button extends StatelessWidget {
-  final Widget child;
-
-  final Color color;
-
-  final GestureTapCallback onPressed;
-
   const Button({
     Key key,
     @required this.child,
     this.color,
     @required this.onPressed,
   }) : super(key: key);
+
+  final Widget child;
+
+  final Color color;
+
+  final GestureTapCallback onPressed;
 
   @override
   Widget build(BuildContext context) {

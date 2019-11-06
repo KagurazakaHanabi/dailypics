@@ -20,16 +20,6 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'image_card.dart';
 
 class SliverImageCardList extends StatelessWidget {
-  final Widget header;
-
-  final Widget footer;
-
-  final List<Picture> data;
-
-  final String Function(int index) tagBuilder;
-
-  final bool adaptiveTablet;
-
   const SliverImageCardList({
     Key key,
     this.header,
@@ -40,6 +30,16 @@ class SliverImageCardList extends StatelessWidget {
   })  : assert(data != null),
         assert(adaptiveTablet != null),
         super(key: key);
+
+  final Widget header;
+
+  final Widget footer;
+
+  final List<Picture> data;
+
+  final String Function(int index) tagBuilder;
+
+  final bool adaptiveTablet;
 
   @override
   Widget build(BuildContext context) {

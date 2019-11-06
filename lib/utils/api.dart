@@ -20,9 +20,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
 class TujianApiException implements Exception {
-  final String message;
-
   const TujianApiException(this.message);
+
+  final String message;
 
   @override
   String toString() => 'TujianApiException: $message';

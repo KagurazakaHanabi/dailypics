@@ -40,13 +40,13 @@ const double _kMinFlingVelocity = 1.0; // Screen widths per second.
 const int _kMaxAnimationTime = 400; // Milliseconds.
 
 class DetailsPage extends StatefulWidget {
+  DetailsPage({this.data, this.pid, this.heroTag});
+
   final Picture data;
 
   final String pid;
 
   final String heroTag;
-
-  DetailsPage({this.data, this.pid, this.heroTag});
 
   @override
   State<StatefulWidget> createState() => _DetailsPageState();
@@ -258,8 +258,8 @@ class _DetailsPageState extends State<DetailsPage> {
         blockquotePadding: const EdgeInsets.all(16),
         blockquoteDecoration: const BoxDecoration(
           color: CupertinoColors.systemGrey6,
-          border: const Border(
-            left: const BorderSide(
+          border: Border(
+            left: BorderSide(
               color: CupertinoColors.systemGrey4,
               width: 4,
             ),
@@ -337,9 +337,9 @@ class _DetailsPageState extends State<DetailsPage> {
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: CupertinoDynamicColor.withBrightness(
-            color: const Color(0xFFF2F2F7),
-            darkColor: const Color(0xFF313135),
+          color: const CupertinoDynamicColor.withBrightness(
+            color: Color(0xFFF2F2F7),
+            darkColor: Color(0xFF313135),
           ).resolveFrom(context),
         ),
         child: CupertinoButton(
@@ -436,9 +436,9 @@ class _DetailsPageState extends State<DetailsPage> {
 }
 
 class _SaveButton extends StatefulWidget {
-  final Picture data;
-
   _SaveButton(this.data);
+
+  final Picture data;
 
   @override
   _SaveButtonState createState() => _SaveButtonState();
@@ -460,7 +460,7 @@ class _SaveButtonState extends State<_SaveButton> {
 
   @override
   Widget build(BuildContext context) {
-    Color backgroundColor = CupertinoDynamicColor.withBrightness(
+    Color backgroundColor = const CupertinoDynamicColor.withBrightness(
       color: Color(0xFFF2F2F7),
       darkColor: Color(0xFF313135),
     ).resolveFrom(context);
@@ -487,7 +487,7 @@ class _SaveButtonState extends State<_SaveButton> {
       child: AnimatedCrossFade(
         firstChild: Container(
           alignment: Alignment.center,
-          padding: EdgeInsets.symmetric(vertical: 3, horizontal: 20),
+          padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 20),
           decoration: BoxDecoration(
             color: denied ? CupertinoColors.destructiveRed : backgroundColor,
             borderRadius: BorderRadius.circular(16),
@@ -507,7 +507,7 @@ class _SaveButtonState extends State<_SaveButton> {
           width: 70,
           height: 26,
           alignment: Alignment.center,
-          padding: EdgeInsets.symmetric(vertical: 4, horizontal: 26),
+          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 26),
           child: CircularProgressIndicator(
             strokeWidth: 2,
             value: progress,
@@ -520,7 +520,7 @@ class _SaveButtonState extends State<_SaveButton> {
         crossFadeState: progress == null && !started || progress == 1
             ? CrossFadeState.showFirst
             : CrossFadeState.showSecond,
-        duration: Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 200),
       ),
     );
   }
@@ -540,7 +540,7 @@ class _PageRouteBuilder<T> extends PageRoute<T> {
   final bool opaque = false;
 
   @override
-  Duration get transitionDuration => Duration(milliseconds: 400);
+  Duration get transitionDuration => const Duration(milliseconds: 400);
 
   @override
   Widget buildPage(

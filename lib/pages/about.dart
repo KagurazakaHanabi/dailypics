@@ -80,14 +80,14 @@ class _AboutPageState extends State<AboutPage> {
                   child: _buildList(),
                 ),
               ),
-              CupertinoNavigationBar(
+              const CupertinoNavigationBar(
                 /*padding: EdgeInsetsDirectional.zero,
                 leading: CupertinoButton(
                   child: Icon(CupertinoIcons.back),
                   padding: EdgeInsets.zero,
                   onPressed: () => Navigator.of(context).pop(),
                 ),*/
-                middle: const Text('关于'),
+                middle: Text('关于'),
                 /*trailing: CupertinoButton(
                   padding: EdgeInsets.zero,
                   child: Text('测试入口'),
@@ -197,8 +197,8 @@ class _AboutPageState extends State<AboutPage> {
       padding: const EdgeInsets.all(8),
       child: Column(
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 8, 8, 16),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(8, 8, 8, 16),
             child: CircleAvatar(
               radius: 32,
               backgroundColor: Colors.transparent,

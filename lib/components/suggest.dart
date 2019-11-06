@@ -48,8 +48,8 @@ class _SuggestComponentState extends State<SuggestComponent>
           controller: controller,
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: <Widget>[
-            CupertinoSliverNavigationBar(
-              largeTitle: const Text('推荐'),
+            const CupertinoSliverNavigationBar(
+              largeTitle: Text('推荐'),
             ),
             CupertinoSliverRefreshControl(onRefresh: _fetchData),
             SliverSafeArea(

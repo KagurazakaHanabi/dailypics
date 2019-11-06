@@ -16,9 +16,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:qr/qr.dart';
 
 class QrCodeView extends StatefulWidget {
-  final String data;
-
   const QrCodeView(this.data);
+
+  final String data;
 
   @override
   _QrCodeViewState createState() => _QrCodeViewState();
@@ -48,15 +48,15 @@ class _QrCodeViewState extends State<QrCodeView> {
 }
 
 class _QrCodePainter extends CustomPainter {
-  final QrCode code;
-
   _QrCodePainter(this.code);
+
+  final QrCode code;
 
   @override
   void paint(Canvas canvas, Size size) {
     canvas.drawRect(
       Rect.fromLTWH(0, 0, size.width, size.height),
-      Paint()..color = Color(0xFFFFFFFF),
+      Paint()..color = const Color(0xFFFFFFFF),
     );
     canvas.translate(1.5, 1.5);
     for (int x = 0; x < code.moduleCount; x++) {
@@ -64,7 +64,7 @@ class _QrCodePainter extends CustomPainter {
         if (code.isDark(y, x)) {
           canvas.drawRect(
             Rect.fromLTWH(x * 1.5, y *1.5, 1.5, 1.5),
-            Paint()..color = Color(0xFF000000),
+            Paint()..color = const Color(0xFF000000),
           );
         }
       }

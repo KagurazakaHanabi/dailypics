@@ -23,6 +23,14 @@ import 'package:flutter/material.dart' show Colors;
 import 'package:markdown/markdown.dart' hide Text;
 
 class ImageCard extends StatefulWidget {
+  const ImageCard(
+      this.data,
+      this.heroTag, {
+        this.aspectRatio = 4 / 5,
+        this.showQrCode = false,
+        this.repaintKey,
+      }) : assert(aspectRatio != null);
+
   final Picture data;
 
   final String heroTag;
@@ -33,20 +41,12 @@ class ImageCard extends StatefulWidget {
 
   final GlobalKey repaintKey;
 
-  ImageCard(
-    this.data,
-    this.heroTag, {
-    this.aspectRatio = 4 / 5,
-    this.showQrCode = false,
-    this.repaintKey,
-  }) : assert(aspectRatio != null);
-
   @override
   State<StatefulWidget> createState() => _ImageCardState();
 }
 
 class _ImageCardState extends State<ImageCard> {
-  final Duration duration = Duration(milliseconds: 150);
+  final Duration duration = const Duration(milliseconds: 150);
 
   double scale = 1;
   DateTime tapDown;

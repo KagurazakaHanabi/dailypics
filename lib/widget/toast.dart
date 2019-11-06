@@ -18,23 +18,24 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 
 class Toast extends StatelessWidget {
-  static const Duration length_short = const Duration(seconds: 4);
+  Toast(
+    this.context,
+    this.text, {
+      this.duration = length_short,
+      this.alignment = const Alignment(0, 0.75),
+    }): assert(context != null),
+        assert(duration != null),
+        assert(alignment != null);
 
-  static const Duration length_long = const Duration(seconds: 7);
+  static const Duration length_short = Duration(seconds: 4);
 
-  static const Duration _animationDuration = const Duration(milliseconds: 500);
+  static const Duration length_long = Duration(seconds: 7);
+
+  static const Duration _animationDuration = Duration(milliseconds: 500);
 
   static Queue<Toast> _toasts = Queue<Toast>();
 
   static Timer _toastTimer;
-
-
-  Toast(
-    this.context,
-    this.text, {
-    this.duration = length_short,
-    this.alignment = const Alignment(0, 0.75),
-  }) : assert(context != null);
 
   final BuildContext context;
 
@@ -46,7 +47,10 @@ class Toast extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyle = TextStyle(color: Color(0xDE000000), fontSize: 14);
+    TextStyle textStyle = const TextStyle(
+      color: Color(0xDE000000),
+      fontSize: 14,
+    );
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,

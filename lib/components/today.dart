@@ -44,7 +44,7 @@ class _TodayComponentState extends State<TodayComponent>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (AppModel.of(context).today.length == 0) {
+    if (AppModel.of(context).today.isEmpty) {
       return const Center(
         child: CupertinoActivityIndicator(),
       );
@@ -73,7 +73,7 @@ class _TodayComponentState extends State<TodayComponent>
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
               height: MediaQuery.of(context).padding.top,
-              color: CupertinoDynamicColor.withBrightness(
+              color: const CupertinoDynamicColor.withBrightness(
                 color: Color(0xCCFFFFFF),
                 darkColor: Color(0xB7000000),
               ).resolveFrom(context),

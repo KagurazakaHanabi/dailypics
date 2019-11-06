@@ -16,6 +16,18 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 
 class OptimizedImage extends StatelessWidget {
+  OptimizedImage(
+      this.imageUrl, {
+        Key key,
+        this.width,
+        this.height,
+        this.fit = BoxFit.cover,
+        this.borderRadius = BorderRadius.zero,
+        this.heroTag,
+      })  : assert(imageUrl != null),
+        assert(borderRadius != null),
+        super(key: key);
+
   final String imageUrl;
 
   final double width;
@@ -27,18 +39,6 @@ class OptimizedImage extends StatelessWidget {
   final BorderRadius borderRadius;
 
   final Object heroTag;
-
-  OptimizedImage(
-    this.imageUrl, {
-    Key key,
-    this.width,
-    this.height,
-    this.fit = BoxFit.cover,
-    this.borderRadius = BorderRadius.zero,
-    this.heroTag,
-  })  : assert(imageUrl != null),
-        assert(borderRadius != null),
-        super(key: key);
 
   @override
   Widget build(BuildContext context) {

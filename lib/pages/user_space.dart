@@ -24,11 +24,11 @@ import 'package:flutter/material.dart' show CircleAvatar, Colors, Divider;
 import 'package:image_picker/image_picker.dart';
 
 class UserSpacePage extends StatefulWidget {
+  const UserSpacePage({this.data, this.uid});
+
   final User data;
 
   final String uid;
-
-  const UserSpacePage({this.data, this.uid});
 
   @override
   _UserSpacePageState createState() => _UserSpacePageState();
@@ -103,7 +103,7 @@ class _UserSpacePageState extends State<UserSpacePage> {
           Stack(
             children: <Widget>[
               Container(
-                margin: EdgeInsets.only(top: 154),
+                margin: const EdgeInsets.only(top: 154),
                 decoration: BoxDecoration(
                   color: backgroundColor,
                   borderRadius: const BorderRadius.vertical(
@@ -113,7 +113,7 @@ class _UserSpacePageState extends State<UserSpacePage> {
                 child: Column(
                   children: <Widget>[
                     _buildHeader(),
-                    Divider(),
+                    const Divider(),
                   ],
                 ),
               ),
@@ -143,7 +143,7 @@ class _UserSpacePageState extends State<UserSpacePage> {
 
   Widget _buildHeader() {
     return Container(
-      padding: EdgeInsets.all(12),
+      padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -156,19 +156,19 @@ class _UserSpacePageState extends State<UserSpacePage> {
               )
             ],
           ),
-          Text(
+          const Text(
             'Nickname',
-            style: const TextStyle(fontSize: 22),
+            style: TextStyle(fontSize: 22),
           ),
-          Text(
+          const Text(
             '@Username',
-            style: const TextStyle(fontSize: 14, color: Colors.black54),
+            style: TextStyle(fontSize: 14, color: Colors.black54),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 8, bottom: 16),
+          const Padding(
+            padding: EdgeInsets.only(top: 8, bottom: 16),
             child: Text(
               '这里是个人简介，签名什么的',
-              style: const TextStyle(fontSize: 14, color: Colors.black87),
+              style: TextStyle(fontSize: 14, color: Colors.black87),
             ),
           ),
           Highlight(

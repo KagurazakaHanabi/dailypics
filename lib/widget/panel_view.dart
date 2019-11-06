@@ -23,6 +23,35 @@ enum PanelLockMode {
 }
 
 class PanelView extends StatefulWidget {
+  PanelView({
+    Key key,
+    this.alignment = Alignment.bottomCenter,
+    @required this.panel,
+    @required this.child,
+    this.minHeight = kToolbarHeight,
+    this.maxHeight = 320,
+    this.radius = 8,
+    this.color = Colors.white,
+    this.boxShadow = const <BoxShadow>[
+      BoxShadow(
+        blurRadius: 8,
+        color: Color.fromRGBO(0, 0, 0, 0.25),
+      )
+    ],
+    this.lockMode = PanelLockMode.unlock,
+    this.scrimColor = Colors.black,
+    this.scrimOpacity = 0.5,
+    this.ignorePointer = true,
+    this.onPanelSlide,
+    this.onPanelOpened,
+    this.onPanelClosed,
+  })  : assert(alignment.x == 0),
+        assert(alignment.y == -1 || alignment.y == 1),
+        assert(panel != null && child != null),
+        assert(color != null),
+        assert(scrimOpacity >= 0 && scrimOpacity <= 1),
+        super(key: key);
+
   final Alignment alignment;
 
   final Widget panel;
@@ -53,35 +82,6 @@ class PanelView extends StatefulWidget {
 
   final VoidCallback onPanelClosed;
 
-  PanelView({
-    Key key,
-    this.alignment = Alignment.bottomCenter,
-    @required this.panel,
-    @required this.child,
-    this.minHeight = kToolbarHeight,
-    this.maxHeight = 320,
-    this.radius = 8,
-    this.color = Colors.white,
-    this.boxShadow = const <BoxShadow>[
-      BoxShadow(
-        blurRadius: 8,
-        color: Color.fromRGBO(0, 0, 0, 0.25),
-      )
-    ],
-    this.lockMode = PanelLockMode.unlock,
-    this.scrimColor = Colors.black,
-    this.scrimOpacity = 0.5,
-    this.ignorePointer = true,
-    this.onPanelSlide,
-    this.onPanelOpened,
-    this.onPanelClosed,
-  })  : assert(alignment.x == 0),
-        assert(alignment.y == -1 || alignment.y == 1),
-        assert(panel != null && child != null),
-        assert(color != null),
-        assert(scrimOpacity >= 0 && scrimOpacity <= 1),
-        super(key: key);
-
   @override
   PanelViewState createState() => PanelViewState();
 }
@@ -95,7 +95,7 @@ class PanelViewState extends State<PanelView>
     super.initState();
     _anim = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 246),
+      duration: const Duration(milliseconds: 246),
     )..addListener(_dispatchEvents);
   }
 
