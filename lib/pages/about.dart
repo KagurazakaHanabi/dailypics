@@ -102,7 +102,6 @@ class _AboutPageState extends State<AboutPage> {
   }
 
   Widget _buildList() {
-    bool isDark = CupertinoTheme.of(context).brightness == Brightness.dark;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -153,7 +152,7 @@ class _AboutPageState extends State<AboutPage> {
         ),
         const Divider(color: Colors.transparent, height: 16),
         Theme(
-          data: isDark ? ThemeData.dark() : ThemeData.light(),
+          data: ThemeData(brightness: CupertinoTheme.of(context).brightness),
           child: Column(
             children: <Widget>[
               ...List<Widget>.generate(

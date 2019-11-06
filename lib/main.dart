@@ -16,7 +16,6 @@ import 'package:dailypics/model/app.dart';
 import 'package:dailypics/pages/splash.dart';
 import 'package:dailypics/widget/error.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -37,7 +36,6 @@ class TujianApp extends StatelessWidget {
       child: CupertinoApp(
         title: '图鉴日图',
         home: SplashPage(),
-        // FIXME: 2019/9/19 等待 CupertinoApp 加入 darkTheme 字段
         builder: (BuildContext context, Widget child) {
           CupertinoThemeData theme = CupertinoTheme.of(context).copyWith(
             brightness: MediaQuery.platformBrightnessOf(context),
