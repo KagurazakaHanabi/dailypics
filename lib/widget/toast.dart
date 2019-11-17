@@ -21,9 +21,9 @@ class Toast extends StatelessWidget {
   Toast(
     this.context,
     this.text, {
-      this.duration = length_short,
-      this.alignment = const Alignment(0, 0.75),
-    }): assert(context != null),
+    this.duration = length_short,
+    this.alignment = const Alignment(0, 0.75),
+  })  : assert(context != null),
         assert(duration != null),
         assert(alignment != null);
 

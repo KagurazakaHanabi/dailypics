@@ -17,9 +17,9 @@ import 'package:flutter/material.dart' show Colors;
 
 class CustomErrorWidget extends StatelessWidget {
   const CustomErrorWidget(
-      this.details, {
-        Key key,
-      }) : super(key: key);
+    this.details, {
+    Key key,
+  }) : super(key: key);
 
   final FlutterErrorDetails details;
 

@@ -50,9 +50,7 @@ class _AboutPageState extends State<AboutPage> {
     DefaultAssetBundle.of(context).loadString('res/contributors.json').then(
       (String value) {
         setState(() {
-          contributors = (jsonDecode(value) as List)
-              .map((e) => Contributor.fromJson(e))
-              .toList();
+          contributors = (jsonDecode(value) as List).map((e) => Contributor.fromJson(e)).toList();
         });
       },
     );
@@ -62,8 +60,8 @@ class _AboutPageState extends State<AboutPage> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     double padding = SystemUtils.isIPad(context) && !SystemUtils.isPortrait(context)
-            ? (size.width - size.height) / 2
-            : 0;
+        ? (size.width - size.height) / 2
+        : 0;
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: DefaultTextStyle(

@@ -26,8 +26,7 @@ import 'package:dailypics/widget/image_card.dart';
 import 'package:dailypics/widget/optimized_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart'
-    show CircularProgressIndicator, Colors, Divider;
+import 'package:flutter/material.dart' show CircularProgressIndicator, Colors, Divider;
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
@@ -272,7 +271,7 @@ class _DetailsPageState extends State<DetailsPage> {
         horizontalRuleDecoration: const BoxDecoration(
           border: Border(
             top: BorderSide(
-              color: CupertinoColors.systemGrey4,
+              color: CupertinoColors.systemGrey5,
               width: 1,
             ),
           ),
@@ -327,7 +326,7 @@ class _DetailsPageState extends State<DetailsPage> {
 
   Widget _buildShareButton() {
     Color color = CupertinoDynamicColor.withBrightness(
-      color: CupertinoColors.activeBlue,
+      color: CupertinoColors.systemBlue,
       darkColor: Colors.white,
     ).resolveFrom(context);
     return Container(
@@ -493,9 +492,7 @@ class _SaveButtonState extends State<_SaveButton> {
             borderRadius: BorderRadius.circular(16),
           ),
           child: Text(
-            denied
-                ? '授权'
-                : progress != 1 ? '获取' : Platform.isAndroid ? '设定' : '完成',
+            denied ? '授权' : progress != 1 ? '获取' : Platform.isAndroid ? '设定' : '完成',
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w500,
@@ -675,9 +672,8 @@ class _BackGestureDetectorState extends State<_BackGestureDetector> {
       widget.navigator.pop();
 
       if (widget.controller.isAnimating) {
-        final int animationTime = ui
-            .lerpDouble(0, _kMaxAnimationTime, widget.controller.value)
-            .floor();
+        final int animationTime =
+            ui.lerpDouble(0, _kMaxAnimationTime, widget.controller.value).floor();
         widget.controller.animateBack(
           0.0,
           duration: Duration(milliseconds: animationTime),

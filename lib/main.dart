@@ -20,7 +20,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 void main() async {
-  ErrorWidget.builder = (details) {
+  ErrorWidget.builder = (FlutterErrorDetails details) {
     return CustomErrorWidget(details);
   };
   runApp(TujianApp());

@@ -86,8 +86,7 @@ class PanelView extends StatefulWidget {
   PanelViewState createState() => PanelViewState();
 }
 
-class PanelViewState extends State<PanelView>
-    with SingleTickerProviderStateMixin {
+class PanelViewState extends State<PanelView> with SingleTickerProviderStateMixin {
   AnimationController _anim;
 
   @override

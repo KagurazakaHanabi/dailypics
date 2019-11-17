@@ -22,8 +22,7 @@ class SuggestComponent extends StatefulWidget {
   _SuggestComponentState createState() => _SuggestComponentState();
 }
 
-class _SuggestComponentState extends State<SuggestComponent>
-    with AutomaticKeepAliveClientMixin {
+class _SuggestComponentState extends State<SuggestComponent> with AutomaticKeepAliveClientMixin {
   ScrollController controller = ScrollController();
 
   List<Picture> data;

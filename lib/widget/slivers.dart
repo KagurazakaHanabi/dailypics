@@ -45,9 +45,7 @@ class SliverImageCardList extends StatelessWidget {
   Widget build(BuildContext context) {
     bool iPad = SystemUtils.isIPad(context, true);
     bool portrait = SystemUtils.isPortrait(context);
-    int cnt = SystemUtils.isIPad(context)
-        ? iPad && !portrait && adaptiveTablet ? 6 : 2
-        : 1;
+    int cnt = SystemUtils.isIPad(context) ? iPad && !portrait && adaptiveTablet ? 6 : 2 : 1;
     return SliverPadding(
       padding: SystemUtils.isIPad(context, true)
           ? const EdgeInsets.fromLTRB(12, 12, 12, 0)

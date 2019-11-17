@@ -29,8 +29,7 @@ class TodayComponent extends StatefulWidget {
   _TodayComponentState createState() => _TodayComponentState();
 }
 
-class _TodayComponentState extends State<TodayComponent>
-    with AutomaticKeepAliveClientMixin {
+class _TodayComponentState extends State<TodayComponent> with AutomaticKeepAliveClientMixin {
   ScrollController controller = ScrollController();
 
   String text;
@@ -117,10 +116,11 @@ class _TodayComponentState extends State<TodayComponent>
               ],
             ),
           ),
-          Text(
-            text ?? ' ',
-            style: TextStyle(color: textColor, fontSize: 12),
-          ),
+          if (text != null)
+            Text(
+              text,
+              style: TextStyle(color: textColor, fontSize: 12),
+            ),
         ],
       ),
     );
@@ -146,7 +146,7 @@ class _TodayComponentState extends State<TodayComponent>
   Future<void> _fetchText() async {
     String url = 'https://v1.hitokoto.cn/?encode=text';
     String source = (await http.get(url)).body;
-    setState(() => text = source);
+    if (mounted) setState(() => text = source);
   }
 
   Future<Picture> _fetchBing() async {

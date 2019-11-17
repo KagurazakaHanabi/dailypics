@@ -63,7 +63,7 @@ class _QrCodePainter extends CustomPainter {
       for (int y = 0; y < code.moduleCount; y++) {
         if (code.isDark(y, x)) {
           canvas.drawRect(
-            Rect.fromLTWH(x * 1.5, y *1.5, 1.5, 1.5),
+            Rect.fromLTWH(x * 1.5, y * 1.5, 1.5, 1.5),
             Paint()..color = const Color(0xFF000000),
           );
         }

@@ -24,12 +24,12 @@ import 'package:markdown/markdown.dart' hide Text;
 
 class ImageCard extends StatefulWidget {
   const ImageCard(
-      this.data,
-      this.heroTag, {
-        this.aspectRatio = 4 / 5,
-        this.showQrCode = false,
-        this.repaintKey,
-      }) : assert(aspectRatio != null);
+    this.data,
+    this.heroTag, {
+    this.aspectRatio = 4 / 5,
+    this.showQrCode = false,
+    this.repaintKey,
+  }) : assert(aspectRatio != null);
 
   final Picture data;
 
