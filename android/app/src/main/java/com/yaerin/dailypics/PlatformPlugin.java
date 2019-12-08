@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.yaerin.daily_pics;
+package com.yaerin.dailypics;
 
 import android.app.Activity;
 import android.os.Build;

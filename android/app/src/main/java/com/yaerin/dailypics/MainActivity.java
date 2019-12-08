@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.yaerin.daily_pics;
+package com.yaerin.dailypics;
 
 import androidx.annotation.NonNull;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.yaerin.daily_pics;
+package com.yaerin.dailypics;
 
 import android.app.WallpaperManager;
 import android.content.ContentResolver;
@@ -43,10 +43,8 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.os.Environment.DIRECTORY_PICTURES;
 import static android.os.Environment.getExternalStoragePublicDirectory;
-import static androidx.core.content.ContextCompat.checkSelfPermission;
 
 class PlatformPluginBaseImpl implements PlatformPluginImpl {
     private static final String ACTION_CROP_AND_SET_WALLPAPER = "android.service.wallpaper.CROP_AND_SET_WALLPAPER";
