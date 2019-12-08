@@ -16,6 +16,7 @@
 
 package com.yaerin.dailypics;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
@@ -24,11 +25,10 @@ import androidx.core.content.FileProvider;
 import java.io.File;
 
 import io.flutter.plugin.common.MethodChannel.Result;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 class PlatformPluginApi24Impl extends PlatformPluginBaseImpl {
-    PlatformPluginApi24Impl(Registrar registrar) {
-        super(registrar);
+    PlatformPluginApi24Impl(Context context) {
+        super(context);
     }
 
     @Override

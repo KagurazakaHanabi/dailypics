@@ -41,7 +41,6 @@ import java.util.List;
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel.Result;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 import static android.os.Environment.DIRECTORY_PICTURES;
 import static android.os.Environment.getExternalStoragePublicDirectory;
@@ -51,8 +50,8 @@ class PlatformPluginBaseImpl implements PlatformPluginImpl {
 
     final Context mContext;
 
-    PlatformPluginBaseImpl(Registrar registrar) {
-        this.mContext = registrar.activeContext();
+    PlatformPluginBaseImpl(Context context) {
+        this.mContext = context;
     }
 
     @Override
