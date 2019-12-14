@@ -38,8 +38,3 @@ flutter:
   uses-material-design: true
   assets:
     - res/
-#  plugin:
-#    platforms:
-#      android:
-#        package: com.yaerin.dailypics
-#        pluginClass: PlatformPlugin

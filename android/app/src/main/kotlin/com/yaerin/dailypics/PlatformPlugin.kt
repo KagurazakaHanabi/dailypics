@@ -91,12 +91,13 @@ internal class PlatformPlugin : ActivityAware, FlutterPlugin, MethodCallHandler,
             "syncAlbum" -> {
                 methodCall = call
                 methodResult = result
-                val permissions = arrayOf(WRITE_EXTERNAL_STORAGE)
                 val requestCode = 1000
+                val permissions = arrayOf(WRITE_EXTERNAL_STORAGE)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     activity!!.requestPermissions(permissions, requestCode)
                 } else {
-                    onRequestPermissionsResult(requestCode, permissions, intArrayOf(PERMISSION_GRANTED))
+                    val grantResults = intArrayOf(PERMISSION_GRANTED)
+                    onRequestPermissionsResult(requestCode, permissions, grantResults)
                 }
             }
 
