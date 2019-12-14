@@ -197,9 +197,7 @@ class PanelViewState extends State<PanelView> with SingleTickerProviderStateMixi
   static PanelViewState of(BuildContext context, {bool nullOk = false}) {
     assert(context != null);
     assert(nullOk != null);
-    final PanelViewState result = context.ancestorStateOfType(
-      const TypeMatcher<PanelViewState>(),
-    );
+    final PanelViewState result = context.findAncestorStateOfType<PanelViewState>();
     if (nullOk || result != null) {
       return result;
     }
