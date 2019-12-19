@@ -21,7 +21,6 @@ import 'package:dailypics/utils/api.dart';
 import 'package:dailypics/utils/utils.dart';
 import 'package:dailypics/widget/slivers.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart' show Colors;
 import 'package:http/http.dart' as http;
 
 class TodayComponent extends StatefulWidget {
@@ -84,18 +83,28 @@ class _TodayComponentState extends State<TodayComponent> with AutomaticKeepAlive
   }
 
   Widget _buildHeader() {
-    Color textColor = CupertinoDynamicColor.withBrightness(
-      color: Colors.black54,
-      darkColor: Colors.white70,
-    ).resolveFrom(context);
+    TextStyle textStyle = TextStyle(
+      color: CupertinoColors.secondaryLabel,
+      fontWeight: FontWeight.w500,
+      fontSize: 12,
+    );
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
-            _getDate(),
-            style: TextStyle(color: textColor, fontSize: 12),
+          GestureDetector(
+            child: Text(_getDate(), style: textStyle),
+            onLongPress: () {
+              /*showCupertinoDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return const CupertinoAlertDialog(
+                    title: Text('Copied'),
+                  );
+                },
+              );*/
+            },
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
@@ -106,7 +115,7 @@ class _TodayComponentState extends State<TodayComponent> with AutomaticKeepAlive
                   'Today',
                   style: TextStyle(
                     fontSize: 34,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
                 const Offstage(
@@ -116,11 +125,7 @@ class _TodayComponentState extends State<TodayComponent> with AutomaticKeepAlive
               ],
             ),
           ),
-          if (text != null)
-            Text(
-              text,
-              style: TextStyle(color: textColor, fontSize: 12),
-            ),
+          if (text != null) Text(text, style: textStyle),
         ],
       ),
     );
