@@ -36,7 +36,61 @@ import java.io.*
 
 open class PlatformPluginBaseImpl(val context: Context) : PlatformPluginImpl {
     companion object {
-        const val ACTION_CROP_AND_SET_WALLPAPER = "android.service.wallpaper.CROP_AND_SET_WALLPAPER"
+        /**
+         * Gets an Intent that will launch an activity that crops the given
+         * image and sets the device's wallpaper. If there is a default HOME activity
+         * that supports cropping wallpapers, it will be preferred as the default.
+         * Use this method instead of directly creating a {@link #ACTION_CROP_AND_SET_WALLPAPER}
+         * intent.
+         *
+         * @param imageUri The image URI that will be set in the intent. The must be a content
+         *                 URI and its provider must resolve its type to "image/"
+         * @see WallpaperManager#getCropAndSetWallpaperIntent(Uri)
+         */
+        fun getCropAndSetWallpaperIntent(context: Context, imageUri: Uri?): Intent? {
+            requireNotNull(imageUri) { "Image URI must not be null" }
+
+            require(ContentResolver.SCHEME_CONTENT == imageUri.scheme) {
+                ("Image URI must be of the " + ContentResolver.SCHEME_CONTENT + " scheme type")
+            }
+
+            val packageManager = context.packageManager
+            val resultIntent = Intent("android.service.wallpaper.CROP_AND_SET_WALLPAPER")
+            resultIntent.setDataAndType(imageUri, "image/*")
+            resultIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+            // Find out if the default HOME activity supports CROP_AND_SET_WALLPAPER
+            val homeIntent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
+            val resolvedHome = packageManager.resolveActivity(homeIntent, MATCH_DEFAULT_ONLY)
+            if (resolvedHome != null) {
+                resultIntent.setPackage(resolvedHome.activityInfo.packageName)
+
+                val cropAppList = packageManager.queryIntentActivities(resultIntent, 0)
+                if (cropAppList.size > 0) {
+                    return resultIntent
+                }
+            }
+
+            // fallback crop activity
+            val cropperPackage: String
+            cropperPackage = try {
+                val resId = context.resources
+                        .getIdentifier("config_wallpaperCropperPackage", "string", "android")
+                context.resources.getString(resId)
+            } catch (e: Exception) {
+                "com.android.wallpapercropper"
+            }
+
+            resultIntent.setPackage(cropperPackage)
+            val cropAppList = packageManager.queryIntentActivities(resultIntent, 0)
+            if (cropAppList.size > 0) {
+                return resultIntent
+            }
+            // If the URI is not of the right type, or for some reason the system wallpaper
+            // cropper doesn't exist, return null
+            throw IllegalArgumentException("Cannot use passed URI to set wallpaper; " +
+                    "check that the type returned by ContentProvider matches image/*")
+        }
     }
 
     @Suppress("DEPRECATION")
@@ -160,61 +214,5 @@ open class PlatformPluginBaseImpl(val context: Context) : PlatformPluginImpl {
             cr.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
             result.success(null)
         }
-    }
-
-    /**
-     * Gets an Intent that will launch an activity that crops the given
-     * image and sets the device's wallpaper. If there is a default HOME activity
-     * that supports cropping wallpapers, it will be preferred as the default.
-     * Use this method instead of directly creating a {@link #ACTION_CROP_AND_SET_WALLPAPER}
-     * intent.
-     *
-     * @param imageUri The image URI that will be set in the intent. The must be a content
-     *                 URI and its provider must resolve its type to "image/"
-     * @see WallpaperManager#getCropAndSetWallpaperIntent(Uri)
-     */
-    private fun getCropAndSetWallpaperIntent(context: Context, imageUri: Uri?): Intent? {
-        requireNotNull(imageUri) { "Image URI must not be null" }
-
-        require(ContentResolver.SCHEME_CONTENT == imageUri.scheme) {
-            ("Image URI must be of the " + ContentResolver.SCHEME_CONTENT + " scheme type")
-        }
-
-        val packageManager = context.packageManager
-        val cropAndSetWallpaperIntent = Intent(ACTION_CROP_AND_SET_WALLPAPER)
-        cropAndSetWallpaperIntent.setDataAndType(imageUri, "image/*")
-        cropAndSetWallpaperIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-
-        // Find out if the default HOME activity supports CROP_AND_SET_WALLPAPER
-        val homeIntent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
-        val resolvedHome = packageManager.resolveActivity(homeIntent, MATCH_DEFAULT_ONLY)
-        if (resolvedHome != null) {
-            cropAndSetWallpaperIntent.setPackage(resolvedHome.activityInfo.packageName)
-
-            val cropAppList = packageManager.queryIntentActivities(cropAndSetWallpaperIntent, 0)
-            if (cropAppList.size > 0) {
-                return cropAndSetWallpaperIntent
-            }
-        }
-
-        // fallback crop activity
-        val cropperPackage: String
-        cropperPackage = try {
-            val resId = context.resources
-                    .getIdentifier("config_wallpaperCropperPackage", "string", "android")
-            context.resources.getString(resId)
-        } catch (e: Exception) {
-            "com.android.wallpapercropper"
-        }
-
-        cropAndSetWallpaperIntent.setPackage(cropperPackage)
-        val cropAppList = packageManager.queryIntentActivities(cropAndSetWallpaperIntent, 0)
-        if (cropAppList.size > 0) {
-            return cropAndSetWallpaperIntent
-        }
-        // If the URI is not of the right type, or for some reason the system wallpaper
-        // cropper doesn't exist, return null
-        throw IllegalArgumentException("Cannot use passed URI to set wallpaper; " +
-                "check that the type returned by ContentProvider matches image/*")
     }
 }
