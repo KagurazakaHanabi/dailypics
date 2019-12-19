@@ -36,7 +36,17 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="tujian" />
+                <data
+                    android:host="dailypics.cn"
+                    android:pathPrefix="/member/id/"
+                    android:scheme="https" />
+
+                <data
+                    android:host="dailypics.cn"
+                    android:pathPrefix="/p/"
+                    android:scheme="https" />
+
+                <data android:scheme="dailypics" />
             </intent-filter>
         </activity>
 
