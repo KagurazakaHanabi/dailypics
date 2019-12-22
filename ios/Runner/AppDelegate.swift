@@ -33,6 +33,8 @@ class AppDelegate: FlutterAppDelegate {
                 self.isAlbumAuthorized(result: result)
             case "openAppSettings":
                 self.openAppSettings(result: result)
+            case "getTemporaryDirectory":
+                self.getTemporaryDirectory(result: result)
             case "syncAlbum":
                 self.syncAlbum(file: (call.arguments as! Dictionary<String, String>)["file"]!, result: result)
             default:
@@ -82,7 +84,12 @@ class AppDelegate: FlutterAppDelegate {
         UIApplication.shared.openURL(URL.init(string: UIApplication.openSettingsURLString)!)
         result(nil)
     }
-    
+
+    private func getTemporaryDirectory(result: FlutterResult) {
+        let fileManager = FileManager.default
+        result(fileManager.urls(for: .cachesDirectory, in: .userDomainMask)[0])
+    }
+
     private func syncAlbum(file: String, result: @escaping FlutterResult) {
         PHPhotoLibrary.requestAuthorization({status in
             if status == .authorized {

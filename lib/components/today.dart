@@ -115,7 +115,7 @@ class _TodayComponentState extends State<TodayComponent> with AutomaticKeepAlive
                   'Today',
                   style: TextStyle(
                     fontSize: 34,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 const Offstage(
