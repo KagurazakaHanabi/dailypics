@@ -157,7 +157,7 @@ open class PlatformPluginBaseImpl(val context: Context) : PlatformPluginImpl {
     }
 
     override fun getTemporaryDirectory(result: Result) {
-        result.success(context.getCacheDir().getPath())
+        result.success(context.cacheDir.path)
     }
 
     @Suppress("DEPRECATION")
