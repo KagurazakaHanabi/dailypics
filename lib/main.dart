@@ -36,6 +36,7 @@ class TujianApp extends StatelessWidget {
       child: CupertinoApp(
         title: '图鉴日图',
         home: SplashPage(),
+        debugShowCheckedModeBanner: false,
         builder: (BuildContext context, Widget child) {
           CupertinoThemeData theme = CupertinoTheme.of(context).copyWith(
             brightness: MediaQuery.platformBrightnessOf(context),
