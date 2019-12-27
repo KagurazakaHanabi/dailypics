@@ -87,7 +87,7 @@ class AppDelegate: FlutterAppDelegate {
 
     private func getTemporaryDirectory(result: FlutterResult) {
         let fileManager = FileManager.default
-        result(fileManager.urls(for: .cachesDirectory, in: .userDomainMask)[0])
+        result(fileManager.urls(for: .cachesDirectory, in: .userDomainMask)[0].path)
     }
 
     private func syncAlbum(file: String, result: @escaping FlutterResult) {
