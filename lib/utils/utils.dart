@@ -163,7 +163,7 @@ class Utils {
   }
 
   static String getCompressed(Picture data, [String style = 'w720']) {
-    if (!data.url.contains('images.dailypics.cn/')) return data.url;
+    if (data.url.contains('bing')) return data.url;
     return 'https://s1.images.dailypics.cn${data.path}!$style';
   }
 
