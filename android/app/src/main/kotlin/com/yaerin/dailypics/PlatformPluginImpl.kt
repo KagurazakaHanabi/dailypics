@@ -32,12 +32,10 @@ internal interface PlatformPluginImpl {
 
     fun requestReview(result: Result?)
 
-    fun isAlbumAuthorized(result: Result)
+    fun isAlbumAuthorized(result: Result?)
 
     fun openAppSettings(result: Result?)
 
     @Throws(IOException::class)
     fun syncAlbum(call: MethodCall, result: Result)
-
-    fun getTemporaryDirectory(result: Result)
 }

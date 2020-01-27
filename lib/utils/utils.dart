@@ -21,6 +21,7 @@ import 'package:dailypics/misc/bean.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -58,10 +59,6 @@ class SystemUtils {
     return launch(url, forceSafariVC: false, forceWebView: false);
   }
 
-  static Future<String> getTemporaryDirectory() {
-    return _channel.invokeMethod('getTemporaryDirectory');
-  }
-
   static bool isIPad(BuildContext context, [bool strict = false]) {
     Size size = MediaQuery.of(context).size;
     if (strict) {
@@ -83,7 +80,7 @@ class Utils {
   ]) async {
     Completer<File> completer = Completer();
     String url = data.url;
-    String dest = await SystemUtils.getTemporaryDirectory();
+    String dest = (await getTemporaryDirectory()).path;
     File file;
     String name;
     if (url.contains('bing.com/')) {
