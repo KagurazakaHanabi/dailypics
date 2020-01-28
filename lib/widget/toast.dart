@@ -57,7 +57,7 @@ class Toast extends StatelessWidget {
       padding: MediaQuery.of(context).padding,
       alignment: alignment,
       child: DefaultTextStyle(
-        style: Theme.of(context).textTheme.subhead.merge(textStyle),
+        style: Theme.of(context).textTheme.subtitle1.merge(textStyle),
         child: AnimatedOpacity(
           opacity: _toasts.contains(this) ? 1 : 0,
           duration: const Duration(milliseconds: 500),
