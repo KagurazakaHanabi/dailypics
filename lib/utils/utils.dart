@@ -186,7 +186,7 @@ class Settings {
     _prefs = await SharedPreferences.getInstance();
   }
 
-  static List<String> get marked => _prefs.get('marked') ?? [];
+  static List<String> get marked => _prefs.getStringList('marked') ?? [];
 
   static set marked(List<String> list) => _prefs.setStringList('marked', list);
 }
