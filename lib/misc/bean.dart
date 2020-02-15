@@ -30,7 +30,7 @@ class Picture {
     this.width,
     this.height,
     this.url,
-    this.path,
+    this.cdnUrl,
     this.color,
     this.date,
     this.marked,
@@ -59,11 +59,11 @@ class Picture {
 
   int height;
 
-  @JsonKey(name: 'local_url')
+  @JsonKey(ignore: true)
   String url;
 
-  @JsonKey(name: 'nativePath')
-  String path;
+  @JsonKey(name: 'nativePath', fromJson: _urlFromJson)
+  String cdnUrl;
 
   @JsonKey(name: 'theme_color', fromJson: _colorFromHex, toJson: _colorToHex)
   Color color;
@@ -81,6 +81,10 @@ class Picture {
   }
 
   String toJson() => jsonEncode(_$PictureToJson(this));
+
+  static String _urlFromJson(String s) {
+    return 'https://s1.images.dailypics.cn$s';
+  }
 
   static Color _colorFromHex(String hex) {
     if (hex == null) return null;

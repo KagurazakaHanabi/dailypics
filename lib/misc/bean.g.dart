@@ -15,8 +15,7 @@ Picture _$PictureFromJson(Map<String, dynamic> json) {
     content: json['p_content'] as String,
     width: json['width'] as int,
     height: json['height'] as int,
-    url: json['local_url'] as String,
-    path: json['nativePath'] as String,
+    cdnUrl: Picture._urlFromJson(json['nativePath'] as String),
     color: Picture._colorFromHex(json['theme_color'] as String),
     date: json['p_date'] as String,
     marked: json['marked'] as bool ?? false,
@@ -31,8 +30,7 @@ Map<String, dynamic> _$PictureToJson(Picture instance) => <String, dynamic>{
       'p_content': instance.content,
       'width': instance.width,
       'height': instance.height,
-      'local_url': instance.url,
-      'nativePath': instance.path,
+      'nativePath': instance.cdnUrl,
       'theme_color': Picture._colorToHex(instance.color),
       'p_date': instance.date,
       'marked': instance.marked,
@@ -61,12 +59,8 @@ Splash _$SplashFromJson(Map<String, dynamic> json) {
   return Splash(
     title: json['splash_title'] as String,
     imageUrl: json['splash_image'] as String,
-    effectiveAt: json['effective_at'] == null
-        ? null
-        : DateTime.parse(json['effective_at'] as String),
-    expiresAt: json['expires_at'] == null
-        ? null
-        : DateTime.parse(json['expires_at'] as String),
+    effectiveAt: Splash._parseDateTime(json['effective_at'] as String),
+    expiresAt: Splash._parseDateTime(json['expires_at'] as String),
   );
 }
 

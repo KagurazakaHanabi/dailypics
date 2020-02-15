@@ -79,15 +79,14 @@ class Utils {
     void Function(int count, int total) cb,
   ]) async {
     Completer<File> completer = Completer();
-    String url = data.url;
+    String url = data.url ?? data.cdnUrl;
     String dest = (await getTemporaryDirectory()).path;
     File file;
     String name;
     if (url.contains('bing.com/')) {
       name = url.substring(url.lastIndexOf('=') + 1);
     } else {
-      name = url.substring(url.lastIndexOf('/') + 1) + '.jpg';
-      url += '?p=0&f=jpg';
+      name = url.substring(url.lastIndexOf('/') + 1);
     }
     file = File('$dest/$name');
     if (file.existsSync()) {
@@ -160,8 +159,8 @@ class Utils {
   }
 
   static String getCompressed(Picture data, [String style = 'w720']) {
-    if (data.url.contains('bing')) return data.url;
-    return 'https://s1.images.dailypics.cn${data.path}!$style';
+    if (data.url != null) return data.url;
+    return '${data.cdnUrl}!$style';
   }
 
   static bool isDarkColor(Color c) {

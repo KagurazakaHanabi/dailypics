@@ -141,7 +141,7 @@ class _ImageCardState extends State<ImageCard> {
                         alignment: Alignment.bottomRight,
                         padding: const EdgeInsets.only(right: 8, bottom: 8),
                         child: QrCodeView(
-                          widget.data.url.contains('bing.com/')
+                          widget.data.url?.contains('bing.com/') ?? false
                               ? 'https://cn.bing.com/'
                               : 'https://dailypics.cn/p/${widget.data.id}',
                         ),
