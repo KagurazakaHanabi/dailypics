@@ -116,7 +116,7 @@ open class PlatformPluginBaseImpl(val context: Context) : PlatformPluginImpl {
         intent.putExtra(Intent.EXTRA_STREAM, uri)
         intent.setDataAndType(uri, "image/*")
         context.startActivity(Intent.createChooser(intent, null))
-        result.success(null)
+        result?.success(null)
     }
 
     override fun useAsWallpaper(file: String, result: Result?) {
@@ -124,14 +124,14 @@ open class PlatformPluginBaseImpl(val context: Context) : PlatformPluginImpl {
             val uri = FileProvider.getUriForFile(context, PROVIDER_AUTHORITY, File(file))
             val intent: Intent? = getCropAndSetWallpaperIntent(context, uri)
             context.startActivity(Intent.createChooser(intent, "设置为壁纸"))
-            result.success(null)
+            result?.success(null)
         } catch (e: Exception) {
             val wm = WallpaperManager.getInstance(context)
             try {
                 wm.setStream(FileInputStream(File(file)))
-                result.success(null)
+                result?.success(null)
             } catch (ex: IOException) {
-                result.error(ex.javaClass.name, ex.localizedMessage, null)
+                result?.error(ex.javaClass.name, ex.localizedMessage, null)
             }
         }
     }
@@ -141,11 +141,11 @@ open class PlatformPluginBaseImpl(val context: Context) : PlatformPluginImpl {
         val intent = Intent(Intent.ACTION_VIEW, uri)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(intent)
-        result.success(null)
+        result?.success(null)
     }
 
     override fun isAlbumAuthorized(result: Result?) {
-        result.success(true)
+        result?.success(true)
     }
 
     override fun openAppSettings(result: Result?) {
@@ -153,7 +153,7 @@ open class PlatformPluginBaseImpl(val context: Context) : PlatformPluginImpl {
         intent.data = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(intent)
-        result.success(null)
+        result?.success(null)
     }
 
     @Suppress("DEPRECATION")
