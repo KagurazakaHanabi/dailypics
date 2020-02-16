@@ -254,24 +254,24 @@ class _DetailsPageState extends State<DetailsPage> {
         img: textStyle,
         blockSpacing: 8,
         listIndent: 24,
-        blockquotePadding: const EdgeInsets.all(16),
-        blockquoteDecoration: const BoxDecoration(
-          color: CupertinoColors.systemGrey6,
+        blockquotePadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        blockquoteDecoration: BoxDecoration(
+          color: CupertinoColors.systemGrey6.resolveFrom(context),
           border: Border(
             left: BorderSide(
-              color: CupertinoColors.systemGrey4,
+              color: CupertinoColors.systemGrey4.resolveFrom(context),
               width: 4,
             ),
           ),
         ),
         codeblockPadding: const EdgeInsets.all(8),
-        codeblockDecoration: const BoxDecoration(
-          color: CupertinoColors.systemGrey6,
+        codeblockDecoration: BoxDecoration(
+          color: CupertinoColors.systemGrey6.resolveFrom(context),
         ),
-        horizontalRuleDecoration: const BoxDecoration(
+        horizontalRuleDecoration: BoxDecoration(
           border: Border(
             top: BorderSide(
-              color: CupertinoColors.systemGrey5,
+              color: CupertinoColors.systemGrey5.resolveFrom(context),
               width: 1,
             ),
           ),

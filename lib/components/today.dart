@@ -84,7 +84,7 @@ class _TodayComponentState extends State<TodayComponent> with AutomaticKeepAlive
 
   Widget _buildHeader() {
     TextStyle textStyle = TextStyle(
-      color: CupertinoColors.secondaryLabel,
+      color: CupertinoColors.secondaryLabel.resolveFrom(context),
       fontWeight: FontWeight.w500,
       fontSize: 12,
     );

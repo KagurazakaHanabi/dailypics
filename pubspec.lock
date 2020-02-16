@@ -192,8 +192,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: HEAD
-      resolved-ref: "046708c2bf9e0494079557153e9a3cc9d9cee36a"
+      ref: dev
+      resolved-ref: d8aae5fe9386a6a4497a21568a859cd4e2a0f1ac
       url: "https://github.com/KagurazakaHanabi/flutter_markdown.git"
     source: git
     version: "0.3.2"
