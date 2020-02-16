@@ -21,6 +21,8 @@ import 'package:dailypics/utils/api.dart';
 import 'package:dailypics/utils/utils.dart';
 import 'package:dailypics/widget/slivers.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:http/http.dart' as http;
 
 class TodayComponent extends StatefulWidget {
@@ -93,30 +95,15 @@ class _TodayComponentState extends State<TodayComponent> with AutomaticKeepAlive
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          GestureDetector(
-            child: Text(_getDate(), style: textStyle),
-            onLongPress: () {
-              /*showCupertinoDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return const CupertinoAlertDialog(
-                    title: Text('Copied'),
-                  );
-                },
-              );*/
-            },
-          ),
+          Text(_getDate(), style: textStyle),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                const Text(
+                Text(
                   'Today',
-                  style: TextStyle(
-                    fontSize: 34,
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: CupertinoTheme.of(context).textTheme.navLargeTitleTextStyle,
                 ),
                 const Offstage(
                   offstage: true,
@@ -125,7 +112,21 @@ class _TodayComponentState extends State<TodayComponent> with AutomaticKeepAlive
               ],
             ),
           ),
-          if (text != null) Text(text, style: textStyle),
+          GestureDetector(
+            child: Text(text ?? '　', style: textStyle),
+            onLongPress: () async {
+              await Clipboard.setData(ClipboardData(text: text));
+              showCupertinoDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return const AlertDialog(
+                    icon: Ionicons.ios_checkmark,
+                    text: Text('已复制'),
+                  );
+                },
+              );
+            },
+          ),
         ],
       ),
     );
@@ -189,4 +190,57 @@ class _TodayComponentState extends State<TodayComponent> with AutomaticKeepAlive
 
   @override
   bool get wantKeepAlive => true;
+}
+
+class AlertDialog extends StatefulWidget {
+  const AlertDialog({this.icon, this.text});
+
+  final IconData icon;
+
+  final Widget text;
+
+  @override
+  State<StatefulWidget> createState() => _AlertDialogState();
+}
+
+class _AlertDialogState extends State<AlertDialog> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Future.delayed(const Duration(seconds: 1));
+      Navigator.of(context).pop();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: SizedBox.fromSize(
+        size: const Size(128, 96),
+        child: CupertinoPopupSurface(
+          child: Center(
+            child: Stack(
+              alignment: Alignment.topCenter,
+              children: <Widget>[
+                Text(
+                  String.fromCharCode(widget.icon.codePoint),
+                  style: TextStyle(
+                    fontFamily: widget.icon.fontFamily,
+                    package: widget.icon.fontPackage,
+                    fontSize: 48,
+                    height: 0.7,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 24),
+                  child: widget.text,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
