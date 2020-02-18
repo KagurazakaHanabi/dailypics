@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dailypics/misc/bean.dart';
 import 'package:dailypics/misc/config.g.dart';
@@ -97,5 +99,58 @@ class TujianApi {
     Uri uri = Uri.parse('$_kBaseUrl/app/splash');
     String source = await _client.read(uri, headers: _kHeaders);
     return Splash.fromJson(jsonDecode(source));
+  }
+
+  static Future<String> uploadFile(
+    File file,
+    void Function(int, int) cb,
+  ) async {
+    HttpClient client = HttpClient();
+    Uri uri = Uri.parse('https://img.dpic.dev/upload');
+    HttpClientRequest request = await client.postUrl(uri);
+    String subType = file.path.substring(file.path.lastIndexOf('.') + 1);
+    request.headers.set('content-type', 'image/$subType');
+    int contentLength = file.statSync().size;
+    int byteCount = 0;
+    Stream<List<int>> stream = file.openRead();
+    await request.addStream(stream.transform(StreamTransformer.fromHandlers(
+      handleDone: (sink) => sink.close(),
+      handleError: (_, __, ___) {},
+      handleData: (data, sink) {
+        byteCount += data.length;
+        sink.add(data);
+        if (cb != null) {
+          cb(byteCount, contentLength);
+        }
+      },
+    )));
+    HttpClientResponse response = await request.close();
+    return await response.cast<List<int>>().transform(utf8.decoder).join();
+  }
+
+  static Future<String> submit({
+    String title,
+    String content,
+    String url,
+    String user,
+    String type,
+    String email,
+  }) async {
+    final Map<String, String> data = {
+      'title': title,
+      'content': content,
+      'url': url,
+      'user': user,
+      'sort': type,
+    };
+    if (email != null) {
+      data.addAll({'hz': email});
+    }
+    http.Response response = await http.post(
+      'https://v2.api.dailypics.cn/tg',
+      headers: _kHeaders,
+      body: data,
+    );
+    return response.body;
   }
 }

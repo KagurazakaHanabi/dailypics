@@ -13,14 +13,11 @@
 // limitations under the License.
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:dailypics/misc/bean.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -110,52 +107,6 @@ class Utils {
       completer.complete(file);
     });
     return completer.future;
-  }
-
-  static Future<String> upload(
-    File file,
-    Map<String, String> data,
-    void Function(int count, int total) cb,
-  ) async {
-    dynamic json = jsonDecode(
-      await uploadFile('https://img.dpic.dev/upload', file, cb),
-    );
-    if (!json['ret']) {
-      return jsonEncode({
-        'code': 400,
-        'msg': json['error']['message'],
-      });
-    }
-    String url = 'https://img.dpic.dev/' + json['info']['md5'];
-    data['url'] = url;
-    return (await http.post('https://v2.api.dailypics.cn/tg', body: data)).body;
-  }
-
-  static Future<String> uploadFile(
-    String url,
-    File file,
-    void Function(int, int) cb,
-  ) async {
-    HttpClient client = HttpClient();
-    HttpClientRequest request = await client.postUrl(Uri.parse(url));
-    String subType = file.path.substring(file.path.lastIndexOf('.') + 1);
-    request.headers.set('content-type', 'image/$subType');
-    int contentLength = file.statSync().size;
-    int byteCount = 0;
-    Stream<Uint8List> stream = file.openRead();
-    await request.addStream(stream.transform(StreamTransformer.fromHandlers(
-      handleData: (data, sink) {
-        byteCount += data.length;
-        sink.add(data);
-        if (cb != null) {
-          cb(byteCount, contentLength);
-        }
-      },
-      handleError: (_, __, ___) {},
-      handleDone: (sink) => sink.close(),
-    )));
-    HttpClientResponse response = await request.close();
-    return await response.cast<List<int>>().transform(utf8.decoder).join();
   }
 
   static String getCompressed(Picture data, [String style = 'w720']) {

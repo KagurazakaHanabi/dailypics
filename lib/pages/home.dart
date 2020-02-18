@@ -20,6 +20,7 @@ import 'package:dailypics/model/app.dart';
 import 'package:dailypics/pages/about.dart';
 import 'package:dailypics/pages/details.dart';
 import 'package:dailypics/pages/recent.dart';
+import 'package:dailypics/pages/upload.dart';
 import 'package:dailypics/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -64,6 +65,7 @@ class _HomePageState extends State<HomePage> {
           items: [
             _buildNavigationItem(Ionicons.ios_today, 'Today'),
             _buildNavigationItem(Ionicons.ios_time, '以往'),
+            _buildNavigationItem(Ionicons.ios_paper_plane, '投稿'),
             _buildNavigationItem(Ionicons.ios_flame, '推荐 '),
             _buildNavigationItem(Ionicons.ios_settings, '更多'),
           ],
@@ -77,8 +79,10 @@ class _HomePageState extends State<HomePage> {
                 builder: (_) => RecentPage(types: AppModel.of(context).types),
               );
             case 2:
-              return CupertinoTabView(builder: (_) => SuggestComponent());
+              return CupertinoTabView(builder: (_) => UploadPage());
             case 3:
+              return CupertinoTabView(builder: (_) => SuggestComponent());
+            case 4:
               return CupertinoTabView(builder: (_) => AboutPage());
             default:
               return null;

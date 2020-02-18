@@ -17,7 +17,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:dailypics/model/app.dart';
-import 'package:dailypics/utils/utils.dart';
+import 'package:dailypics/utils/api.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show LinearProgressIndicator;
 import 'package:flutter_ionicons/flutter_ionicons.dart';
@@ -43,102 +43,94 @@ class _UploadPageState extends State<UploadPage> {
 
   File imageFile;
   String type;
-  double progress;
+  double progress = -1;
 
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        padding: EdgeInsetsDirectional.zero,
-        leading: CupertinoButton(
-          child: const Icon(CupertinoIcons.back),
-          padding: EdgeInsets.zero,
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        middle: const Text('投稿'),
+      navigationBar: const CupertinoNavigationBar(
+        middle: Text('投稿'),
       ),
-      child: SafeArea(
-        child: Column(
-          children: <Widget>[
-            Flexible(
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                children: <Widget>[
-                  _buildImageCard(),
-                  _TextField(
-                    minLines: 2,
-                    controller: title,
-                    placeholder: '标题*',
-                    textInputAction: TextInputAction.next,
+      child: Column(
+        children: <Widget>[
+          Flexible(
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(16, 64, 16, 64),
+              children: <Widget>[
+                _buildImageCard(),
+                _TextField(
+                  minLines: 2,
+                  controller: title,
+                  placeholder: '标题*',
+                  textInputAction: TextInputAction.next,
+                ),
+                _TextField(
+                  minLines: 4,
+                  controller: content,
+                  placeholder: '描述*',
+                  textInputAction: TextInputAction.next,
+                ),
+                ScopedModelDescendant<AppModel>(builder: (_, __, model) {
+                  return CupertinoSegmentedControl<String>(
+                    selectedColor: const Color(0xFF9C9C9C),
+                    borderColor: const Color(0xFF9C9C9C),
+                    pressedColor: const Color(0xFF9C9C9C).withOpacity(0.2),
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    groupValue: type,
+                    children: model.types.map<String, Widget>((key, value) {
+                      return MapEntry(key, Text(value));
+                    }),
+                    onValueChanged: (String newValue) {
+                      setState(() => type = newValue);
+                    },
+                  );
+                }),
+                _TextField(
+                  minLines: 2,
+                  controller: username,
+                  placeholder: '用户名*',
+                  textInputAction: TextInputAction.next,
+                ),
+                _TextField(
+                  minLines: 2,
+                  controller: email,
+                  placeholder: '邮箱地址',
+                  textInputAction: TextInputAction.done,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: CupertinoButton(
+                    pressedOpacity: 0.7,
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    color: const Color(0xFF353A40),
+                    child: const Text('提交'),
+                    onPressed: _onSubmitted,
                   ),
-                  _TextField(
-                    minLines: 4,
-                    controller: content,
-                    placeholder: '描述*',
-                    textInputAction: TextInputAction.next,
-                  ),
-                  ScopedModelDescendant<AppModel>(builder: (_, __, model) {
-                    return CupertinoSegmentedControl<String>(
-                      selectedColor: const Color(0xFF9C9C9C),
-                      borderColor: const Color(0xFF9C9C9C),
-                      pressedColor: const Color(0xFF9C9C9C).withOpacity(0.2),
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      groupValue: type,
-                      children: model.types.map<String, Widget>((key, value) {
-                        return MapEntry(key, Text(value));
-                      }),
-                      onValueChanged: (String newValue) {
-                        setState(() => type = newValue);
-                      },
-                    );
-                  }),
-                  _TextField(
-                    minLines: 2,
-                    controller: username,
-                    placeholder: '用户名*',
-                    textInputAction: TextInputAction.next,
-                  ),
-                  _TextField(
-                    minLines: 2,
-                    controller: email,
-                    placeholder: '邮箱地址',
-                    textInputAction: TextInputAction.done,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: CupertinoButton(
-                      pressedOpacity: 0.7,
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      color: const Color(0xFF353A40),
-                      child: const Text('提交'),
-                      onPressed: _onSubmitted,
-                    ),
-                  ),
-                  Opacity(
-                    opacity: progress != null ? 1 : 0,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
-                        child: LinearProgressIndicator(
-                          value: progress,
-                          backgroundColor: const Color(0xFF9C9C9C),
-                          valueColor: const AlwaysStoppedAnimation(
-                            Color(0xFF353A40),
-                          ),
+                ),
+                Opacity(
+                  opacity: progress != -1 ? 1 : 0,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: LinearProgressIndicator(
+                        value: progress,
+                        backgroundColor: const Color(0xFF9C9C9C),
+                        valueColor: const AlwaysStoppedAnimation(
+                          Color(0xFF353A40),
                         ),
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            Offstage(
-              offstage: !FocusScope.of(context).hasFocus,
-              child: _buildActionBar(),
-            ),
-          ],
-        ),
+          ),
+          Offstage(
+            offstage: !FocusScope.of(context).hasFocus,
+            child: _buildActionBar(),
+          ),
+        ],
       ),
     );
   }
@@ -184,21 +176,23 @@ class _UploadPageState extends State<UploadPage> {
                     onTap: () {
                       showCupertinoDialog(
                         context: context,
-                        builder: (_) => CupertinoAlertDialog(
-                          title: const Text('上传须知'),
-                          content: const Text(
-                            '1. 图片分辨率不小于 1080P，需备注出处\n'
-                            '2. 禁止上传含年龄限制、暴力倾向、宗教性质、政治相关等图片\n'
-                            '3. 不得有侵犯他人合法版权的行为',
-                            textAlign: TextAlign.left,
-                          ),
-                          actions: <Widget>[
-                            CupertinoDialogAction(
-                              child: const Text('好'),
-                              onPressed: () => Navigator.of(context).pop(),
+                        builder: (BuildContext context) {
+                          return CupertinoAlertDialog(
+                            title: const Text('上传须知'),
+                            content: const Text(
+                              '1. 分辨率不小于 1080P，需备注出处\n'
+                              '2. 禁止上传含年龄限制、暴力倾向、宗教性质、政治相关等图片\n'
+                              '3. 不得有侵犯他人合法版权的行为',
+                              textAlign: TextAlign.left,
                             ),
-                          ],
-                        ),
+                            actions: <Widget>[
+                              CupertinoDialogAction(
+                                child: const Text('好'),
+                                onPressed: () => Navigator.of(context).pop(),
+                              ),
+                            ],
+                          );
+                        },
                       );
                     },
                     child: const Icon(
@@ -257,10 +251,10 @@ class _UploadPageState extends State<UploadPage> {
     );
   }
 
-  Future<void> _showDialog(String title) {
+  Future<void> _showAlertDialog(String title) {
     return showCupertinoDialog(
       context: context,
-      builder: (_) {
+      builder: (BuildContext context) {
         return CupertinoAlertDialog(
           title: Text(title),
           actions: <Widget>[
@@ -274,8 +268,16 @@ class _UploadPageState extends State<UploadPage> {
     );
   }
 
+  void _clearAll() {
+    imageFile = null;
+    title.clear();
+    content.clear();
+    username.clear();
+    type = null;
+  }
+
   void _onSubmitted() async {
-    if (progress != null) return;
+    if (progress != -1) return;
     List<String> errors = [];
     if (imageFile == null) {
       errors.add('图片');
@@ -292,7 +294,7 @@ class _UploadPageState extends State<UploadPage> {
     if (type == null) {
       errors.add('分类');
     }
-    if (errors.isEmpty) {
+    if (errors.isNotEmpty) {
       String errorText = '';
       for (int i = 0; i < errors.length; i++) {
         if (i != 0 && i != errors.length - 1) {
@@ -304,41 +306,36 @@ class _UploadPageState extends State<UploadPage> {
         errorText += errors[i];
       }
       errorText += '不可为空';
-      await showCupertinoDialog(
-        context: context,
-        builder: (_) {
-          return CupertinoAlertDialog(
-            title: Text(errorText),
-            actions: <Widget>[
-              CupertinoDialogAction(
-                child: const Text('好'),
-                onPressed: () => Navigator.of(context).pop(),
-              )
-            ],
-          );
-        },
-      );
+      await _showAlertDialog(errorText);
       return;
     }
-    dynamic json = jsonDecode(await Utils.upload(
+
+    setState(() => progress = null);
+    dynamic json = jsonDecode(await TujianApi.uploadFile(
       imageFile,
-      {
-        'title': title.text,
-        'content': content.text,
-        'url': null,
-        'user': username.text,
-        'sort': type,
-        'hz': email.text,
-      },
       (int count, int total) {
         setState(() => progress = count / total);
       },
     ));
-    await _showDialog(json['msg']);
-    if (json['code'] != 200) {
-      setState(() => progress = null);
+    if (!json['ret']) {
+      await _showAlertDialog(json['error']['message']);
+      return;
+    }
+    String result = await TujianApi.submit(
+      title: title.text,
+      content: content.text,
+      url: 'https://img.dpic.dev/' + json['info']['md5'],
+      user: username.text,
+      type: type,
+      email: email.text,
+    );
+    dynamic json2 = jsonDecode(result);
+    if (json2['code'] != 200) {
+      setState(() => progress = -1);
+      await _showAlertDialog('投稿失败，因为：' + json2['msg']);
     } else {
-      Navigator.of(context).pop();
+      _clearAll();
+      await _showAlertDialog('投稿成功，请等待管理员审核');
     }
   }
 }
