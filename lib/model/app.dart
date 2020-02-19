@@ -38,6 +38,13 @@ class AppModel extends Model {
     notifyListeners();
   }
 
+  List<Picture> _collections = [];
+  List<Picture> get collections => _collections;
+  set collections(List<Picture> data) {
+    _collections = data;
+    notifyListeners();
+  }
+
   @override
   void notifyListeners() {
     super.notifyListeners();

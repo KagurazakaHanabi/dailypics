@@ -19,6 +19,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:dailypics/misc/bean.dart';
+import 'package:dailypics/model/app.dart';
 import 'package:dailypics/utils/api.dart';
 import 'package:dailypics/utils/utils.dart';
 import 'package:dailypics/widget/adaptive_scaffold.dart';
@@ -413,6 +414,7 @@ class _DetailsPageState extends State<DetailsPage> {
       hashSet.remove(data.id);
     }
     Settings.marked = hashSet.toList();
+    AppModel.of(context).collections = [];
     setState(() {});
   }
 

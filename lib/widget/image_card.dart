@@ -26,7 +26,10 @@ class ImageCard extends StatefulWidget {
   const ImageCard(
     this.data,
     this.heroTag, {
+    this.padding = const EdgeInsets.all(16),
     this.aspectRatio = 4 / 5,
+    this.blurRadius = 32,
+    this.showTexts = true,
     this.showQrCode = false,
     this.repaintKey,
   }) : assert(aspectRatio != null);
@@ -35,9 +38,15 @@ class ImageCard extends StatefulWidget {
 
   final String heroTag;
 
+  final EdgeInsets padding;
+
   final double aspectRatio;
 
+  final double blurRadius;
+
   final bool showQrCode;
+
+  final bool showTexts;
 
   final GlobalKey repaintKey;
 
@@ -64,15 +73,15 @@ class _ImageCardState extends State<ImageCard> {
       child: AspectRatio(
         aspectRatio: widget.aspectRatio ?? 4 / 5,
         child: Container(
-          padding: const EdgeInsets.all(16),
+          padding: widget.padding,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            boxShadow: const [
+            boxShadow: [
               BoxShadow(
                 color: Colors.black26,
-                offset: Offset(0, 4),
-                spreadRadius: -24,
-                blurRadius: 32,
+                offset: const Offset(0, 4),
+                spreadRadius: 8 - widget.blurRadius,
+                blurRadius: widget.blurRadius,
               )
             ],
           ),
@@ -105,7 +114,8 @@ class _ImageCardState extends State<ImageCard> {
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  Padding(
+                  if (widget.showTexts)
+                    Padding(
                     padding: const EdgeInsets.fromLTRB(16, 32, 24, 0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

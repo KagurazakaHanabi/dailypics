@@ -16,7 +16,10 @@ import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dailypics/misc/bean.dart';
+import 'package:dailypics/pages/collection.dart';
+import 'package:dailypics/utils/api.dart';
 import 'package:dailypics/utils/utils.dart';
+import 'package:dailypics/widget/image_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart'
     show CircleAvatar, Colors, Divider, ListTile, Scaffold, Theme, ThemeData;
@@ -40,6 +43,7 @@ class _AboutPageState extends State<AboutPage> {
 
   PackageInfo packageInfo;
   List<Contributor> contributors;
+  List<Picture> data;
 
   @override
   void initState() {
@@ -54,6 +58,7 @@ class _AboutPageState extends State<AboutPage> {
         });
       },
     );
+    _fetchData();
   }
 
   @override
@@ -104,6 +109,7 @@ class _AboutPageState extends State<AboutPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         _buildAppInfo(),
+        _buildCollection(),
         const Divider(),
         const Padding(
           padding: EdgeInsets.only(left: 16, top: 8, bottom: 8),
@@ -245,6 +251,61 @@ class _AboutPageState extends State<AboutPage> {
     );
   }
 
+  Widget _buildCollection() {
+    if (Settings.marked.isEmpty) return Container();
+    return Column(
+      children: <Widget>[
+        const Divider(),
+        GestureDetector(
+          onTap: () => CollectionPage.push(context),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              children: <Widget>[
+                const Expanded(
+                  child: Text(
+                    '我的收藏',
+                    style: TextStyle(fontSize: 22),
+                  ),
+                ),
+                const Text('查看更多 '),
+                Text(
+                  String.fromCharCode(CupertinoIcons.right_chevron.codePoint),
+                  style: TextStyle(
+                    fontFamily: CupertinoIcons.right_chevron.fontFamily,
+                    package: CupertinoIcons.right_chevron.fontPackage,
+                    fontSize: 24,
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 256,
+          child: data != null
+              ? ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: data.length,
+                  itemBuilder: (_, i) {
+                    return ImageCard(
+                      data[i],
+                      'C-$i-${data[i].id}',
+                      padding: const EdgeInsets.all(12),
+                      showTexts: false,
+                      blurRadius: 64,
+                    );
+                  },
+                )
+              : const Center(
+                  child: CupertinoActivityIndicator(),
+                ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildAction(IconData icon, String title, GestureTapCallback onTap) {
     return CupertinoButton(
       padding: EdgeInsets.zero,
@@ -275,5 +336,14 @@ class _AboutPageState extends State<AboutPage> {
         const Icon(CupertinoIcons.right_chevron),
       ],
     );
+  }
+
+  Future<void> _fetchData() async {
+    List<Picture> result = [];
+    List<String> ids = Settings.marked.take(5).toList();
+    for (int i = 0; i < ids.length; i++) {
+      result.add(await TujianApi.getDetails(ids[i]));
+    }
+    setState(() => data = result);
   }
 }
