@@ -104,7 +104,7 @@ class _HomePageState extends State<HomePage> {
 
   void _handleUniLink(Uri uri) {
     if (uri == null) return;
-    if ((uri.scheme == 'tujian' && uri.host == 'p') ||
+    if ((uri.scheme == 'dailypics' && uri.host == 'p') ||
         ((uri.scheme == 'https' && uri.host.contains('dailypics.cn')) &&
             (uri.path.startsWith('/p/') || uri.path.startsWith('/member/id/')))) {
       DetailsPage.push(context, pid: uri.pathSegments.last);
