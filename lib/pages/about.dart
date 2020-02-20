@@ -229,7 +229,7 @@ class _AboutPageState extends State<AboutPage> {
                   Ionicons.logo_github,
                   '开源',
                   () => launch(
-                    'https://github.com/KagurazakaHanabi/daily_pics',
+                    'https://github.com/KagurazakaHanabi/dailypics',
                   ),
                 ),
                 _buildAction(
@@ -241,6 +241,11 @@ class _AboutPageState extends State<AboutPage> {
                   Ionicons.ios_star_half,
                   '评分',
                   () => SystemUtils.requestReview(false),
+                ),
+                _buildAction(
+                  Ionicons.ios_chatboxes,
+                  '反馈',
+                  () => launch('https://support.qq.com/product/120654'),
                 ),
               ],
             ),
