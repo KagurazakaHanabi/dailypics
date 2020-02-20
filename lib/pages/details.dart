@@ -187,7 +187,7 @@ class _DetailsPageState extends State<DetailsPage> {
           child: Padding(
             padding: const EdgeInsets.only(left: 12),
             child: Icon(
-              data.marked ? Ionicons.ios_star : Ionicons.ios_star_outline,
+              data.marked ? Ionicons.ios_heart : Ionicons.ios_heart_empty,
               color: CupertinoColors.activeBlue,
               size: 22,
             ),

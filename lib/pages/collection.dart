@@ -68,6 +68,7 @@ class _CollectionPageState extends State<CollectionPage> {
   }
 
   Future<void> _fetchData() async {
+    if (!mounted) return;
     List<Picture> saved = AppModel.of(context).collections;
     if (saved.isNotEmpty) {
       setState(() => data = saved);

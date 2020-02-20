@@ -16,6 +16,7 @@ import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dailypics/misc/bean.dart';
+import 'package:dailypics/model/app.dart';
 import 'package:dailypics/pages/collection.dart';
 import 'package:dailypics/utils/api.dart';
 import 'package:dailypics/utils/utils.dart';
@@ -43,7 +44,6 @@ class _AboutPageState extends State<AboutPage> {
 
   PackageInfo packageInfo;
   List<Contributor> contributors;
-  List<Picture> data;
 
   @override
   void initState() {
@@ -58,7 +58,6 @@ class _AboutPageState extends State<AboutPage> {
         });
       },
     );
-    _fetchData();
   }
 
   @override
@@ -283,8 +282,16 @@ class _AboutPageState extends State<AboutPage> {
         ),
         SizedBox(
           height: 256,
-          child: data != null
-              ? ListView.builder(
+          child: FutureBuilder(
+            future: _fetchData(),
+            builder: (BuildContext context, AsyncSnapshot<List<Picture>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CupertinoActivityIndicator(),
+                );
+              } else {
+                final data = snapshot.data;
+                return ListView.builder(
                   physics: const AlwaysScrollableScrollPhysics(),
                   scrollDirection: Axis.horizontal,
                   itemCount: data.length,
@@ -297,10 +304,10 @@ class _AboutPageState extends State<AboutPage> {
                       blurRadius: 64,
                     );
                   },
-                )
-              : const Center(
-                  child: CupertinoActivityIndicator(),
-                ),
+                );
+              }
+            },
+          ),
         ),
       ],
     );
@@ -338,12 +345,17 @@ class _AboutPageState extends State<AboutPage> {
     );
   }
 
-  Future<void> _fetchData() async {
+  Future<List<Picture>> _fetchData() async {
+    List<Picture> saved = AppModel.of(context).collections;
+    if (saved.isNotEmpty) {
+      return saved;
+    }
     List<Picture> result = [];
-    List<String> ids = Settings.marked.take(5).toList();
+    List<String> ids = Settings.marked;
     for (int i = 0; i < ids.length; i++) {
       result.add(await TujianApi.getDetails(ids[i]));
     }
-    setState(() => data = result);
+    AppModel.of(context).collections = result;
+    return result;
   }
 }
