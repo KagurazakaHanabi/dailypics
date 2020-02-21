@@ -51,86 +51,89 @@ class _UploadPageState extends State<UploadPage> {
       navigationBar: const CupertinoNavigationBar(
         middle: Text('投稿'),
       ),
-      child: Column(
-        children: <Widget>[
-          Flexible(
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(16, 64, 16, 64),
-              children: <Widget>[
-                _buildImageCard(),
-                _TextField(
-                  minLines: 2,
-                  controller: title,
-                  placeholder: '标题*',
-                  textInputAction: TextInputAction.next,
-                ),
-                _TextField(
-                  minLines: 4,
-                  controller: content,
-                  placeholder: '描述*',
-                  textInputAction: TextInputAction.next,
-                ),
-                ScopedModelDescendant<AppModel>(builder: (_, __, model) {
-                  return CupertinoSegmentedControl<String>(
-                    selectedColor: const Color(0xFF9C9C9C),
-                    borderColor: const Color(0xFF9C9C9C),
-                    pressedColor: const Color(0xFF9C9C9C).withOpacity(0.2),
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    groupValue: type,
-                    children: model.types.map<String, Widget>((key, value) {
-                      return MapEntry(key, Text(value));
-                    }),
-                    onValueChanged: (String newValue) {
-                      setState(() => type = newValue);
-                    },
-                  );
-                }),
-                _TextField(
-                  minLines: 2,
-                  controller: username,
-                  placeholder: '用户名*',
-                  textInputAction: TextInputAction.next,
-                ),
-                _TextField(
-                  minLines: 2,
-                  controller: email,
-                  placeholder: '邮箱地址',
-                  textInputAction: TextInputAction.done,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: CupertinoButton(
-                    pressedOpacity: 0.7,
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    color: const Color(0xFF353A40),
-                    child: const Text('提交'),
-                    onPressed: _onSubmitted,
+      child: SafeArea(
+        bottom: false,
+        child: Column(
+          children: <Widget>[
+            Flexible(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                children: <Widget>[
+                  _buildImageCard(),
+                  _TextField(
+                    minLines: 2,
+                    controller: title,
+                    placeholder: '标题*',
+                    textInputAction: TextInputAction.next,
                   ),
-                ),
-                Opacity(
-                  opacity: progress != -1 ? 1 : 0,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: LinearProgressIndicator(
-                        value: progress,
-                        backgroundColor: const Color(0xFF9C9C9C),
-                        valueColor: const AlwaysStoppedAnimation(
-                          Color(0xFF353A40),
+                  _TextField(
+                    minLines: 4,
+                    controller: content,
+                    placeholder: '描述*',
+                    textInputAction: TextInputAction.next,
+                  ),
+                  ScopedModelDescendant<AppModel>(builder: (_, __, model) {
+                    return CupertinoSegmentedControl<String>(
+                      selectedColor: const Color(0xFF9C9C9C),
+                      borderColor: const Color(0xFF9C9C9C),
+                      pressedColor: const Color(0xFF9C9C9C).withOpacity(0.2),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      groupValue: type,
+                      children: model.types.map<String, Widget>((key, value) {
+                        return MapEntry(key, Text(value));
+                      }),
+                      onValueChanged: (String newValue) {
+                        setState(() => type = newValue);
+                      },
+                    );
+                  }),
+                  _TextField(
+                    minLines: 2,
+                    controller: username,
+                    placeholder: '用户名*',
+                    textInputAction: TextInputAction.next,
+                  ),
+                  _TextField(
+                    minLines: 2,
+                    controller: email,
+                    placeholder: '邮箱地址',
+                    textInputAction: TextInputAction.done,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: CupertinoButton(
+                      pressedOpacity: 0.7,
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      color: const Color(0xFF353A40),
+                      child: const Text('提交'),
+                      onPressed: _onSubmitted,
+                    ),
+                  ),
+                  Opacity(
+                    opacity: progress != -1 ? 1 : 0,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        child: LinearProgressIndicator(
+                          value: progress,
+                          backgroundColor: const Color(0xFF9C9C9C),
+                          valueColor: const AlwaysStoppedAnimation(
+                            Color(0xFF353A40),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Offstage(
-            offstage: !FocusScope.of(context).hasFocus,
-            child: _buildActionBar(),
-          ),
-        ],
+            Offstage(
+              offstage: !FocusScope.of(context).hasFocus,
+              child: _buildActionBar(),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -109,7 +109,7 @@ internal class PlatformPlugin : ActivityAware, FlutterPlugin, MethodCallHandler,
             "syncAlbum" -> {
                 methodCall = call
                 methodResult = result
-                val requestCode = 1000
+                val requestCode = 1080
                 val permissions = arrayOf(WRITE_EXTERNAL_STORAGE)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     activity!!.requestPermissions(permissions, requestCode)
@@ -124,6 +124,9 @@ internal class PlatformPlugin : ActivityAware, FlutterPlugin, MethodCallHandler,
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray): Boolean {
+        if (requestCode != 1080) {
+            return false
+        }
         if (grantResults[0] == PERMISSION_DENIED) {
             methodResult!!.error("-1", "Permission denied", null)
             return true

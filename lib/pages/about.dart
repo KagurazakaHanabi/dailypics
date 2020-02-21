@@ -17,7 +17,6 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dailypics/misc/bean.dart';
 import 'package:dailypics/model/app.dart';
-import 'package:dailypics/pages/collection.dart';
 import 'package:dailypics/utils/api.dart';
 import 'package:dailypics/utils/utils.dart';
 import 'package:dailypics/widget/image_card.dart';
@@ -83,13 +82,7 @@ class _AboutPageState extends State<AboutPage> {
                 ),
               ),
               const CupertinoNavigationBar(
-                /*padding: EdgeInsetsDirectional.zero,
-                leading: CupertinoButton(
-                  child: Icon(CupertinoIcons.back),
-                  padding: EdgeInsets.zero,
-                  onPressed: () => Navigator.of(context).pop(),
-                ),*/
-                middle: Text('关于'),
+                middle: Text('更多'),
                 /*trailing: CupertinoButton(
                   padding: EdgeInsets.zero,
                   child: Text('测试入口'),
@@ -256,43 +249,32 @@ class _AboutPageState extends State<AboutPage> {
   }
 
   Widget _buildCollection() {
-    if (Settings.marked.isEmpty) return Container();
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         const Divider(),
-        GestureDetector(
-          onTap: () => CollectionPage.push(context),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              children: <Widget>[
-                const Expanded(
-                  child: Text(
-                    '我的收藏',
-                    style: TextStyle(fontSize: 22),
-                  ),
-                ),
-                const Text('查看更多 '),
-                Text(
-                  String.fromCharCode(CupertinoIcons.right_chevron.codePoint),
-                  style: TextStyle(
-                    fontFamily: CupertinoIcons.right_chevron.fontFamily,
-                    package: CupertinoIcons.right_chevron.fontPackage,
-                    fontSize: 24,
-                  ),
-                )
-              ],
-            ),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Text(
+            '我的收藏',
+            style: TextStyle(fontSize: 22),
           ),
         ),
         SizedBox(
-          height: 256,
+          height: Settings.marked.isEmpty ? 64 : 256,
           child: FutureBuilder(
             future: _fetchData(),
             builder: (BuildContext context, AsyncSnapshot<List<Picture>> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
                   child: CupertinoActivityIndicator(),
+                );
+              } else if (snapshot.data.isEmpty) {
+                return const Center(
+                  child: Text(
+                    '无数据',
+                    style: TextStyle(color: Colors.black54),
+                  ),
                 );
               } else {
                 final data = snapshot.data;
@@ -351,12 +333,17 @@ class _AboutPageState extends State<AboutPage> {
   }
 
   Future<List<Picture>> _fetchData() async {
+    List<Picture> result = [];
+    List<String> ids = Settings.marked;
+    if (ids.isEmpty) {
+      return result;
+    }
+
     List<Picture> saved = AppModel.of(context).collections;
     if (saved.isNotEmpty) {
       return saved;
     }
-    List<Picture> result = [];
-    List<String> ids = Settings.marked;
+
     for (int i = 0; i < ids.length; i++) {
       result.add(await TujianApi.getDetails(ids[i]));
     }
