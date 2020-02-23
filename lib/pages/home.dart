@@ -16,7 +16,6 @@ import 'dart:async';
 
 import 'package:dailypics/components/suggest.dart';
 import 'package:dailypics/components/today.dart';
-import 'package:dailypics/model/app.dart';
 import 'package:dailypics/pages/about.dart';
 import 'package:dailypics/pages/details.dart';
 import 'package:dailypics/pages/recent.dart';
@@ -75,9 +74,7 @@ class _HomePageState extends State<HomePage> {
             case 0:
               return CupertinoTabView(builder: (_) => TodayComponent());
             case 1:
-              return CupertinoTabView(
-                builder: (_) => RecentPage(types: AppModel.of(context).types),
-              );
+              return CupertinoTabView(builder: (_) => RecentPage());
             case 2:
               return CupertinoTabView(builder: (_) => UploadPage());
             case 3:

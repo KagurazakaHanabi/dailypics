@@ -31,16 +31,13 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class RecentPage extends StatefulWidget {
-  const RecentPage({Key key, this.types}) : super(key: key);
-
-  final Map<String, String> types;
 
   @override
   _RecentPageState createState() => _RecentPageState();
 
-  static Future<void> push(BuildContext context, Map<String, String> types) {
+  static Future<void> push(BuildContext context) {
     return Navigator.of(context, rootNavigator: true).push(
-      CupertinoPageRoute(builder: (_) => RecentPage(types: types)),
+      CupertinoPageRoute(builder: (_) => RecentPage()),
     );
   }
 }
@@ -57,24 +54,20 @@ class _RecentPageState extends State<RecentPage>
   Map<String, int> max = {};
 
   @override
-  void initState() {
-    super.initState();
-    types = widget.types.keys.toList();
-    controller = ScrollController(
-      initialScrollOffset: kSearchBarHeight,
-    )..addListener(_onScrollUpdate);
-    current = types.first;
-    for (int i = 0; i < types.length; i++) {
-      cur[types[i]] = 1;
-      max[types[i]] = null;
-    }
-    _fetchData();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _initialize();
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
     MediaQueryData queryData = MediaQuery.of(context);
+    if (AppModel.of(context).types == null) {
+      return const Center(
+        child: CupertinoActivityIndicator(),
+      );
+    }
     return CupertinoPageScaffold(
       resizeToAvoidBottomInset: false,
       child: ScopedModelDescendant<AppModel>(builder: (_, __, model) {
@@ -137,6 +130,24 @@ class _RecentPageState extends State<RecentPage>
         );
       }),
     );
+  }
+
+  Future<void> _initialize() async {
+    AppModel model = AppModel.of(context);
+    if (model.types == null) {
+      model.types = await TujianApi.getTypes();
+    }
+    types = model.types.keys.toList();
+    controller = ScrollController(
+      initialScrollOffset: kSearchBarHeight,
+    )..addListener(_onScrollUpdate);
+    current = types.first;
+    for (int i = 0; i < types.length; i++) {
+      cur[types[i]] = 1;
+      max[types[i]] = null;
+    }
+    setState(() {});
+    _fetchData();
   }
 
   Future<void> _fetchData() async {
