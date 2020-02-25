@@ -210,7 +210,15 @@ class _DetailsPageState extends State<DetailsPage> {
     return MarkdownBody(
       data: data.content,
       onTapLink: (String href) => SystemUtils.openUrl(href),
-      imageBuilder: (Uri uri) => OptimizedImage(uri.toString()),
+      imageBuilder: (uri, width, height) {
+        return SizedBox(
+          width: width,
+          height: height,
+          child: OptimizedImage(
+            uri.toString(),
+          ),
+        );
+      },
       styleSheet: MarkdownStyleSheet(
         a: const TextStyle(color: CupertinoColors.link),
         p: textStyle.copyWith(

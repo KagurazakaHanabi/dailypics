@@ -19,8 +19,6 @@ class OptimizedImage extends StatelessWidget {
   OptimizedImage(
     this.imageUrl, {
     Key key,
-    this.width,
-    this.height,
     this.fit = BoxFit.cover,
     this.borderRadius = BorderRadius.zero,
     this.heroTag,
@@ -29,10 +27,6 @@ class OptimizedImage extends StatelessWidget {
         super(key: key);
 
   final String imageUrl;
-
-  final double width;
-
-  final double height;
 
   final BoxFit fit;
 
@@ -47,8 +41,6 @@ class OptimizedImage extends StatelessWidget {
       borderRadius: borderRadius,
       child: CachedNetworkImage(
         imageUrl: imageUrl,
-        width: width,
-        height: height,
         fit: fit,
         placeholderFadeInDuration: Duration.zero,
         fadeInDuration: const Duration(milliseconds: 700),
