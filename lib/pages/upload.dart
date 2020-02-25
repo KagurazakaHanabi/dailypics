@@ -69,8 +69,8 @@ class _UploadPageState extends State<UploadPage> {
                   _TextField(
                     minLines: 4,
                     controller: content,
-                    placeholder: '描述*',
-                    textInputAction: TextInputAction.next,
+                    placeholder: '描述（支持 Markdown 格式）*',
+                    textInputAction: TextInputAction.newline,
                   ),
                   ScopedModelDescendant<AppModel>(builder: (_, __, model) {
                     return CupertinoSegmentedControl<String>(
