@@ -177,7 +177,7 @@ class _DetailsPageState extends State<DetailsPage> {
           child: Text(
             data.title,
             style: const TextStyle(
-              fontSize: 22,
+              fontSize: 24,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -189,7 +189,7 @@ class _DetailsPageState extends State<DetailsPage> {
             child: Icon(
               data.marked ? Ionicons.ios_heart : Ionicons.ios_heart_empty,
               color: CupertinoColors.activeBlue,
-              size: 22,
+              size: 24,
             ),
           ),
         ),
@@ -203,10 +203,7 @@ class _DetailsPageState extends State<DetailsPage> {
 
   Widget _buildContent() {
     CupertinoThemeData theme = CupertinoTheme.of(context);
-    TextStyle textStyle = theme.textTheme.textStyle.copyWith(
-      fontSize: 15,
-      height: 1.2,
-    );
+    TextStyle textStyle = theme.textTheme.textStyle;
     return MarkdownBody(
       data: data.content,
       onTapLink: (String href) => SystemUtils.openUrl(href),
@@ -496,7 +493,7 @@ class _SaveButtonState extends State<_SaveButton> {
       child: AnimatedCrossFade(
         firstChild: Container(
           alignment: Alignment.center,
-          padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 20),
+          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
           decoration: BoxDecoration(
             color: denied ? CupertinoColors.destructiveRed : backgroundColor,
             borderRadius: BorderRadius.circular(16),
@@ -512,9 +509,9 @@ class _SaveButtonState extends State<_SaveButton> {
         ),
         secondChild: Container(
           width: 70,
-          height: 26,
+          height: 28,
           alignment: Alignment.center,
-          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 26),
+          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 26),
           child: CircularProgressIndicator(
             strokeWidth: 2,
             value: progress,
