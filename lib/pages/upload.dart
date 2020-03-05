@@ -48,8 +48,14 @@ class _UploadPageState extends State<UploadPage> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        middle: Text('投稿'),
+      navigationBar: CupertinoNavigationBar(
+        padding: EdgeInsetsDirectional.zero,
+        leading: CupertinoButton(
+          child: const Icon(CupertinoIcons.back),
+          padding: EdgeInsets.zero,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        middle: const Text('投稿'),
       ),
       child: SafeArea(
         bottom: false,
@@ -271,14 +277,6 @@ class _UploadPageState extends State<UploadPage> {
     );
   }
 
-  void _clearAll() {
-    imageFile = null;
-    title.clear();
-    content.clear();
-    username.clear();
-    type = null;
-  }
-
   void _onSubmitted() async {
     if (progress != -1) return;
     List<String> errors = [];
@@ -337,8 +335,8 @@ class _UploadPageState extends State<UploadPage> {
       setState(() => progress = -1);
       await _showAlertDialog('投稿失败，因为：' + json2['msg']);
     } else {
-      _clearAll();
       await _showAlertDialog('投稿成功，请等待管理员审核');
+      Navigator.of(context).pop();
     }
   }
 }

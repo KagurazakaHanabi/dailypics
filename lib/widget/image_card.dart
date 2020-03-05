@@ -28,7 +28,14 @@ class ImageCard extends StatefulWidget {
     this.heroTag, {
     this.padding = const EdgeInsets.all(16),
     this.aspectRatio = 4 / 5,
-    this.blurRadius = 32,
+    this.boxShadow = const [
+      BoxShadow(
+        color: Colors.black26,
+        offset: Offset(0, 4),
+        spreadRadius: -24,
+        blurRadius: 32,
+      )
+    ],
     this.showTexts = true,
     this.showQrCode = false,
     this.repaintKey,
@@ -42,7 +49,7 @@ class ImageCard extends StatefulWidget {
 
   final double aspectRatio;
 
-  final double blurRadius;
+  final List<BoxShadow> boxShadow;
 
   final bool showQrCode;
 
@@ -76,14 +83,7 @@ class _ImageCardState extends State<ImageCard> {
           padding: widget.padding,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black26,
-                offset: const Offset(0, 4),
-                spreadRadius: 8 - widget.blurRadius,
-                blurRadius: widget.blurRadius,
-              )
-            ],
+            boxShadow: widget.boxShadow,
           ),
           child: GestureDetector(
             onTapDown: (_) {
@@ -116,34 +116,34 @@ class _ImageCardState extends State<ImageCard> {
                   ),
                   if (widget.showTexts)
                     Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 32, 24, 0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          widget.data.title,
-                          style: TextStyle(
-                            color: textColor,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 28,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Text(
-                            markdownToHtml(widget.data.content.split('\n')[0])
-                                .replaceAll(RegExp(r'<[^>]+>'), ''),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
+                      padding: const EdgeInsets.fromLTRB(16, 32, 24, 0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            widget.data.title,
                             style: TextStyle(
-                              color: textColor.withAlpha(0xB3),
-                              fontSize: 13,
+                              color: textColor,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 28,
                             ),
                           ),
-                        ),
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: Text(
+                              markdownToHtml(widget.data.content.split('\n')[0])
+                                  .replaceAll(RegExp(r'<[^>]+>'), ''),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: textColor.withAlpha(0xB3),
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
                   if (widget.showQrCode)
                     AspectRatio(
                       aspectRatio: widget.aspectRatio,

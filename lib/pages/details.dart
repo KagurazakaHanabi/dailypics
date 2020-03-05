@@ -203,7 +203,9 @@ class _DetailsPageState extends State<DetailsPage> {
 
   Widget _buildContent() {
     CupertinoThemeData theme = CupertinoTheme.of(context);
-    TextStyle textStyle = theme.textTheme.textStyle;
+    TextStyle textStyle = theme.textTheme.textStyle.copyWith(
+      fontSize: 16,
+    );
     return MarkdownBody(
       data: data.content,
       onTapLink: (String href) => SystemUtils.openUrl(href),

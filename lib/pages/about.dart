@@ -17,6 +17,7 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dailypics/misc/bean.dart';
 import 'package:dailypics/model/app.dart';
+import 'package:dailypics/pages/upload.dart';
 import 'package:dailypics/utils/api.dart';
 import 'package:dailypics/utils/utils.dart';
 import 'package:dailypics/widget/image_card.dart';
@@ -81,13 +82,13 @@ class _AboutPageState extends State<AboutPage> {
                   child: _buildList(),
                 ),
               ),
-              const CupertinoNavigationBar(
-                middle: Text('更多'),
-                /*trailing: CupertinoButton(
+              CupertinoNavigationBar(
+                middle: const Text('更多'),
+                trailing: CupertinoButton(
                   padding: EdgeInsets.zero,
-                  child: Text('测试入口'),
-                  onPressed: () => UserSpacePage.push(context),
-                ),*/
+                  child: const Text('投稿'),
+                  onPressed: () => UploadPage.push(context),
+                ),
               )
             ],
           ),
@@ -288,7 +289,20 @@ class _AboutPageState extends State<AboutPage> {
                       'C-$i-${data[i].id}',
                       padding: const EdgeInsets.all(12),
                       showTexts: false,
-                      blurRadius: 64,
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0x1F000000),
+                          offset: Offset(0, 3),
+                          spreadRadius: -16,
+                          blurRadius: 8,
+                        ),
+                        BoxShadow(
+                          color: Color(0x0A000000),
+                          offset: Offset(0, 3),
+                          spreadRadius: -16,
+                          blurRadius: 1,
+                        ),
+                      ],
                     );
                   },
                 );
