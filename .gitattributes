@@ -1,17 +1,30 @@
-# Miscellaneous
-*             text=auto
-*.md          text
-*.json        text
-*.yaml        text
-*.png         binary
+# Auto detect text files and perform LF normalization
+*                 text=auto
 
-# Android related
-*.java        text   diff=java
-*.gradle      text   diff=java
-*.xml         text
-*.properties  text
+# Always perform LF normalization on these files
+*.dart            text
+*.gradle          text
+*.html            text
+*.java            text
+*.json            text
+*.md              text
+*.py              text
+*.sh              text
+*.txt             text
+*.xml             text
+*.yaml            text
 
-# iOS/Xcode related
-*.pbxproj     binary -merge=union
-*.m           text   diff=objc
-*.swift       text   diff=swift
+# Make sure that these Windows files always have CRLF line endings in checkout
+*.bat             text eol=crlf
+*.ps1             text eol=crlf
+*.rc              text eol=crlf
+*.sln             text eol=crlf
+*.props           text eol=crlf
+*.vcxproj         text eol=crlf
+*.vcxproj.filters text eol=crlf
+
+# Never perform LF normalization on these files
+*.ico             binary
+*.jar             binary
+*.png             binary
+*.zip             binary
