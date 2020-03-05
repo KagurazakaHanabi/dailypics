@@ -380,7 +380,7 @@ class _TileState extends State<_Tile> {
                       offstage: !widget.data.marked,
                       child: const Padding(
                         padding: EdgeInsets.only(left: 8),
-                        child: Icon(Ionicons.ios_star, size: 18),
+                        child: Icon(Ionicons.ios_heart, size: 18),
                       ),
                     ),
                   ],
