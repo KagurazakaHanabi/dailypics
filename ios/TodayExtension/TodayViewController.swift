@@ -14,6 +14,8 @@
 // limitations under the License.
 //
 
+import Alamofire
+import AlamofireImage
 import UIKit
 import NotificationCenter
 
@@ -28,15 +30,24 @@ class TodayViewController: UIViewController, NCWidgetProviding {
     }
 
     func widgetPerformUpdate(completionHandler: (@escaping (NCUpdateResult) -> Void)) {
-        Picture.today(completion: { data in
-            self.current = data[Int.random(in: 0..<data.count)]
-            let url = URL.init(string: self.current!.url)
-            let bin = try! Data(contentsOf: url!)
-            DispatchQueue.main.async {
-                self.imageView.image = UIImage(data: bin)
-                completionHandler(.newData)
+        AF.request("https://v2.api.dailypics.cn/today").responseJSON { response in
+            switch response.result {
+            case .success:
+                if let data = response.value as? Array<Any> {
+                    let random = data[Int.random(in: 0..<data.count)]
+                    self.current = Picture(source: random as! [String : Any])
+                    let url = URL.init(string: self.current!.url)
+                    DispatchQueue.main.async {
+                        self.imageView.af.setImage(withURL: url!)
+                        completionHandler(.newData)
+                    }
+                } else {
+                    completionHandler(.noData)
+                }
+            case .failure:
+                completionHandler(.failed)
             }
-        })
+        }
     }
 
     func widgetActiveDisplayModeDidChange(_ activeDisplayMode: NCWidgetDisplayMode, withMaximumSize maxSize: CGSize) {
@@ -68,22 +79,5 @@ struct Picture {
 
         self.id = id
         self.url = "https://s1.images.dailypics.cn/\(path)!w1080_jpg"
-    }
-
-    static func today(completion: @escaping ([Picture]) -> Void) {
-        var result: [Picture] = []
-
-        let url = URL.init(string: "https://v2.api.dailypics.cn/today")
-        URLSession.shared.dataTask(with: url!) { data, response, error in
-            if let data = data,
-                let decoded = try? JSONSerialization.jsonObject(with: data, options: []) as? Array<Any> {
-                for case let item in decoded {
-                    if let obj = Picture.init(source: item as! [String : Any]) {
-                        result.append(obj)
-                    }
-                }
-                completion(result)
-            }
-        }.resume()
     }
 }
