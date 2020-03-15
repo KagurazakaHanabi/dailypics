@@ -46,10 +46,10 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    _initial();
+    _initialize();
   }
 
-  Future<void> _initial() async {
+  Future<void> _initialize() async {
     _timer = Timer(const Duration(seconds: 3), () => HomePage.push(context));
     List<dynamic> results = await Future.wait([
       TujianApi.getTypes(),
