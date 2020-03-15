@@ -21,14 +21,14 @@ dependencies:
   http: ^0.12.0+4
   image_picker: ^0.6.3+1
   json_annotation: ^3.0.1
-  package_info: ^0.4.0+13
+  # package_info: ^0.4.0+13
   palette_generator: ^0.2.0
   path_provider: ^1.5.1
   photo_view: ^0.9.1
   qr: ^1.2.0
   scoped_model: ^1.0.1
   shared_preferences: ^0.5.6
-  uni_links: ^0.2.0
+  # uni_links: ^0.2.0
   url_launcher: ^5.4.1
 
 dev_dependencies:

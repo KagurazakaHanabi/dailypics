@@ -16,6 +16,7 @@ import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dailypics/misc/bean.dart';
+import 'package:dailypics/misc/config.g.dart';
 import 'package:dailypics/model/app.dart';
 import 'package:dailypics/pages/upload.dart';
 import 'package:dailypics/utils/api.dart';
@@ -25,7 +26,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart'
     show CircleAvatar, Colors, Divider, ListTile, Scaffold, Theme, ThemeData;
 import 'package:flutter_ionicons/flutter_ionicons.dart';
-import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutPage extends StatefulWidget {
@@ -42,15 +42,11 @@ class AboutPage extends StatefulWidget {
 class _AboutPageState extends State<AboutPage> {
   ScrollController controller = ScrollController();
 
-  PackageInfo packageInfo;
   List<Contributor> contributors;
 
   @override
   void initState() {
     super.initState();
-    PackageInfo.fromPlatform().then((info) {
-      setState(() => packageInfo = info);
-    });
     DefaultAssetBundle.of(context).loadString('res/contributors.json').then(
       (String value) {
         setState(() {
@@ -184,8 +180,8 @@ class _AboutPageState extends State<AboutPage> {
   }
 
   Widget _buildAppInfo() {
-    final String version = packageInfo?.version ?? '0.0.0';
-    final String buildNumber = packageInfo?.buildNumber ?? '190000';
+    final String version = Config.version;
+    final String buildNumber = Config.buildNumber.toString();
     Color textColor = CupertinoDynamicColor.withBrightness(
       color: Colors.black54,
       darkColor: Colors.white70,

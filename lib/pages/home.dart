@@ -12,22 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'dart:async';
-
 import 'package:dailypics/components/suggest.dart';
 import 'package:dailypics/components/today.dart';
 import 'package:dailypics/pages/about.dart';
-import 'package:dailypics/pages/details.dart';
 import 'package:dailypics/pages/recent.dart';
 import 'package:dailypics/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
-import 'package:uni_links/uni_links.dart';
 
-class HomePage extends StatefulWidget {
-  @override
-  _HomePageState createState() => _HomePageState();
+class HomePage extends StatelessWidget {
 
   static void push(BuildContext context) {
     Navigator.of(context).pushReplacement(
@@ -38,17 +32,6 @@ class HomePage extends StatefulWidget {
         );
       }),
     );
-  }
-}
-
-class _HomePageState extends State<HomePage> {
-  StreamSubscription _subscription;
-
-  @override
-  void initState() {
-    super.initState();
-    _subscription = getUriLinksStream().listen(_handleUniLink);
-    getInitialUri().then(_handleUniLink);
   }
 
   @override
@@ -85,22 +68,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  @override
-  void dispose() {
-    _subscription.cancel();
-    super.dispose();
-  }
-
   BottomNavigationBarItem _buildNavigationItem(IconData icon, String title) {
     return BottomNavigationBarItem(icon: Icon(icon), title: Text(title));
-  }
-
-  void _handleUniLink(Uri uri) {
-    if (uri == null) return;
-    if ((uri.scheme == 'dailypics' && uri.host == 'p') ||
-        ((uri.scheme == 'https' && uri.host.contains('dailypics.cn')) &&
-            (uri.path.startsWith('/p/') || uri.path.startsWith('/member/id/')))) {
-      DetailsPage.push(context, pid: uri.pathSegments.last);
-    }
   }
 }
