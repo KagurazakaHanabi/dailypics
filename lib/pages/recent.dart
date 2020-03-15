@@ -56,7 +56,9 @@ class _RecentPageState extends State<RecentPage>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _initialize();
+    if (current == null) {
+      _initialize();
+    }
   }
 
   @override
@@ -326,11 +328,7 @@ class _TileState extends State<_Tile> {
     }
     return GestureDetector(
       onTap: () async {
-        await DetailsPage.push(
-          context,
-          data: widget.data,
-          heroTag: widget.heroTag,
-        );
+        await DetailsPage.push(context, data: widget.data, heroTag: widget.heroTag);
         setState(() {});
       },
       child: Container(
