@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'dart:collection';
 import 'dart:io';
 import 'dart:math' as math;
 import 'dart:typed_data';
@@ -414,13 +413,13 @@ class _DetailsPageState extends State<DetailsPage> {
     } else {
       data.marked = !data.marked;
     }
-    HashSet<String> hashSet = HashSet.from(Settings.marked);
+    List<String> list = List.from(Settings.marked);
     if (data.marked) {
-      hashSet.add(data.id);
+      list.add(data.id);
     } else {
-      hashSet.remove(data.id);
+      list.remove(data.id);
     }
-    Settings.marked = hashSet.toList();
+    Settings.marked = list.toList();
     AppModel.of(context).collections = [];
     setState(() {});
   }

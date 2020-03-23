@@ -348,7 +348,7 @@ class _AboutPageState extends State<AboutPage> {
 
   Future<List<Picture>> _fetchData() async {
     List<Picture> result = [];
-    List<String> ids = Settings.marked;
+    List<String> ids = Settings.marked.reversed.toList();
     if (ids.isEmpty) {
       return result;
     }
@@ -359,7 +359,7 @@ class _AboutPageState extends State<AboutPage> {
     }
 
     for (int i = 0; i < ids.length; i++) {
-      result.add(await TujianApi.getDetails(ids[i]));
+      result.add((await TujianApi.getDetails(ids[i]))..marked = true);
     }
     AppModel.of(context).collections = result;
     return result;
