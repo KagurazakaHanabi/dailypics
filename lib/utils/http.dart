@@ -3,6 +3,6 @@ import 'package:dio/dio.dart';
 
 Dio http = Dio(BaseOptions(
   headers: {
-    'User-Agent': 'Dailypics/${Config.version} Version/${Config.buildNumber}',
+    'user-agent': 'Dailypics/${Config.version} Version/${Config.buildNumber}',
   },
 ));

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dailypics/misc/bean.dart';
@@ -89,27 +90,34 @@ class TujianApi {
     return Splash.fromJson(response.data);
   }
 
-  static Future<String> uploadFile(
+  static Future<dynamic> uploadFile(
     File file,
     ProgressCallback onProgress,
   ) async {
+    Uri uri = Uri.parse('https://img.dpic.dev/upload');
+    HttpClient client = HttpClient();
+    HttpClientRequest request = await client.postUrl(uri);
     String subType = file.path.substring(file.path.lastIndexOf('.') + 1);
-    Response response = await http.postUri(
-      Uri.parse('https://img.dpic.dev/upload'),
-      onSendProgress: onProgress,
-      data: file.openRead(),
-      options: Options(
-        responseType: ResponseType.plain,
-        headers: {
-          'Content-Type': 'image/$subType',
-          'Content-Length': file.lengthSync(),
-        },
-      ),
-    );
-    return response.data;
+    request.headers.set('content-type', 'image/$subType');
+    int contentLength = file.statSync().size;
+    int byteCount = 0;
+    Stream<List<int>> stream = file.openRead();
+    await request.addStream(stream.transform(StreamTransformer.fromHandlers(
+      handleDone: (sink) => sink.close(),
+      handleError: (_, __, ___) {},
+      handleData: (data, sink) {
+        byteCount += data.length;
+        sink.add(data);
+        if (onProgress != null) {
+          onProgress(byteCount, contentLength);
+        }
+      },
+    )));
+    HttpClientResponse response = await request.close();
+    return jsonDecode(await response.cast<List<int>>().transform(utf8.decoder).join());
   }
 
-  static Future<String> submit({
+  static Future<dynamic> submit({
     String title,
     String content,
     String url,
@@ -125,13 +133,7 @@ class TujianApi {
       'sort': type,
       'hz': email,
     };
-    Response response = await http.postUri(
-      Uri.parse('$_kBaseUrl/tg'),
-      data: data,
-      options: Options(
-        responseType: ResponseType.plain,
-      )
-    );
+    Response response = await http.postUri(Uri.parse('$_kBaseUrl/tg'), data: data);
     return response.data;
   }
 }
