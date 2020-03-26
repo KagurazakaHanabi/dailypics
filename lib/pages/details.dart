@@ -23,7 +23,7 @@ import 'package:dailypics/model/app.dart';
 import 'package:dailypics/utils/api.dart';
 import 'package:dailypics/utils/utils.dart';
 import 'package:dailypics/widget/adaptive_scaffold.dart';
-import 'package:dailypics/widget/image_card.dart';
+import 'package:dailypics/widget/photo_card.dart';
 import 'package:dailypics/widget/optimized_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -115,7 +115,7 @@ class _DetailsPageState extends State<DetailsPage> {
             Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.only(top: 64),
-              child: ImageCard(
+              child: PhotoCard(
                 data,
                 null,
                 showQrCode: true,

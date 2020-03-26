@@ -20,7 +20,7 @@ import 'package:dailypics/model/app.dart';
 import 'package:dailypics/pages/upload.dart';
 import 'package:dailypics/utils/api.dart';
 import 'package:dailypics/utils/utils.dart';
-import 'package:dailypics/widget/image_card.dart';
+import 'package:dailypics/widget/photo_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart'
     show CircleAvatar, Colors, Divider, ListTile, Scaffold, Theme, ThemeData;
@@ -284,7 +284,7 @@ class _AboutPageState extends State<AboutPage> {
                   scrollDirection: Axis.horizontal,
                   itemCount: data.length,
                   itemBuilder: (_, i) {
-                    return ImageCard(
+                    return PhotoCard(
                       data[i],
                       'C-$i-${data[i].id}',
                       padding: const EdgeInsets.all(12),

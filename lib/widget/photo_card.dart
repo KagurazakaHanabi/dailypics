@@ -22,8 +22,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show Colors;
 import 'package:markdown/markdown.dart' hide Text;
 
-class ImageCard extends StatefulWidget {
-  const ImageCard(
+class PhotoCard extends StatefulWidget {
+  const PhotoCard(
     this.data,
     this.heroTag, {
     this.padding = const EdgeInsets.all(16),
@@ -58,10 +58,10 @@ class ImageCard extends StatefulWidget {
   final GlobalKey repaintKey;
 
   @override
-  State<StatefulWidget> createState() => _ImageCardState();
+  State<StatefulWidget> createState() => _PhotoCardState();
 }
 
-class _ImageCardState extends State<ImageCard> {
+class _PhotoCardState extends State<PhotoCard> {
   final Duration duration = const Duration(milliseconds: 150);
 
   double scale = 1;

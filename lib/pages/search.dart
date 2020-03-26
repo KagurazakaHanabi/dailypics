@@ -19,7 +19,7 @@ import 'package:dailypics/extension.dart';
 import 'package:dailypics/misc/bean.dart';
 import 'package:dailypics/utils/api.dart';
 import 'package:dailypics/utils/utils.dart';
-import 'package:dailypics/widget/image_card.dart';
+import 'package:dailypics/widget/photo_card.dart';
 import 'package:dailypics/widget/search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show LinearProgressIndicator;
@@ -73,7 +73,7 @@ class _SearchPageState extends State<SearchPage> {
                 itemCount: data.isEmpty ? 1 : data.length,
                 itemBuilder: (_, i) {
                   if (data.isNotEmpty) {
-                    return ImageCard(data[i], '$query-${data[i].id}');
+                    return PhotoCard(data[i], '$query-${data[i].id}');
                   } else if (query.isNotEmpty && !doing) {
                     return Container(
                       padding: const EdgeInsets.only(top: 16),
