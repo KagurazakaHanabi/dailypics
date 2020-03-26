@@ -17,6 +17,7 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:dailypics/extension.dart';
 import 'package:dailypics/misc/bean.dart';
 import 'package:dailypics/model/app.dart';
 import 'package:dailypics/utils/api.dart';
@@ -104,7 +105,7 @@ class _DetailsPageState extends State<DetailsPage> {
     Radius radius = Radius.circular(SystemUtils.isIPad(context) ? 16 : 0);
     CupertinoThemeData theme = CupertinoTheme.of(context);
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: Utils.isDarkColor(data.color) && !SystemUtils.isIPad(context)
+      value: (data.color?.isDark ?? false) && !SystemUtils.isIPad(context)
           ? SystemUiOverlayStyle.light
           : SystemUiOverlayStyle.dark,
       child: AdaptiveScaffold(
@@ -136,7 +137,7 @@ class _DetailsPageState extends State<DetailsPage> {
                   AspectRatio(
                     aspectRatio: data.width / data.height,
                     child: OptimizedImage(
-                      Utils.getCompressed(data),
+                      data.getCompressedUrl(),
                       borderRadius: BorderRadius.vertical(top: radius),
                       heroTag: widget.heroTag,
                     ),

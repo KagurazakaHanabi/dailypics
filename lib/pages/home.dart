@@ -14,12 +14,12 @@
 
 import 'dart:async';
 
+import 'package:dailypics/extension.dart';
 import 'package:dailypics/components/suggest.dart';
 import 'package:dailypics/components/today.dart';
 import 'package:dailypics/pages/about.dart';
 import 'package:dailypics/pages/details.dart';
 import 'package:dailypics/pages/recent.dart';
-import 'package:dailypics/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: Utils.isDarkColor(CupertinoTheme.of(context).barBackgroundColor)
+      value: CupertinoTheme.of(context).barBackgroundColor.isDark
           ? SystemUiOverlayStyle.light
           : SystemUiOverlayStyle.dark,
       child: CupertinoTabScaffold(

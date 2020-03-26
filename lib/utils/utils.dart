@@ -15,6 +15,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dailypics/extension.dart';
 import 'package:dailypics/misc/bean.dart';
 import 'package:dailypics/utils/http.dart';
 import 'package:dio/dio.dart';
@@ -54,6 +55,22 @@ class SystemUtils {
     await _channel.invokeMethod('openAppSettings');
   }
 
+  static Future<void> makeH2Wallpaper(
+    Size size,
+    Offset offset,
+    Color shadowColor,
+    double shadowRadius,
+  ) async {
+    await _channel.invokeMethod('makeH2Wallpaper', {
+      'width': size.width,
+      'height': size.height,
+      'offsetX': offset.dx,
+      'offsetY': offset.dy,
+      'shadowColor': shadowColor.hexString,
+      'shadowRadius': shadowRadius,
+    });
+  }
+
   static Future<void> openUrl(String url) {
     return launch(url, forceSafariVC: false, forceWebView: false);
   }
@@ -69,27 +86,6 @@ class SystemUtils {
   static bool isPortrait(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return size.width < size.height;
-  }
-}
-
-class Utils {
-  static String getCompressed(Picture data, [String style = 'w720']) {
-    if (data.url != null) return data.url;
-    return '${data.cdnUrl}!$style';
-  }
-
-  static bool isDarkColor(Color c) {
-    if (c == null) return false;
-    // See https://github.com/FooStudio/tinycolor
-    return (c.red * 299 + c.green * 587 + c.blue * 114) / 1000 < 128;
-  }
-
-  static bool isUuid(String input) {
-    RegExp regExp = RegExp(
-      r'^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$',
-      caseSensitive: false,
-    );
-    return regExp.hasMatch(input);
   }
 }
 

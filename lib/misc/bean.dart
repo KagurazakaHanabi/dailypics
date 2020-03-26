@@ -14,6 +14,7 @@
 
 import 'dart:convert';
 
+import 'package:dailypics/extension.dart';
 import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -80,26 +81,23 @@ class Picture {
     })?.toList();
   }
 
+  String getCompressedUrl([String style = 'w1080']) {
+    if (url != null) return url;
+    return '${cdnUrl}!$style';
+  }
+
   String toJson() => jsonEncode(_$PictureToJson(this));
 
   static String _urlFromJson(String s) {
     return 'https://s1.images.dailypics.cn$s';
   }
 
-  static Color _colorFromHex(String hex) {
-    if (hex == null) return null;
-    hex = hex.toUpperCase().replaceAll('#', '');
-    if (hex.length == 6) {
-      hex = 'FF' + hex;
-    } else if (hex.length == 3) {
-      hex = 'FF' + hex[0] * 2 + hex[1] * 2 + hex[2] * 2;
-    }
-    return Color(int.parse(hex, radix: 16));
+  static Color _colorFromHex(String source) {
+    return ColorX.fromHexString(source);
   }
 
   static String _colorToHex(Color color) {
-    if (color == null) return null;
-    return '#' + color.value.toRadixString(16);
+    return color?.hexString;
   }
 }
 

@@ -359,7 +359,7 @@ class _TileState extends State<_Tile> {
               AspectRatio(
                 aspectRatio: aspectRatio,
                 child: OptimizedImage(
-                  Utils.getCompressed(widget.data, 'w480'),
+                  widget.data.getCompressedUrl('w480'),
                   heroTag: widget.heroTag,
                 ),
               ),

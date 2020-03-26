@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import 'package:dailypics/extension.dart';
 import 'package:dailypics/misc/bean.dart';
 import 'package:dailypics/pages/details.dart';
-import 'package:dailypics/utils/utils.dart';
 import 'package:dailypics/widget/animated_transform.dart';
 import 'package:dailypics/widget/optimized_image.dart';
 import 'package:dailypics/widget/qrcode.dart';
@@ -69,9 +69,7 @@ class _ImageCardState extends State<ImageCard> {
 
   @override
   Widget build(BuildContext context) {
-    Color textColor = Utils.isDarkColor(widget.data.color)
-        ? CupertinoColors.white
-        : CupertinoColors.black;
+    Color textColor = widget.data.color?.isDark ?? false ? Colors.white : Colors.black;
     return AnimatedTransform.scale(
       scale: scale,
       duration: duration,
@@ -109,7 +107,7 @@ class _ImageCardState extends State<ImageCard> {
                   AspectRatio(
                     aspectRatio: widget.aspectRatio,
                     child: OptimizedImage(
-                      Utils.getCompressed(widget.data),
+                      widget.data.getCompressedUrl(),
                       heroTag: widget.heroTag,
                       borderRadius: BorderRadius.circular(16),
                     ),

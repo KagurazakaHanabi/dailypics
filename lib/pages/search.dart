@@ -15,6 +15,7 @@
 import 'dart:async';
 import 'dart:ui' show ImageFilter, window;
 
+import 'package:dailypics/extension.dart';
 import 'package:dailypics/misc/bean.dart';
 import 'package:dailypics/utils/api.dart';
 import 'package:dailypics/utils/utils.dart';
@@ -116,7 +117,7 @@ class _SearchPageState extends State<SearchPage> {
             showCancelButton: true,
             autofocus: true,
             onSubmitted: (value) {
-              if (Utils.isUuid(value)) {
+              if (value.isUuid) {
                 _fetchData(value);
               } else if (value.isNotEmpty) {
                 query = value;
