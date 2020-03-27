@@ -15,7 +15,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:dailypics/extension.dart';
 import 'package:dailypics/misc/bean.dart';
 import 'package:dailypics/utils/http.dart';
 import 'package:dio/dio.dart';
@@ -55,21 +54,33 @@ class SystemUtils {
     await _channel.invokeMethod('openAppSettings');
   }
 
-  static Future<void> makeH2Wallpaper(
+  /*static Future<void> makeH2Wallpaper(
     Size size,
     Offset offset,
+    Color backgroundColor,
+    File backgroundImage,
+    double backgroundBlurRadius,
+    Color dockBarColor,
     Color shadowColor,
     double shadowRadius,
+    Offset shadowOffset,
+    double borderRadius,
   ) async {
     await _channel.invokeMethod('makeH2Wallpaper', {
       'width': size.width,
       'height': size.height,
       'offsetX': offset.dx,
       'offsetY': offset.dy,
+      'background': backgroundColor != null ? backgroundColor.hexString : backgroundImage.path,
+      'backgroundBlurRadius': backgroundColor != null ? null : backgroundBlurRadius,
+      'dockBarColor': dockBarColor.hexString,
       'shadowColor': shadowColor.hexString,
       'shadowRadius': shadowRadius,
+      'shadowOffsetX': shadowOffset.dx,
+      'shadowOffsetY': shadowOffset.dy,
+      'borderRadius': borderRadius,
     });
-  }
+  }*/
 
   static Future<void> openUrl(String url) {
     return launch(url, forceSafariVC: false, forceWebView: false);
