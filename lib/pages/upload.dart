@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
@@ -269,7 +268,10 @@ class _UploadPageState extends State<UploadPage> {
           actions: <Widget>[
             CupertinoDialogAction(
               child: const Text('好'),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                setState(() => progress = -1);
+                Navigator.of(context).pop();
+              },
             )
           ],
         );
@@ -312,17 +314,17 @@ class _UploadPageState extends State<UploadPage> {
     }
 
     setState(() => progress = null);
-    dynamic json = jsonDecode(await TujianApi.uploadFile(
+    dynamic json = await TujianApi.uploadFile(
       imageFile,
       (int count, int total) {
         setState(() => progress = count / total);
       },
-    ));
+    );
     if (!json['ret']) {
       await _showAlertDialog(json['error']['message']);
       return;
     }
-    String result = await TujianApi.submit(
+    dynamic result = await TujianApi.submit(
       title: title.text,
       content: content.text,
       url: 'https://img.dpic.dev/' + json['info']['md5'],
@@ -330,10 +332,9 @@ class _UploadPageState extends State<UploadPage> {
       type: type,
       email: email.text,
     );
-    dynamic json2 = jsonDecode(result);
-    if (json2['code'] != 200) {
+    if (result['code'] != 200) {
       setState(() => progress = -1);
-      await _showAlertDialog('投稿失败，因为：' + json2['msg']);
+      await _showAlertDialog('投稿失败，因为：' + result['msg']);
     } else {
       await _showAlertDialog('投稿成功，请等待管理员审核');
       Navigator.of(context).pop();

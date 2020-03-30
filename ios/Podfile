@@ -36,9 +36,6 @@ target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
-  pod 'Alamofire', '~> 5.0'
-  pod 'AlamofireImage', '~> 4.0'
-
   # Flutter Pod
 
   copied_flutter_dir = File.join(__dir__, 'Flutter')
@@ -81,6 +78,13 @@ target 'Runner' do
   end
 end
 
+target 'TodayExtension' do
+  use_frameworks!
+
+  pod 'Alamofire', '~> 5.0'
+  pod 'AlamofireImage', '~> 4.0'
+end
+
 # Prevent Cocoapods from embedding a second Flutter framework and causing an error with the new Xcode build system.
 install! 'cocoapods', :disable_input_output_paths => true
 
@@ -91,3 +95,4 @@ post_install do |installer|
     end
   end
 end
+

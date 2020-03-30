@@ -17,7 +17,7 @@ import 'package:dailypics/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-import 'image_card.dart';
+import 'photo_card.dart';
 
 class SliverImageCardList extends StatelessWidget {
   const SliverImageCardList({
@@ -72,13 +72,13 @@ class SliverImageCardList extends StatelessWidget {
           } else if (i == data.length + 1) {
             return footer ?? Container();
           } else if (iPad && !portrait && adaptiveTablet) {
-            return ImageCard(
+            return PhotoCard(
               data[i - 1],
               tagBuilder != null ? tagBuilder(i - 1) : '#$i',
               aspectRatio: _needWiden(i) ? 4 / 3 : 2 / 3.15,
             );
           } else {
-            return ImageCard(
+            return PhotoCard(
               data[i - 1],
               tagBuilder != null ? tagBuilder(i - 1) : '#$i',
             );

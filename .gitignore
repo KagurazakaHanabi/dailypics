@@ -14,7 +14,12 @@
 *.iml
 *.ipr
 *.iws
-.idea/
+**/.idea/caches
+**/.idea/libraries
+**/.idea/modules.xml
+**/.idea/workspace.xml
+**/.idea/navEditor.xml
+**/.idea/assetWizardSettings.xml
 
 # Flutter/Dart/Pub related
 **/doc/api/

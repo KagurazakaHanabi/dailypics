@@ -16,13 +16,11 @@ class MainFlutterWindow: NSWindow {
             switch call.method {
             case "share":
                 let arguments = call.arguments as! Dictionary<String, Any>;
-                let originX = arguments["originX"], originY = arguments["originY"];
-                let originWidth = arguments["originWidth"], originHeight = arguments["originHeight"];
-                var originRect: CGRect? = nil;
+                let originX = arguments["originX"] as! Double, originY = arguments["originY"] as! Double;
+                let originWidth = arguments["originWidth"] as! Double, originHeight = arguments["originHeight"] as! Double;
+                var originRect: NSRect? = nil;
                 if originX != nil && originY != nil && originWidth != nil && originHeight != nil {
-                    originRect = CGRect.init(
-                        x: originX as! Double, y: originY as! Double,
-                        width: originWidth as! Double, height: originHeight as! Double)
+                    originRect = NSRect.init(x: originWidth / 2, y: originY + originHeight, width: originWidth, height: originHeight)
                 }
                 self.share(file: arguments["file"]! as! String, atSource: originRect, result: result)
             case "useAsWallpaper":
@@ -44,20 +42,15 @@ class MainFlutterWindow: NSWindow {
         super.awakeFromNib()
     }
     
-    private func share(file: String, atSource: CGRect?, result: FlutterResult) {
-        result(FlutterMethodNotImplemented)
-        /*do {
-            let data = try Data(contentsOf: URL.init(string: "file://" + file)!)
-            let controller = UIActivityViewController.init(activityItems: [UIImage(data: data) as Any], applicationActivities: nil)
-            controller.popoverPresentationController?.sourceView = controller.view;
-            if atSource != nil {
-                controller.popoverPresentationController?.sourceRect = atSource!;
-            }
-            window.rootViewController!.present(controller, animated: true, completion: nil)
+    private func share(file: String, atSource: NSRect?, result: FlutterResult) {
+        do {
+            let data = NSImage(data: try Data(contentsOf: URL.init(string: "file://" + file)!))
+            let picker = NSSharingServicePicker(items: [data as Any])
+            picker.show(relativeTo: atSource!, of: contentViewController!.view, preferredEdge: .maxY)
             result(nil)
         } catch let error {
             result(FlutterError(code: "0", message: error.localizedDescription, details: nil))
-        }*/
+        }
     }
     
     private func useAsWallpaper(file: String, result: FlutterResult) {

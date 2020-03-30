@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import 'package:dailypics/extension.dart';
 import 'package:dailypics/misc/bean.dart';
 import 'package:dailypics/pages/details.dart';
-import 'package:dailypics/utils/utils.dart';
 import 'package:dailypics/widget/animated_transform.dart';
 import 'package:dailypics/widget/optimized_image.dart';
 import 'package:dailypics/widget/qrcode.dart';
@@ -22,8 +22,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show Colors;
 import 'package:markdown/markdown.dart' hide Text;
 
-class ImageCard extends StatefulWidget {
-  const ImageCard(
+class PhotoCard extends StatefulWidget {
+  const PhotoCard(
     this.data,
     this.heroTag, {
     this.padding = const EdgeInsets.all(16),
@@ -58,10 +58,10 @@ class ImageCard extends StatefulWidget {
   final GlobalKey repaintKey;
 
   @override
-  State<StatefulWidget> createState() => _ImageCardState();
+  State<StatefulWidget> createState() => _PhotoCardState();
 }
 
-class _ImageCardState extends State<ImageCard> {
+class _PhotoCardState extends State<PhotoCard> {
   final Duration duration = const Duration(milliseconds: 150);
 
   double scale = 1;
@@ -69,9 +69,7 @@ class _ImageCardState extends State<ImageCard> {
 
   @override
   Widget build(BuildContext context) {
-    Color textColor = Utils.isDarkColor(widget.data.color)
-        ? CupertinoColors.white
-        : CupertinoColors.black;
+    Color textColor = widget.data.color?.isDark ?? false ? Colors.white : Colors.black;
     return AnimatedTransform.scale(
       scale: scale,
       duration: duration,
@@ -109,7 +107,7 @@ class _ImageCardState extends State<ImageCard> {
                   AspectRatio(
                     aspectRatio: widget.aspectRatio,
                     child: OptimizedImage(
-                      Utils.getCompressed(widget.data),
+                      widget.data.getCompressedUrl(),
                       heroTag: widget.heroTag,
                       borderRadius: BorderRadius.circular(16),
                     ),

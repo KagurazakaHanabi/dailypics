@@ -443,7 +443,8 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				PRODUCT_BUNDLE_IDENTIFIER = cn.dailypics.macos;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yaerin.dailyPics;
+				PRODUCT_COPYRIGHT = "Copyright © 2019-2020 图鉴事务所 All rights reserved.";
 				PRODUCT_NAME = "图鉴日图";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
@@ -578,7 +579,8 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				PRODUCT_BUNDLE_IDENTIFIER = cn.dailypics.macos;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yaerin.dailyPics;
+				PRODUCT_COPYRIGHT = "Copyright © 2019-2020 图鉴事务所 All rights reserved.";
 				PRODUCT_NAME = "图鉴日图";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -607,7 +609,8 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				PRODUCT_BUNDLE_IDENTIFIER = cn.dailypics.macos;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yaerin.dailyPics;
+				PRODUCT_COPYRIGHT = "Copyright © 2019-2020 图鉴事务所 All rights reserved.";
 				PRODUCT_NAME = "图鉴日图";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;

@@ -15,13 +15,14 @@
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dailypics/extension.dart';
 import 'package:dailypics/misc/bean.dart';
 import 'package:dailypics/misc/config.g.dart';
 import 'package:dailypics/model/app.dart';
 import 'package:dailypics/pages/upload.dart';
 import 'package:dailypics/utils/api.dart';
 import 'package:dailypics/utils/utils.dart';
-import 'package:dailypics/widget/image_card.dart';
+import 'package:dailypics/widget/photo_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart'
     show CircleAvatar, Colors, Divider, ListTile, Scaffold, Theme, ThemeData;
@@ -180,7 +181,7 @@ class _AboutPageState extends State<AboutPage> {
   }
 
   Widget _buildAppInfo() {
-    final String version = Config.version;
+    const String version = Config.version;
     final String buildNumber = Config.buildNumber.toString();
     Color textColor = CupertinoDynamicColor.withBrightness(
       color: Colors.black54,
@@ -280,7 +281,7 @@ class _AboutPageState extends State<AboutPage> {
                   scrollDirection: Axis.horizontal,
                   itemCount: data.length,
                   itemBuilder: (_, i) {
-                    return ImageCard(
+                    return PhotoCard(
                       data[i],
                       'C-$i-${data[i].id}',
                       padding: const EdgeInsets.all(12),
@@ -344,7 +345,7 @@ class _AboutPageState extends State<AboutPage> {
 
   Future<List<Picture>> _fetchData() async {
     List<Picture> result = [];
-    List<String> ids = Settings.marked;
+    List<String> ids = Settings.marked.reversed.toList();
     if (ids.isEmpty) {
       return result;
     }
@@ -355,7 +356,21 @@ class _AboutPageState extends State<AboutPage> {
     }
 
     for (int i = 0; i < ids.length; i++) {
-      result.add(await TujianApi.getDetails(ids[i]));
+      if (!ids[i].isUuid) {
+        result.add(Picture(
+          id: ids[i],
+          title: '',
+          content: '',
+          width: 1080,
+          height: 1920,
+          user: '',
+          url: 'https://cn.bing.com/th?${ids[i]}.jpg',
+          date: 'Unknown',
+          marked: true,
+        ));
+      } else {
+        result.add((await TujianApi.getDetails(ids[i]))..marked = true);
+      }
     }
     AppModel.of(context).collections = result;
     return result;

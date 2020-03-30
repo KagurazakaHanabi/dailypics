@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import 'package:dailypics/extension.dart';
 import 'package:dailypics/components/suggest.dart';
 import 'package:dailypics/components/today.dart';
 import 'package:dailypics/pages/about.dart';
 import 'package:dailypics/pages/recent.dart';
-import 'package:dailypics/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
@@ -37,7 +37,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: Utils.isDarkColor(CupertinoTheme.of(context).barBackgroundColor)
+      value: CupertinoTheme.of(context).barBackgroundColor.isDark
           ? SystemUiOverlayStyle.light
           : SystemUiOverlayStyle.dark,
       child: CupertinoTabScaffold(

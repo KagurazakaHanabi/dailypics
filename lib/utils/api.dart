@@ -17,9 +17,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dailypics/misc/bean.dart';
-import 'package:dailypics/misc/config.g.dart';
+import 'package:dailypics/utils/http.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
 
 class TujianApiException implements Exception {
   const TujianApiException(this.message);
@@ -32,32 +32,24 @@ class TujianApiException implements Exception {
 
 class TujianApi {
   static const String _kBaseUrl = 'https://v2.api.dailypics.cn';
-  static const Map<String, String> _kHeaders = {
-    'User-Agent': 'Tujian/${Config.version} Version/${Config.buildNumber}',
-  };
-
-  static final http.Client _client = http.Client();
 
   static Future<Map<String, String>> getTypes() async {
-    Uri uri = Uri.parse('$_kBaseUrl/sort');
-    String source = await _client.read(uri, headers: _kHeaders);
+    Response response = await http.getUri(Uri.parse('$_kBaseUrl/sort'));
     Map<String, String> result = {};
-    (jsonDecode(source)['result'] as List).forEach((e) {
+    (response.data['result'] as List).forEach((e) {
       result.addAll({e['TID']: e['T_NAME']});
     });
     return result;
   }
 
   static Future<List<Picture>> getToday() async {
-    Uri uri = Uri.parse('$_kBaseUrl/today');
-    String source = await _client.read(uri, headers: _kHeaders);
-    return Picture.parseList(jsonDecode(source)) ?? [];
+    Response response = await http.getUri(Uri.parse('$_kBaseUrl/today'));
+    return Picture.parseList(response.data) ?? [];
   }
 
   static Future<List<Picture>> getRandom({int count = 1}) async {
-    Uri uri = Uri.parse('$_kBaseUrl/random?count=$count');
-    String source = await _client.read(uri, headers: _kHeaders);
-    return Picture.parseList(jsonDecode(source)) ?? [];
+    Response response = await http.getUri(Uri.parse('$_kBaseUrl/random?count=$count'));
+    return Picture.parseList(response.data) ?? [];
   }
 
   /// 获取分页归档
@@ -73,14 +65,13 @@ class TujianApi {
     String option = 'desc',
   }) async {
     String url = '$_kBaseUrl/list?page=$page&size=$size&sort=$sort&op=$option';
-    String source = await _client.read(url, headers: _kHeaders);
-    return Recents.fromJson(jsonDecode(source));
+    Response response = await http.getUri(Uri.parse(url));
+    return Recents.fromJson(response.data);
   }
 
   static Future<Picture> getDetails(String pid) async {
-    Uri uri = Uri.parse('$_kBaseUrl/member?id=$pid');
-    String source = await _client.read(uri, headers: _kHeaders);
-    Map<String, dynamic> json = jsonDecode(source);
+    Response response = await http.getUri(Uri.parse('$_kBaseUrl/member?id=$pid'));
+    Map<String, dynamic> json = response.data;
     if (json['error_code'] != null) {
       throw TujianApiException(json['msg']);
     } else {
@@ -90,23 +81,21 @@ class TujianApi {
 
   static Future<List<Picture>> search(String keyword) async {
     String encodedQuery = Uri.encodeQueryComponent(keyword);
-    Uri uri = Uri.parse('$_kBaseUrl/search/s/$encodedQuery');
-    String source = await _client.read(uri, headers: _kHeaders);
-    return Picture.parseList(jsonDecode(source)['result']);
+    Response response = await http.getUri(Uri.parse('$_kBaseUrl/search/s/$encodedQuery'));
+    return Picture.parseList(response.data['result']);
   }
 
   static Future<Splash> getSplash() async {
-    Uri uri = Uri.parse('$_kBaseUrl/app/splash');
-    String source = await _client.read(uri, headers: _kHeaders);
-    return Splash.fromJson(jsonDecode(source));
+    Response response = await http.getUri(Uri.parse('$_kBaseUrl/app/splash'));
+    return Splash.fromJson(response.data);
   }
 
-  static Future<String> uploadFile(
+  static Future<dynamic> uploadFile(
     File file,
-    void Function(int, int) cb,
+    ProgressCallback onProgress,
   ) async {
-    HttpClient client = HttpClient();
     Uri uri = Uri.parse('https://img.dpic.dev/upload');
+    HttpClient client = HttpClient();
     HttpClientRequest request = await client.postUrl(uri);
     String subType = file.path.substring(file.path.lastIndexOf('.') + 1);
     request.headers.set('content-type', 'image/$subType');
@@ -119,16 +108,16 @@ class TujianApi {
       handleData: (data, sink) {
         byteCount += data.length;
         sink.add(data);
-        if (cb != null) {
-          cb(byteCount, contentLength);
+        if (onProgress != null) {
+          onProgress(byteCount, contentLength);
         }
       },
     )));
     HttpClientResponse response = await request.close();
-    return await response.cast<List<int>>().transform(utf8.decoder).join();
+    return jsonDecode(await response.cast<List<int>>().transform(utf8.decoder).join());
   }
 
-  static Future<String> submit({
+  static Future<dynamic> submit({
     String title,
     String content,
     String url,
@@ -142,15 +131,9 @@ class TujianApi {
       'url': url,
       'user': user,
       'sort': type,
+      'hz': email,
     };
-    if (email != null) {
-      data.addAll({'hz': email});
-    }
-    http.Response response = await http.post(
-      'https://v2.api.dailypics.cn/tg',
-      headers: _kHeaders,
-      body: data,
-    );
-    return response.body;
+    Response response = await http.postUri(Uri.parse('$_kBaseUrl/tg'), data: data);
+    return response.data;
   }
 }

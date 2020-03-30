@@ -16,6 +16,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dailypics/misc/bean.dart';
+import 'package:dailypics/utils/http.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
@@ -52,6 +54,34 @@ class SystemUtils {
     await _channel.invokeMethod('openAppSettings');
   }
 
+  /*static Future<void> makeH2Wallpaper(
+    Size size,
+    Offset offset,
+    Color backgroundColor,
+    File backgroundImage,
+    double backgroundBlurRadius,
+    Color dockBarColor,
+    Color shadowColor,
+    double shadowRadius,
+    Offset shadowOffset,
+    double borderRadius,
+  ) async {
+    await _channel.invokeMethod('makeH2Wallpaper', {
+      'width': size.width,
+      'height': size.height,
+      'offsetX': offset.dx,
+      'offsetY': offset.dy,
+      'background': backgroundColor != null ? backgroundColor.hexString : backgroundImage.path,
+      'backgroundBlurRadius': backgroundColor != null ? null : backgroundBlurRadius,
+      'dockBarColor': dockBarColor.hexString,
+      'shadowColor': shadowColor.hexString,
+      'shadowRadius': shadowRadius,
+      'shadowOffsetX': shadowOffset.dx,
+      'shadowOffsetY': shadowOffset.dy,
+      'borderRadius': borderRadius,
+    });
+  }*/
+
   static Future<void> openUrl(String url) {
     return launch(url, forceSafariVC: false, forceWebView: false);
   }
@@ -70,12 +100,31 @@ class SystemUtils {
   }
 }
 
-class Utils {
-  static Future<File> download(
-    Picture data, [
-    void Function(int count, int total) cb,
-  ]) async {
-    Completer<File> completer = Completer();
+class Settings {
+  static SharedPreferences _prefs;
+
+  static Future<void> initialize() async {
+    _prefs = await SharedPreferences.getInstance();
+  }
+
+  static List<String> get marked => _prefs.getStringList('marked') ?? [];
+
+  static set marked(List<String> list) => _prefs.setStringList('marked', list);
+}
+
+class DownloadManager {
+  static DownloadManager _instance;
+
+  static DownloadManager get instance {
+    if (_instance == null) {
+      _instance = DownloadManager();
+    }
+    return _instance;
+  }
+
+  List<DownloadTask> _tasks = [];
+
+  Future<DownloadTask> runTask(Picture data, ValueNotifier<double> onProgress) async {
     String url = data.url ?? data.cdnUrl;
     String dest = (await getTemporaryDirectory()).path;
     File file;
@@ -89,54 +138,52 @@ class Utils {
     if (file.existsSync()) {
       file.deleteSync();
     }
-    HttpClient client = HttpClient();
-    HttpClientRequest request = await client.getUrl(Uri.parse(url));
-    HttpClientResponse response = await request.close();
-    int count = 0;
-    response.listen((data) {
-      file.writeAsBytesSync(data, mode: FileMode.writeOnlyAppend);
-      if (cb != null) {
-        cb(count += data.length, response.contentLength);
-      }
-    }, onDone: () async {
+
+    CancelToken token = CancelToken();
+    DownloadTask task = DownloadTask(
+      url: url,
+      destFile: file,
+      progress: onProgress,
+      cancelToken: token,
+    );
+    _tasks.add(task);
+    http.downloadUri(
+      Uri.parse(url),
+      file.path,
+      cancelToken: token,
+      onReceiveProgress: (int count, int total) {
+        // DownloadTask task = tasks.singleWhere((e) => e.url == url);
+        task.progress.value = count / total;
+      },
+    ).then((value) async {
       await _channel.invokeMethod('syncAlbum', {
         'file': file.path,
         'title': data.title,
         'content': data.content,
       });
-      completer.complete(file);
-    });
-    return completer.future;
+      task.progress.value = -1;
+      _tasks.remove(task);
+    }, onError: (err) => _tasks.remove(task));
+    return task;
   }
 
-  static String getCompressed(Picture data, [String style = 'w720']) {
-    if (data.url != null) return data.url;
-    return '${data.cdnUrl}!$style';
+  List<DownloadTask> queryTask(String url) {
+    return _tasks.where((e) => e.url == url).toList();
   }
 
-  static bool isDarkColor(Color c) {
-    if (c == null) return false;
-    // See https://github.com/FooStudio/tinycolor
-    return (c.red * 299 + c.green * 587 + c.blue * 114) / 1000 < 128;
-  }
-
-  static bool isUuid(String input) {
-    RegExp regExp = RegExp(
-      r'^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$',
-      caseSensitive: false,
-    );
-    return regExp.hasMatch(input);
+  void cancel(String url) {
+    Iterable<DownloadTask> tasks = _tasks.where((e) => e.url == url);
+    for (DownloadTask task in tasks) {
+      task.cancelToken.cancel("Abort by user!");
+    }
   }
 }
 
-class Settings {
-  static SharedPreferences _prefs;
+class DownloadTask {
+  DownloadTask({this.url, this.destFile, this.progress, this.cancelToken});
 
-  static Future<void> initialize() async {
-    _prefs = await SharedPreferences.getInstance();
-  }
-
-  static List<String> get marked => _prefs.getStringList('marked') ?? [];
-
-  static set marked(List<String> list) => _prefs.setStringList('marked', list);
+  String url;
+  File destFile;
+  ValueNotifier<double> progress;
+  CancelToken cancelToken;
 }
