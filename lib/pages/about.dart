@@ -15,6 +15,7 @@
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dailypics/extension.dart';
 import 'package:dailypics/misc/bean.dart';
 import 'package:dailypics/model/app.dart';
 import 'package:dailypics/pages/upload.dart';
@@ -359,7 +360,21 @@ class _AboutPageState extends State<AboutPage> {
     }
 
     for (int i = 0; i < ids.length; i++) {
-      result.add((await TujianApi.getDetails(ids[i]))..marked = true);
+      if (!ids[i].isUuid) {
+        result.add(Picture(
+          id: ids[i],
+          title: '',
+          content: '',
+          width: 1080,
+          height: 1920,
+          user: '',
+          url: 'https://cn.bing.com/th?${ids[i]}.jpg',
+          date: 'Unknown',
+          marked: true,
+        ));
+      } else {
+        result.add((await TujianApi.getDetails(ids[i]))..marked = true);
+      }
     }
     AppModel.of(context).collections = result;
     return result;

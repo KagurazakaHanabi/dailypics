@@ -23,8 +23,8 @@ import 'package:dailypics/model/app.dart';
 import 'package:dailypics/utils/api.dart';
 import 'package:dailypics/utils/utils.dart';
 import 'package:dailypics/widget/adaptive_scaffold.dart';
-import 'package:dailypics/widget/photo_card.dart';
 import 'package:dailypics/widget/optimized_image.dart';
+import 'package:dailypics/widget/photo_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' show CircularProgressIndicator, Colors, Divider;
@@ -182,17 +182,18 @@ class _DetailsPageState extends State<DetailsPage> {
             ),
           ),
         ),
-        GestureDetector(
-          onTap: _mark,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 12),
-            child: Icon(
-              data.marked ? Ionicons.ios_heart : Ionicons.ios_heart_empty,
-              color: CupertinoColors.activeBlue,
-              size: 24,
+        if (data.id.isUuid || (!data.id.isUuid && data.marked))
+          GestureDetector(
+            onTap: _mark,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 12),
+              child: Icon(
+                data.marked ? Ionicons.ios_heart : Ionicons.ios_heart_empty,
+                color: CupertinoColors.activeBlue,
+                size: 24,
+              ),
             ),
           ),
-        ),
         Padding(
           padding: const EdgeInsets.only(left: 16),
           child: _DownloadButton(data),
@@ -318,14 +319,16 @@ class _DetailsPageState extends State<DetailsPage> {
       child: Row(
         children: <Widget>[
           Expanded(child: Divider(color: dividerColor)),
-          Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: Text(username),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: Text(date),
-          ),
+          if (username.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: Text(username),
+            ),
+          if (date.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: Text(date),
+            ),
           Expanded(child: Divider(color: dividerColor)),
         ],
       ),
@@ -400,7 +403,8 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 
   String _parseDate(String s) {
-    DateTime date = DateTime.parse(s);
+    DateTime date = DateTime.tryParse(s);
+    if (date == null) return '';
     String result = '${date.month} 月 ${date.day} 日';
     if (date.year != DateTime.now().year) {
       result = '${date.year} 年 $result';
