@@ -16,11 +16,12 @@ class MainFlutterWindow: NSWindow {
             switch call.method {
             case "share":
                 let arguments = call.arguments as! Dictionary<String, Any>;
-                let originX = arguments["originX"] as! Double, originY = arguments["originY"] as! Double;
-                let originWidth = arguments["originWidth"] as! Double, originHeight = arguments["originHeight"] as! Double;
+                let originX = arguments["originX"] as? Double, originY = arguments["originY"] as? Double;
+                let originWidth = arguments["originWidth"] as? Double, originHeight = arguments["originHeight"] as? Double;
                 var originRect: NSRect? = nil;
                 if originX != nil && originY != nil && originWidth != nil && originHeight != nil {
-                    originRect = NSRect.init(x: originWidth / 2, y: originY + originHeight, width: originWidth, height: originHeight)
+                    originRect = NSRect.init(x: originWidth! / 2, y: originY! + originHeight!,
+                                             width: originWidth!, height: originHeight!)
                 }
                 self.share(file: arguments["file"]! as! String, atSource: originRect, result: result)
             case "useAsWallpaper":
