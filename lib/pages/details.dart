@@ -22,6 +22,7 @@ import 'package:dailypics/misc/bean.dart';
 import 'package:dailypics/model/app.dart';
 import 'package:dailypics/utils/api.dart';
 import 'package:dailypics/utils/utils.dart';
+import 'package:dailypics/utils/wallpaper.dart';
 import 'package:dailypics/widget/adaptive_scaffold.dart';
 import 'package:dailypics/widget/optimized_image.dart';
 import 'package:dailypics/widget/photo_card.dart';
@@ -518,6 +519,9 @@ class _DownloadButtonState extends State<_DownloadButton> {
               if (Platform.isAndroid) {
                 SystemUtils.useAsWallpaper(file);
               }
+              if (Platform.isWindows) {
+                Wallpaper.set(file);
+              }
               break;
           }
         }
@@ -535,7 +539,7 @@ class _DownloadButtonState extends State<_DownloadButton> {
                 ? '授权'
                 : (state == null || state == _DownloadState.pending)
                     ? '获取'
-                    : Platform.isAndroid ? '设定' : '完成',
+                    : (Platform.isAndroid || Platform.isWindows) ? '设定' : '完成',
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w500,

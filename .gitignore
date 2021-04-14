@@ -7,8 +7,10 @@
 .atom/
 .buildlog/
 .history
+.idea/
 .svn/
 .vscode/
+test/
 
 # IntelliJ related
 *.iml
@@ -16,6 +18,7 @@
 *.iws
 **/.idea/caches
 **/.idea/libraries
+**/.idea/misc.xml
 **/.idea/modules.xml
 **/.idea/workspace.xml
 **/.idea/navEditor.xml

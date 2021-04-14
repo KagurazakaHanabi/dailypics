@@ -42,6 +42,10 @@ class SystemUtils {
     await _channel.invokeMethod('useAsWallpaper', file.path);
   }
 
+  static Future<void> useAsWallpaperForWindows(File file) async {
+
+  }
+
   static Future<void> requestReview(bool inApp) async {
     await _channel.invokeMethod('requestReview', inApp);
   }
@@ -126,7 +130,7 @@ class DownloadManager {
 
   Future<DownloadTask> runTask(Picture data, ValueNotifier<double> onProgress) async {
     String url = data.url ?? data.cdnUrl;
-    String dest = (await getTemporaryDirectory()).path;
+    String dest = Platform.isWindows ? (await getDownloadsDirectory()).path : (await getTemporaryDirectory()).path;
     File file;
     String name;
     if (url.contains('bing.com/')) {
@@ -156,11 +160,13 @@ class DownloadManager {
         task.progress.value = count / total;
       },
     ).then((value) async {
-      await _channel.invokeMethod('syncAlbum', {
-        'file': file.path,
-        'title': data.title,
-        'content': data.content,
-      });
+      if (!Platform.isWindows) {
+        await _channel.invokeMethod('syncAlbum', {
+          'file': file.path,
+          'title': data.title,
+          'content': data.content,
+        });
+      }
       task.progress.value = -1;
       _tasks.remove(task);
     }, onError: (err) => _tasks.remove(task));

@@ -25,6 +25,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:http/http.dart' as http;
 
+class TuHitokoto {
+  String source;
+  String hitokoto;
+
+  TuHitokoto({this.source, this.hitokoto});
+
+  TuHitokoto.fromJson(Map<String, dynamic> json) {
+    source = json['source'];
+    hitokoto = json['hitokoto'];
+  }
+}
+
 class TodayComponent extends StatefulWidget {
   @override
   _TodayComponentState createState() => _TodayComponentState();
@@ -150,8 +162,9 @@ class _TodayComponentState extends State<TodayComponent> with AutomaticKeepAlive
   }
 
   Future<void> _fetchText() async {
-    String url = 'https://v1.hitokoto.cn/?encode=text';
-    String source = (await http.get(url)).body;
+    String url = 'https://cloudgw.api.dailypics.cn/release/tu_hitokoto';
+    String body = (await http.get(url)).body;
+    String source = TuHitokoto.fromJson(jsonDecode(body)).hitokoto;
     if (mounted) setState(() => text = source);
   }
 
