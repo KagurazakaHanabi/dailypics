@@ -44,6 +44,8 @@ class _UserSpacePageState extends State<UserSpacePage> {
   ScrollController controller = ScrollController();
   ScrollPosition position;
 
+  ImagePicker picker = ImagePicker();
+
   @override
   void initState() {
     super.initState();
@@ -246,7 +248,7 @@ class _UserSpacePageState extends State<UserSpacePage> {
             CupertinoActionSheetAction(
               child: const Text('从相册选择'),
               onPressed: () async => Navigator.of(context).pop(
-                await ImagePicker.pickImage(source: ImageSource.gallery),
+                await picker.getImage(source: ImageSource.gallery),
               ),
             ),
           ],

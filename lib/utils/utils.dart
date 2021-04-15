@@ -17,6 +17,7 @@ import 'dart:io';
 
 import 'package:dailypics/misc/bean.dart';
 import 'package:dailypics/utils/http.dart';
+import 'package:dailypics/utils/windows.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -39,7 +40,14 @@ class SystemUtils {
   }
 
   static Future<void> useAsWallpaper(File file) async {
-    await _channel.invokeMethod('useAsWallpaper', file.path);
+    switch (Platform.operatingSystem) {
+      case "android":
+        await _channel.invokeMethod('useAsWallpaper', file.path);
+        break;
+      case "windows":
+        Windows.useAsWallpaper(file);
+        break;
+    }
   }
 
   static Future<void> useAsWallpaperForWindows(File file) async {

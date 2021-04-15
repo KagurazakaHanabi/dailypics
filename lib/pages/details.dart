@@ -22,7 +22,6 @@ import 'package:dailypics/misc/bean.dart';
 import 'package:dailypics/model/app.dart';
 import 'package:dailypics/utils/api.dart';
 import 'package:dailypics/utils/utils.dart';
-import 'package:dailypics/utils/wallpaper.dart';
 import 'package:dailypics/widget/adaptive_scaffold.dart';
 import 'package:dailypics/widget/optimized_image.dart';
 import 'package:dailypics/widget/photo_card.dart';
@@ -223,7 +222,7 @@ class _DetailsPageState extends State<DetailsPage> {
       styleSheet: MarkdownStyleSheet(
         a: const TextStyle(color: CupertinoColors.link),
         p: textStyle.copyWith(
-          color: CupertinoDynamicColor.withBrightness(
+          color: const CupertinoDynamicColor.withBrightness(
             color: Colors.black54,
             darkColor: Colors.white70,
           ).resolveFrom(context),
@@ -291,7 +290,7 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 
   Widget _buildDivider() {
-    Color dividerColor = CupertinoDynamicColor.withBrightness(
+    Color dividerColor = const CupertinoDynamicColor.withBrightness(
       color: Colors.black38,
       darkColor: Colors.white54,
     ).resolveFrom(context);
@@ -312,7 +311,7 @@ class _DetailsPageState extends State<DetailsPage> {
     return DefaultTextStyle(
       style: TextStyle(
         fontSize: 14,
-        color: CupertinoDynamicColor.withBrightness(
+        color: const CupertinoDynamicColor.withBrightness(
           color: Colors.black45,
           darkColor: Colors.white60,
         ).resolveFrom(context),
@@ -337,7 +336,7 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 
   Widget _buildShareButton() {
-    Color color = CupertinoDynamicColor.withBrightness(
+    Color color = const CupertinoDynamicColor.withBrightness(
       color: CupertinoColors.systemBlue,
       darkColor: Colors.white,
     ).resolveFrom(context);
@@ -516,12 +515,7 @@ class _DownloadButtonState extends State<_DownloadButton> {
               SystemUtils.openAppSettings();
               break;
             case _DownloadState.successful:
-              if (Platform.isAndroid) {
-                SystemUtils.useAsWallpaper(file);
-              }
-              if (Platform.isWindows) {
-                Wallpaper.set(file);
-              }
+              SystemUtils.useAsWallpaper(file);
               break;
           }
         }

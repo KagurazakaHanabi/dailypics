@@ -136,7 +136,7 @@ class _AboutPageState extends State<AboutPage> {
                       member.position,
                       style: TextStyle(
                         fontSize: 14,
-                        color: CupertinoDynamicColor.withBrightness(
+                        color: const CupertinoDynamicColor.withBrightness(
                           color: Colors.black54,
                           darkColor: Colors.white70,
                         ).resolveFrom(context),
@@ -187,7 +187,7 @@ class _AboutPageState extends State<AboutPage> {
   Widget _buildAppInfo() {
     final String version = packageInfo?.version ?? '0.0.0';
     final String buildNumber = packageInfo?.buildNumber ?? '190000';
-    Color textColor = CupertinoDynamicColor.withBrightness(
+    Color textColor = const CupertinoDynamicColor.withBrightness(
       color: Colors.black54,
       darkColor: Colors.white70,
     ).resolveFrom(context);

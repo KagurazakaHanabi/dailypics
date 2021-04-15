@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   BottomNavigationBarItem _buildNavigationItem(IconData icon, String title) {
-    return BottomNavigationBarItem(icon: Icon(icon), title: Text(title));
+    return BottomNavigationBarItem(icon: Icon(icon), label: title);
   }
 
   void _handleUniLink(Uri uri) {

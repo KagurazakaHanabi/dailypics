@@ -150,6 +150,22 @@ class Splash {
 }
 
 @JsonSerializable()
+class Hitokoto {
+  Hitokoto({this.source, this.content});
+
+  factory Hitokoto.fromJson(Map<String, dynamic> json) {
+    return _$HitokotoFromJson(json);
+  }
+
+  String source;
+
+  @JsonKey(name: 'hitokoto')
+  String content;
+
+  String toJson() => jsonEncode(_$HitokotoToJson(this));
+}
+
+@JsonSerializable()
 class Contributor {
   Contributor({this.avatar, this.name, this.position, this.url});
 

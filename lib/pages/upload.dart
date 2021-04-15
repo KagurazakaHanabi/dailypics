@@ -44,6 +44,8 @@ class _UploadPageState extends State<UploadPage> {
   String type;
   double progress = -1;
 
+  ImagePicker picker = ImagePicker();
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -153,9 +155,9 @@ class _UploadPageState extends State<UploadPage> {
     }
     return GestureDetector(
       onTap: () async {
-        File file = await ImagePicker.pickImage(source: ImageSource.gallery);
+        PickedFile file = await picker.getImage(source: ImageSource.gallery);
         if (file != null) {
-          setState(() => imageFile = file);
+          setState(() => imageFile = File(file.path));
         }
       },
       child: AspectRatio(
@@ -240,12 +242,12 @@ class _UploadPageState extends State<UploadPage> {
         children: <Widget>[
           CupertinoButton(
             padding: EdgeInsets.zero,
-            child: Icon(Ionicons.ios_arrow_up),
+            child: const Icon(Ionicons.ios_arrow_up),
             onPressed: () => FocusScope.of(context).previousFocus(),
           ),
           CupertinoButton(
             padding: EdgeInsets.zero,
-            child: Icon(Ionicons.ios_arrow_down),
+            child: const Icon(Ionicons.ios_arrow_down),
             onPressed: () => FocusScope.of(context).nextFocus(),
           ),
           Expanded(child: Container()),

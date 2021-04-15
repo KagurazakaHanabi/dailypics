@@ -25,18 +25,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:http/http.dart' as http;
 
-class Hitokoto {
-  String source;
-  String content;
-
-  Hitokoto({this.source, this.hitokoto});
-
-  Hitokoto.fromJson(Map<String, dynamic> json) {
-    source = json['source'];
-    content = json['hitokoto'];
-  }
-}
-
 class TodayComponent extends StatefulWidget {
   @override
   _TodayComponentState createState() => _TodayComponentState();
