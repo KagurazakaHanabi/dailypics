@@ -27,13 +27,13 @@ import 'package:http/http.dart' as http;
 
 class TuHitokoto {
   String source;
-  String hitokoto;
+  String content;
 
-  TuHitokoto({this.source, this.hitokoto});
+  Hitokoto({this.source, this.hitokoto});
 
-  TuHitokoto.fromJson(Map<String, dynamic> json) {
+  Hitokoto.fromJson(Map<String, dynamic> json) {
     source = json['source'];
-    hitokoto = json['hitokoto'];
+    content = json['hitokoto'];
   }
 }
 
@@ -164,7 +164,7 @@ class _TodayComponentState extends State<TodayComponent> with AutomaticKeepAlive
   Future<void> _fetchText() async {
     String url = 'https://cloudgw.api.dailypics.cn/release/tu_hitokoto';
     String body = (await http.get(url)).body;
-    String source = TuHitokoto.fromJson(jsonDecode(body)).hitokoto;
+    String source = Hitokoto.fromJson(jsonDecode(body)).content;
     if (mounted) setState(() => text = source);
   }
 
