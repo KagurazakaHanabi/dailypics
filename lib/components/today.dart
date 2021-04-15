@@ -25,7 +25,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:http/http.dart' as http;
 
-class TuHitokoto {
+class Hitokoto {
   String source;
   String content;
 
