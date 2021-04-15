@@ -222,7 +222,7 @@ class _DetailsPageState extends State<DetailsPage> {
       styleSheet: MarkdownStyleSheet(
         a: const TextStyle(color: CupertinoColors.link),
         p: textStyle.copyWith(
-          color: CupertinoDynamicColor.withBrightness(
+          color: const CupertinoDynamicColor.withBrightness(
             color: Colors.black54,
             darkColor: Colors.white70,
           ).resolveFrom(context),
@@ -290,7 +290,7 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 
   Widget _buildDivider() {
-    Color dividerColor = CupertinoDynamicColor.withBrightness(
+    Color dividerColor = const CupertinoDynamicColor.withBrightness(
       color: Colors.black38,
       darkColor: Colors.white54,
     ).resolveFrom(context);
@@ -311,7 +311,7 @@ class _DetailsPageState extends State<DetailsPage> {
     return DefaultTextStyle(
       style: TextStyle(
         fontSize: 14,
-        color: CupertinoDynamicColor.withBrightness(
+        color: const CupertinoDynamicColor.withBrightness(
           color: Colors.black45,
           darkColor: Colors.white60,
         ).resolveFrom(context),
@@ -336,7 +336,7 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 
   Widget _buildShareButton() {
-    Color color = CupertinoDynamicColor.withBrightness(
+    Color color = const CupertinoDynamicColor.withBrightness(
       color: CupertinoColors.systemBlue,
       darkColor: Colors.white,
     ).resolveFrom(context);
@@ -515,9 +515,7 @@ class _DownloadButtonState extends State<_DownloadButton> {
               SystemUtils.openAppSettings();
               break;
             case _DownloadState.successful:
-              if (Platform.isAndroid) {
-                SystemUtils.useAsWallpaper(file);
-              }
+              SystemUtils.useAsWallpaper(file);
               break;
           }
         }
@@ -535,7 +533,7 @@ class _DownloadButtonState extends State<_DownloadButton> {
                 ? '授权'
                 : (state == null || state == _DownloadState.pending)
                     ? '获取'
-                    : Platform.isAndroid ? '设定' : '完成',
+                    : (Platform.isAndroid || Platform.isWindows) ? '设定' : '完成',
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w500,

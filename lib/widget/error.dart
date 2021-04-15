@@ -32,7 +32,7 @@ class CustomErrorWidget extends StatelessWidget {
       child: Text(
         details.exceptionAsString(),
         style: TextStyle(
-          color: CupertinoDynamicColor.withBrightness(
+          color: const CupertinoDynamicColor.withBrightness(
             color: Colors.black54,
             darkColor: Colors.white70,
           ).resolveFrom(context),

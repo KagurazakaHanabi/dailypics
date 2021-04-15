@@ -150,8 +150,9 @@ class _TodayComponentState extends State<TodayComponent> with AutomaticKeepAlive
   }
 
   Future<void> _fetchText() async {
-    String url = 'https://v1.hitokoto.cn/?encode=text';
-    String source = (await http.get(url)).body;
+    String url = 'https://cloudgw.api.dailypics.cn/release/tu_hitokoto';
+    String body = (await http.get(url)).body;
+    String source = Hitokoto.fromJson(jsonDecode(body)).content;
     if (mounted) setState(() => text = source);
   }
 

@@ -71,6 +71,18 @@ Map<String, dynamic> _$SplashToJson(Splash instance) => <String, dynamic>{
       'expires_at': instance.expiresAt?.toIso8601String(),
     };
 
+Hitokoto _$HitokotoFromJson(Map<String, dynamic> json) {
+  return Hitokoto(
+    source: json['source'] as String,
+    content: json['hitokoto'] as String,
+  );
+}
+
+Map<String, dynamic> _$HitokotoToJson(Hitokoto instance) => <String, dynamic>{
+      'source': instance.source,
+      'hitokoto': instance.content,
+    };
+
 Contributor _$ContributorFromJson(Map<String, dynamic> json) {
   return Contributor(
     avatar: json['avatar'] as String,

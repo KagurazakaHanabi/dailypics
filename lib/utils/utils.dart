@@ -17,6 +17,7 @@ import 'dart:io';
 
 import 'package:dailypics/misc/bean.dart';
 import 'package:dailypics/utils/http.dart';
+import 'package:dailypics/utils/windows.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -39,7 +40,18 @@ class SystemUtils {
   }
 
   static Future<void> useAsWallpaper(File file) async {
-    await _channel.invokeMethod('useAsWallpaper', file.path);
+    switch (Platform.operatingSystem) {
+      case "android":
+        await _channel.invokeMethod('useAsWallpaper', file.path);
+        break;
+      case "windows":
+        Windows.useAsWallpaper(file);
+        break;
+    }
+  }
+
+  static Future<void> useAsWallpaperForWindows(File file) async {
+
   }
 
   static Future<void> requestReview(bool inApp) async {
@@ -126,7 +138,7 @@ class DownloadManager {
 
   Future<DownloadTask> runTask(Picture data, ValueNotifier<double> onProgress) async {
     String url = data.url ?? data.cdnUrl;
-    String dest = (await getTemporaryDirectory()).path;
+    String dest = Platform.isWindows ? (await getDownloadsDirectory()).path : (await getTemporaryDirectory()).path;
     File file;
     String name;
     if (url.contains('bing.com/')) {
@@ -156,11 +168,13 @@ class DownloadManager {
         task.progress.value = count / total;
       },
     ).then((value) async {
-      await _channel.invokeMethod('syncAlbum', {
-        'file': file.path,
-        'title': data.title,
-        'content': data.content,
-      });
+      if (!Platform.isWindows) {
+        await _channel.invokeMethod('syncAlbum', {
+          'file': file.path,
+          'title': data.title,
+          'content': data.content,
+        });
+      }
       task.progress.value = -1;
       _tasks.remove(task);
     }, onError: (err) => _tasks.remove(task));
