@@ -84,4 +84,5 @@
       <textMaps />
     </LinkMapSettings>
   </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="JDK" project-jdk-type="JavaSDK" />
 </project>

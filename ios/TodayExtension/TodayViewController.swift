@@ -1,5 +1,5 @@
 //
-// Copyright 2019 KagurazakaHanabi<i@yaerin.com>
+// Copyright 2019-2021 KagurazakaHanabi<i@hanabi.su>
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
