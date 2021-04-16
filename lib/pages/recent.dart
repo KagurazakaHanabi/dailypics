@@ -31,7 +31,6 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class RecentPage extends StatefulWidget {
-
   @override
   _RecentPageState createState() => _RecentPageState();
 
@@ -154,20 +153,19 @@ class _RecentPageState extends State<RecentPage>
 
   Future<void> _fetchData() async {
     doing = true;
-    Recents recents = await TujianApi.getRecents(
-      sort: current,
-      page: cur[current],
-      size: 20,
-    );
-    List<Picture> data = recents.data;
-    List<String> list = Settings.marked;
-    for (int i = 0; i < data.length; i++) {
-      data[i].marked = list.contains(data[i].id);
-    }
-    max[current] = recents.maximum;
-    doing = false;
-    AppModel.of(context).recent.addAll(data);
-    setState(() {});
+    TujianApi.getRecents(sort: current, page: cur[current], size: 20).then((recents) {
+      List<Picture> data = recents.data;
+      List<String> list = Settings.marked;
+      for (int i = 0; i < data.length; i++) {
+        data[i].marked = list.contains(data[i].id);
+      }
+      max[current] = recents.maximum;
+      doing = false;
+      AppModel.of(context).recent.addAll(data);
+      if (mounted) setState(() {});
+    }).catchError((_) {
+      doing = false;
+    });
   }
 
   List<Picture> _where(String tid) {
