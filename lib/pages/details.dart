@@ -19,6 +19,7 @@ import 'dart:ui' as ui;
 
 import 'package:dailypics/extension.dart';
 import 'package:dailypics/misc/bean.dart';
+import 'package:dailypics/misc/ionicons.dart';
 import 'package:dailypics/model/app.dart';
 import 'package:dailypics/utils/api.dart';
 import 'package:dailypics/utils/utils.dart';
@@ -30,7 +31,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' show CircularProgressIndicator, Colors, Divider;
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -186,9 +186,9 @@ class _DetailsPageState extends State<DetailsPage> {
           GestureDetector(
             onTap: _mark,
             child: Padding(
-              padding: const EdgeInsets.only(left: 12),
+              padding: const EdgeInsets.only(left: 16, top: 4),
               child: Icon(
-                data.marked ? Ionicons.ios_heart : Ionicons.ios_heart_empty,
+                data.marked ? Ionicons.heart : Ionicons.heart_outline,
                 color: CupertinoColors.activeBlue,
                 size: 24,
               ),
@@ -359,7 +359,7 @@ class _DetailsPageState extends State<DetailsPage> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Icon(CupertinoIcons.share, color: color),
+              Icon(Ionicons.share_outline, color: color),
               Text(
                 '分享',
                 style: TextStyle(color: color),

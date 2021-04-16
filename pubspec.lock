@@ -223,15 +223,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.2"
-  flutter_ionicons:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: d8e4c73bed17bbf5b496afb03757454494e34399
-      url: "https://github.com/KagurazakaHanabi/flutter_ionicons.git"
-    source: git
-    version: "4.5.10-0"
   flutter_localizations:
     dependency: "direct main"
     description: flutter

@@ -12,8 +12,6 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  flutter_ionicons:
-    git: https://github.com/KagurazakaHanabi/flutter_ionicons.git
   flutter_markdown:
     git: https://github.com/KagurazakaHanabi/flutter_markdown.git
   cached_network_image: ^2.0.0
@@ -41,3 +39,7 @@ flutter:
   uses-material-design: true
   assets:
     - res/
+  fonts:
+   - family: Ionicons
+     fonts:
+      - asset: res/Ionicons-v5.5.1.ttf

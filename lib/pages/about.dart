@@ -17,6 +17,7 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dailypics/extension.dart';
 import 'package:dailypics/misc/bean.dart';
+import 'package:dailypics/misc/ionicons.dart';
 import 'package:dailypics/model/app.dart';
 import 'package:dailypics/pages/upload.dart';
 import 'package:dailypics/utils/api.dart';
@@ -25,7 +26,6 @@ import 'package:dailypics/widget/photo_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart'
     show CircleAvatar, Colors, Divider, ListTile, Scaffold, Theme, ThemeData;
-import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -228,17 +228,17 @@ class _AboutPageState extends State<AboutPage> {
                   ),
                 ),
                 _buildAction(
-                  Ionicons.ios_link,
+                  Ionicons.link,
                   '官网',
                   () => launch('https://www.dailypics.cn/'),
                 ),
                 _buildAction(
-                  Ionicons.ios_star_half,
+                  Ionicons.star_half,
                   '评分',
                   () => SystemUtils.requestReview(false),
                 ),
                 _buildAction(
-                  Ionicons.ios_chatboxes,
+                  Ionicons.chatbubbles_outline,
                   '反馈',
                   () => launch('https://support.qq.com/product/120654'),
                 ),

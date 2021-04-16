@@ -17,12 +17,12 @@ import 'dart:async';
 import 'package:dailypics/extension.dart';
 import 'package:dailypics/components/suggest.dart';
 import 'package:dailypics/components/today.dart';
+import 'package:dailypics/misc/ionicons.dart';
 import 'package:dailypics/pages/about.dart';
 import 'package:dailypics/pages/details.dart';
 import 'package:dailypics/pages/recent.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:uni_links/uni_links.dart';
 
 class HomePage extends StatefulWidget {
@@ -61,10 +61,10 @@ class _HomePageState extends State<HomePage> {
         resizeToAvoidBottomInset: false,
         tabBar: CupertinoTabBar(
           items: [
-            _buildNavigationItem(Ionicons.ios_today, 'Today'),
-            _buildNavigationItem(Ionicons.ios_time, '以往'),
-            _buildNavigationItem(Ionicons.ios_flame, '推荐 '),
-            _buildNavigationItem(Ionicons.ios_settings, '更多'),
+            _buildNavigationItem(Ionicons.today_outline, 'Today'),
+            _buildNavigationItem(Ionicons.time_outline, '以往'),
+            _buildNavigationItem(Ionicons.flame_outline, '推荐 '),
+            _buildNavigationItem(Ionicons.settings_outline, '更多'),
           ],
         ),
         tabBuilder: (_, index) {

@@ -16,13 +16,13 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:dailypics/misc/bean.dart';
+import 'package:dailypics/misc/ionicons.dart';
 import 'package:dailypics/model/app.dart';
 import 'package:dailypics/utils/api.dart';
 import 'package:dailypics/utils/utils.dart';
 import 'package:dailypics/widget/slivers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:http/http.dart' as http;
 
 class TodayComponent extends StatefulWidget {
@@ -120,7 +120,7 @@ class _TodayComponentState extends State<TodayComponent> with AutomaticKeepAlive
                 context: context,
                 builder: (BuildContext context) {
                   return const AlertDialog(
-                    icon: Ionicons.ios_checkmark,
+                    icon: Ionicons.checkmark,
                     text: Text('已复制'),
                   );
                 },

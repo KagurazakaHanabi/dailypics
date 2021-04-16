@@ -16,6 +16,7 @@ import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
 import 'package:dailypics/misc/bean.dart';
+import 'package:dailypics/misc/ionicons.dart';
 import 'package:dailypics/model/app.dart';
 import 'package:dailypics/pages/details.dart';
 import 'package:dailypics/pages/search.dart';
@@ -26,7 +27,6 @@ import 'package:dailypics/widget/search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show Colors;
 import 'package:flutter/rendering.dart';
-import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -378,7 +378,7 @@ class _TileState extends State<_Tile> {
                       offstage: !widget.data.marked,
                       child: const Padding(
                         padding: EdgeInsets.only(left: 8),
-                        child: Icon(Ionicons.ios_heart, size: 18),
+                        child: Icon(Ionicons.heart, size: 18),
                       ),
                     ),
                   ],
