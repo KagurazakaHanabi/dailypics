@@ -20,8 +20,7 @@ import 'package:win32/win32.dart';
 
 class Windows {
   static void useAsWallpaper(File wallpaperFile) {
-    final hr = CoInitializeEx(
-        nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+    final hr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
     if (FAILED(hr)) throw WindowsException(hr);
 
     final wallpaper = DesktopWallpaper.createInstance();

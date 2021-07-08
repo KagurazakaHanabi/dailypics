@@ -38,7 +38,6 @@ linter:
     - recursive_getters
     - slash_for_doc_comments
     - sort_constructors_first
-    - sort_pub_dependencies
     - sort_unnamed_constructors_first
     - type_init_formals
     - unnecessary_const
